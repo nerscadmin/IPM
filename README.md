@@ -6,7 +6,7 @@ Integrated Performance Monitoring for HPC
 
 **IPM is a portable profiling infrastructure for parallel codes.** It provides a low-overhead profile of application performance and resource utilization in a parallel program. Communication, computation, and IO are the primary focus. While the design scope targets production computing in HPC centers, IPM has found use in application development, performance debugging and parallel computing education. The level of detail is selectable at runtime and presented through a variety of text and web reports.
 
-IPM has extremely low overhead, is **scalable** and **easy to use* requiring no source code modification. It runs on Cray XT/XE, IBM Blue Gene, most Linux clusters using MPICH/OPENMPI, SGI Altix and some NEC machines. IPM is available under an Open Source software license (LGPL). It is currently installed on several [Teragrid][], [Department of Energy][], and other supercomputing resources. 
+IPM has extremely low overhead, is **scalable** and **easy to use** requiring no source code modification. It runs on Cray XT/XE, IBM Blue Gene, most Linux clusters using MPICH/OPENMPI, SGI Altix and some NEC machines. IPM is available under an Open Source software license (LGPL). It is currently installed on several [Teragrid][], [Department of Energy][], and other supercomputing resources. 
 
 [teragrid]: https://www.teragrid.org/
 [department of energy]: http://www.nersc.gov
