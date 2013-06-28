@@ -1,0 +1,23 @@
+#
+# IPM key file for CUFFT
+#
+##module CUFFT
+#
+# BYTES_NONE
+# BYTES_NX
+# BYTES_NXNY
+# BYTES_NXNYNZ
+#
+1|CUFFT_PLAN1D_ID|cufftResult CUFFTAPI cufftPlan1d(cufftHandle *plan, int nx, cufftType type, int batch)||CS_LOCAL,BYTES_NX,RANK_NONE,DATA_NONE,COMM_NONE
+2|CUFFT_PLAN2D_ID|cufftResult CUFFTAPI cufftPlan2d(cufftHandle *plan, int nx, int ny, cufftType type)||CS_LOCAL,BYTES_NXNY,RANK_NONE,DATA_NONE,COMM_NONE
+3|CUFFT_PLAN3D_ID|cufftResult CUFFTAPI cufftPlan3d(cufftHandle *plan, int nx, int ny, int nz, cufftType type)||CS_LOCAL,BYTES_NXNYNZ,RANK_NONE,DATA_NONE,COMM_NONE
+4|CUFFT_PLANMANY_ID|cufftResult CUFFTAPI cufftPlanMany(cufftHandle *plan, int rank, int *n, int *inembed, int istride, int idist, int *onembed, int ostride, int odist, cufftType type, int batch)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+5|CUFFT_DESTROY|cufftResult CUFFTAPI cufftDestroy(cufftHandle plan)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+6|CUFFT_EXEC_C2C|cufftResult CUFFTAPI cufftExecC2C(cufftHandle plan, cufftComplex *idata, cufftComplex *odata, int direction)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+7|CUFFT_EXEC_R2C|cufftResult CUFFTAPI cufftExecR2C(cufftHandle plan, cufftReal *idata, cufftComplex *odata)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+8|CUFFT_EXEC_C2R|cufftResult CUFFTAPI cufftExecC2R(cufftHandle plan, cufftComplex *idata, cufftReal *odata)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+9|CUFFT_EXEC_Z2Z|cufftResult CUFFTAPI cufftExecZ2Z(cufftHandle plan, cufftDoubleComplex *idata, cufftDoubleComplex *odata, int direction)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+10|CUFFT_EXEC_D2Z|cufftResult CUFFTAPI cufftExecD2Z(cufftHandle plan, cufftDoubleReal *idata, cufftDoubleComplex *odata)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+11|CUFFT_EXEC_Z2D|cufftResult CUFFTAPI cufftExecZ2D(cufftHandle plan, cufftDoubleComplex *idata, cufftDoubleReal *odata)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+12|CUFFT_SETSTREAM|cufftResult CUFFTAPI cufftSetStream(cufftHandle plan, cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+13|CUFFT_SETCOMPATIBILITYMODE|cufftResult CUFFTAPI cufftSetCompatibilityMode(cufftHandle plan, cufftCompatibility mode)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE

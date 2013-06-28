@@ -1,0 +1,9 @@
+#
+##module MEM
+#
+#1|MEM_MALLOC_ID|void* malloc(size_t size)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+#2|MEM_CALLOC_ID|void* calloc(size_t nmemb, size_t size)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+#3|MEM_REALLOC_ID|void* realloc(void * ptr, size_t size)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+4|MEM_FREE_ID|void free(void * ptr)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+#5|MEM_MMAP_ID|void* mmap(void * start, size_t length, int prot , int flags, int fd, off_t offset)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+#6|MEM_MUNMAP_ID|int munmap(void * start, size_t length)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE

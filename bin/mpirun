@@ -1,0 +1,55 @@
+#! /bin/sh
+
+# an mpirun wrapper script, most likely will need to be tailored to the 
+# software (modules, softenv, etc) environment on your machine
+
+# the key premise of this script is that it's put in place first in the path
+# it thus co-opts mpirun in the user batch script and finds the _next_
+# mpirun in the path, which it uses as the real mpirun in turn
+
+
+# this script is based on the use case where you want to implicitly run with
+# IPM on across all or some of the users on a machine, i.e., always-on
+# profiling w/o need to change batch scripts
+
+# IPM_ON -> default run with (1) or without (0) IPM
+# EXEMPT -> a exception list of users who get IPM_ON=0 
+# ACTIVE -> a exception list of users who get IPM_ON=1
+
+# questions -> deskinner@lbl.gov
+
+REAL_MPIRUN=`/usr/bin/which -a mpirun  | awk '(NR==2)'`
+
+if [ "$REAL_MPIRUN" = "" ]; then 
+ REAL_MPIRUN=/usr/common/usg/openmpi/default/pgi/bin/mpirun
+fi
+
+# default
+IPM_ON=0
+
+# skip these users
+EXEMPT=(waldo betty germaine)
+
+# always profile these users
+ACTIVE=(dskinner horus betty)
+
+for name in ${EXEMPT[@]}
+do
+ if [ "$USER" = "$name" ]; then 
+  IPM_ON=0
+ fi 
+done
+
+#for name in ${ACTIVE[@]}
+#do
+# if [ "$USER" = "$name" ]; then 
+#  IPM_ON=1
+# fi 
+#done
+
+if [ $IPM_ON = 1 ] ; then
+$REAL_MPIRUN -x LD_PRELOAD=/usr/common/usg/ipm/magellan/lib/libipm.so $*
+else
+$REAL_MPIRUN $*
+fi
+

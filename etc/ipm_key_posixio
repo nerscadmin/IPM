@@ -1,0 +1,43 @@
+#
+# IPM key file for Posix I/O
+#
+# BYTES_NONE         -  0 bytes read/written
+#
+# BYTES_NMEMB        -  number of elements x size
+# BYTES_COUNT        -  count bytes
+# BYTES_CHAR         -  1 (sizeof(char) byte 
+#
+# BYTES_RETURN_NMEMB -  number of elements (return value) x size
+# BYTES_RETURN_COUNT -  count bytes (return value)
+# BYTES_RETURN_EOF   -  1 byte unless return value==EOF
+#
+##module POSIXIO
+#
+1|PIO_FOPEN_ID|FILE* fopen(const char *path, const char *mode)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+2|PIO_FDOPEN_ID|FILE* fdopen(int fd, const char *mode)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+3|PIO_FREOPEN_ID|FILE* freopen(const char *path, const char *mode, FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+4|PIO_FCLOSE_ID|int fclose(FILE *fp)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+5|PIO_FFLUSH_ID|int fflush(FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+6|PIO_FREAD_ID|size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)||CS_LOCAL,BYTES_NMEMB,RANK_NONE,DATA_RX
+7|PIO_FWRITE_ID|size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)||CS_LOCAL,BYTES_RETURN_NMEMB,RANK_NONE,DATA_TX
+8|PIO_FSEEK_ID|int fseek(FILE *stream, long offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+9|PIO_FTELL_ID|long ftell(FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+10|PIO_REWIND_ID|void rewind(FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+11|PIO_FGETPOS_ID|int fgetpos(FILE *stream, fpos_t *pos)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+12|PIO_FSETPOS_ID|int fsetpos(FILE *stream, const fpos_t *pos)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+13|PIO_FGETC_ID|int fgetc(FILE *stream)||CS_LOCAL,BYTES_RETURN_EOF,RANK_NONE,DATA_NONE
+14|PIO_GETC_ID|int getc(FILE *stream)||CS_LOCAL,BYTES_RETURN_EOF,RANK_NONE,DATA_NONE
+15|PIO_UNGETC_ID|int ungetc(int c, FILE *stream)||CS_LOCAL,BYTES_RETURN_EOF,RANK_NONE,DATA_NONE
+16|PIO_READ_ID|ssize_t read(int fd, void *buf, size_t count)||CS_LOCAL,BYTES_RETURN_COUNT,RANK_NONE,DATA_RX
+17|PIO_WRITE_ID|ssize_t write(int fd, const void *buf, size_t count)||CS_LOCAL,BYTES_RETURN_COUNT,RANK_NONE,DATA_TX
+18|PIO_OPEN_ID|int open(const char *pathname, int flags, mode_t mode)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+19|PIO_OPEN64_ID|int open64(const char *pathname, int flags, mode_t mode)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+20|PIO_CREAT_ID|int creat(const char *pathname, mode_t mode)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+21|PIO_CLOSE_ID|int close(int fd)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+24|PIO_TRUNCATE_ID|int truncate(const char *path, off_t length)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+25|PIO_FTRUNCATE_ID|int ftruncate(int fd, off_t length)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+26|PIO_TRUNCATE64_ID|int truncate64(const char *path, off64_t length)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+27|PIO_FTRUNCATE64_ID|int ftruncate64(int fd, off64_t length)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+28|PIO_LSEEK_ID|off_t lseek(int fd, off_t offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+29|PIO_LSEEK64_ID|off64_t lseek64(int fd, off64_t offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+

@@ -1,0 +1,255 @@
+
+HPCSYS = $(shell $(IPM_ROOT)/bin/hpcenv.pl)
+
+BUILDOPT_HAVE_MPI             = "yes"
+#BUILDOPT_HAVE_MPI_TRACE       = "yes"
+#BUILDOPT_HAVE_POSIXIO         = "yes"
+#BUILDOPT_HAVE_POSIXIO_TRACE   = "yes"
+#BUILDOPT_HAVE_PAPI            = "yes"
+#BUILDOPT_HAVE_SELFMONITOR     = "yes"
+#BUILDOPT_HAVE_OMPTRACEPOINTS  = "yes"
+#BUILDOPT_HAVE_CUDA            = "yes"
+#BUILDOPT_HAVE_CUFFT           = "yes"
+#BUILDOPT_HAVE_CUBLAS          = "yes"
+
+#
+# modules below are experimental 
+#
+#BUILDOPT_HAVE_CALLPATH     = "yes"
+#BUILDOPT_HAVE_KEYHIST      = "yes"
+#BUILDOPT_HAVE_MEM          = "yes"
+#BUILDOPT_HAVE_MPIIO        = "yes"
+#BUILDOPT_HAVE_PROCCTRL     = "yes"
+#BUILDOPT_HAVE_CLUSTERING   = "yes"
+
+
+MPICC=mpicc
+MPIF90=mpif90
+MPIRUN=mpiexec
+MPIRUN_TASKS=-n 16
+#CFLAGS=-DDEBUG
+FUNDERSCORE=-funderscore_post
+
+ifeq ($(HPCSYS), Franklin)
+  MPICC=cc
+  MPIF90=ftn
+  CFLAGS+=-DMPI_STATUS_COUNT=count -DIPM_DISABLE_PWENT -DLINUX_XT5
+  CFLAGS+=-DOS_LINUX
+
+  BUILDOPT_HAVE_LIBUNWIND    = "yes"
+  LIBUNWIND_INC=-I$(HOME)/sw/x86_64/include
+  LIBUNWIND_LIB=-L$(HOME)/sw/x86_64/lib -lunwind
+
+  PAPI_INC=$(PAPI_INCLUDE_OPTS)
+  PAPI_LIB=$(PAPI_POST_LINK_OPTS)
+endif 
+
+ifeq ($(HPCSYS), Hopper)
+  MPICC=cc
+  MPIF90=ftn
+  CFLAGS+=-DMPI_STATUS_COUNT=count -DIPM_DISABLE_PWENT -DLINUX_XT5
+  CFLAGS+=-DOS_LINUX
+
+#  BUILDOPT_HAVE_LIBUNWIND    = "yes"
+#  LIBUNWIND_INC=-I$(HOME)/sw/x86_64/include
+#  LIBUNWIND_LIB=-L$(HOME)/sw/x86_64/lib -lunwind
+
+#  PAPI_INC=$(PAPI_INCLUDE_OPTS)
+#  PAPI_LIB=$(PAPI_POST_LINK_OPTS)
+endif 
+
+ifeq ($(HPCSYS), Kraken)
+  MPICC=cc
+  MPIF90=ftn
+  CFLAGS+=-DMPI_STATUS_COUNT=count -DIPM_DISABLE_PWENT -DLINUX_XT5
+  CFLAGS+=-DOS_LINUX
+
+  BUILDOPT_HAVE_LIBUNWIND    = "yes"
+  LIBUNWIND_INC=-I$(HOME)/sw/x86_64/include
+  LIBUNWIND_LIB=-L$(HOME)/sw/x86_64/lib -lunwind
+
+  PAPI_INC=$(PAPI_INCLUDE_OPTS)
+  PAPI_LIB=$(PAPI_POST_LINK_OPTS)
+endif 
+
+ifeq ($(HPCSYS), Ranger)
+  CFLAGS+=-DMPI_STATUS_COUNT=count
+  CFLAGS+=-DOS_LINUX
+endif 
+
+ifeq ($(HPCSYS), ipm2dev)
+  BUILDOPT_HAVE_DYNLOAD = "yes"
+
+  CFLAGS+=-DOS_LINUX 
+  CFLAGS+=-DMPI_STATUS_COUNT=_count
+  
+  PAPI_INC=-I/usr/local/papi-4.1.1/include
+  PAPI_LIB=-L/usr/local/papi-4.1.1/lib -lpapi
+
+  CUDA_INC=-I/usr/local/cuda/include
+
+  BUILDOPT_HAVE_LIBUNWIND    = "yes"
+  LIBUNWIND_INC=-I$(HOME)/sw/x86_64/include
+  LIBUNWIND_LIB=-L$(HOME)/sw/x86_64/lib -lunwind
+endif 
+
+ifeq ($(HPCSYS), Lawrencium)
+  BUILDOPT_HAVE_DYNLOAD = "yes"
+
+  CFLAGS+=-DMPI_STATUS_COUNT=_count
+  CFLAGS+=-DOS_LINUX
+endif 
+
+ifeq ($(HPCSYS), turing)
+  BUILDOPT_HAVE_DYNLOAD = "yes"
+  MPICC=mpicc
+  CFLAGS+=-DMPI_STATUS_COUNT=_count
+  CFLAGS+=-DOS_LINUX
+endif 
+
+ifeq ($(HPCSYS), tesla)
+  BUILDOPT_HAVE_DYNLOAD = "yes"
+  MPICC=nvcc
+  CFLAGS+=-DMPI_STATUS_COUNT=_count
+  CFLAGS+=-DOS_LINUX
+endif 
+
+
+ifeq ($(HPCSYS), hlrb2)
+  BUILDOPT_NEED_C2F_MACROS = "yes"
+  BUILDOPT_HAVE_DYNLOAD = "yes"
+
+  CFLAGS+=-DMPI_STATUS_COUNT=size
+  CFLAGS+=-DOS_LINUX
+endif 
+
+ifeq ($(HPCSYS), carver)
+  BUILDOPT_HAVE_DYNLOAD = "yes"
+
+  CFLAGS+=-DOS_LINUX 
+  CFLAGS+=-DMPI_STATUS_COUNT=_count
+
+  CUDA_INC=$(CUDA_INCLUDE)
+  
+# Not yet !
+#  PAPI_INC=-I/usr/local/papi-3.7.0/include
+#  PAPI_LIB=-L/usr/local/papi-3.7.0/lib -lpapi
+
+endif 
+
+ifeq ($(HPCSYS), Linux-CentOS)
+  CFLAGS+=-DMPI_STATUS_COUNT=_count
+  CFLAGS+=-DOS_LINUX
+endif
+
+ifeq ($(HPCSYS), LMU)
+  CFLAGS+=-DMPI_STATUS_COUNT=_count
+  CFLAGS+=-DOS_LINUX
+endif
+
+ifeq ($(HPCSYS), salzburg)
+  CFLAGS+=-DMPI_STATUS_COUNT=_count
+  CFLAGS+=-DOS_LINUX
+
+  BUILDOPT_HAVE_LIBUNWIND    = "yes"
+  LIBUNWIND_LIB=-lunwind  
+
+  PAPI_INC=-I/home/fuerling/sw/papi-4.1.1/include
+  PAPI_LIB=-L/home/fuerling/sw/papi-4.1.1/lib -lpapi
+
+#  LIBUNWIND_INC=-I$(HOME)/sw/x86_64/include
+#  LIBUNWIND_LIB=-L$(HOME)/sw/x86_64/lib -lunwind
+endif
+
+ifeq ($(HPCSYS), LRZ_Linux_Cluster)
+  CFLAGS+=-DMPI_STATUS_COUNT=count
+  CFLAGS+=-DOS_LINUX
+
+  BUILDOPT_HAVE_DYNLOAD = "yes"
+  BUILDOPT_NO_DELAYED_FINALIZE = "yes"
+endif
+
+ifeq ($(BUILDOPT_HAVE_MPI), "yes")
+  CFLAGS+=-DHAVE_MPI
+endif
+
+ifeq ($(BUILDOPT_HAVE_MPIIO), "yes")
+  CFLAGS+=-DHAVE_MPIIO
+endif
+
+ifeq ($(BUILDOPT_HAVE_POSIXIO), "yes")
+  CFLAGS+=-DHAVE_POSIXIO
+endif
+
+ifeq ($(BUILDOPT_HAVE_CALLPATH), "yes")
+  CFLAGS+=-DHAVE_CALLPATH
+endif
+
+ifeq ($(BUILDOPT_HAVE_KEYHIST), "yes")
+  CFLAGS+=-DHAVE_KEYHIST
+endif
+
+ifeq ($(BUILDOPT_HAVE_MEM), "yes")
+  CFLAGS+=-DHAVE_MEM
+endif
+
+ifeq ($(BUILDOPT_HAVE_POSIXIO_TRACE), "yes")
+  CFLAGS+=-DHAVE_POSIXIO_TRACE
+endif
+
+ifeq ($(BUILDOPT_HAVE_MPI_TRACE), "yes")
+  CFLAGS+=-DHAVE_MPI_TRACE
+endif
+
+ifeq ($(BUILDOPT_HAVE_LIBUNWIND), "yes")
+  CFLAGS+=$(LIBUNWIND_INC) -DHAVE_LIBUNWIND
+  LFLAGS+=$(LIBUNWIND_LIB)
+endif
+
+ifeq ($(BUILDOPT_HAVE_DYNLOAD), "yes")
+  CFLAGS+=-DHAVE_DYNLOAD
+endif
+
+
+ifeq ($(BUILDOPT_NEED_C2F_MACROS), "yes")
+  CFLAGS+=-DNEED_C2F_MACROS
+endif
+
+ifeq ($(BUILDOPT_HAVE_PAPI), "yes")
+  CFLAGS+=$(PAPI_INC) -DHAVE_PAPI
+  LFLAGS+=$(PAPI_LIB)
+endif
+
+ifeq ($(BUILDOPT_HAVE_SELFMONITOR), "yes")
+  CFLAGS+=-DHAVE_SELFMONITOR
+endif
+
+ifeq ($(BUILDOPT_HAVE_PROCCTRL), "yes")
+  CFLAGS+=-DHAVE_PROCCTRL
+endif
+
+
+ifeq ($(BUILDOPT_HAVE_CLUSTERING), "yes")
+  CFLAGS+=-DHAVE_CLUSTERING
+endif
+
+ifeq ($(BUILDOPT_HAVE_OMPTRACEPOINTS), "yes")
+  CFLAGS+=-DHAVE_OMPTRACEPOINTS
+endif
+
+ifeq ($(BUILDOPT_HAVE_CUDA), "yes")
+  CFLAGS+=-DHAVE_CUDA $(CUDA_INC)
+endif
+
+ifeq ($(BUILDOPT_HAVE_CUFFT), "yes")
+  CFLAGS+=-DHAVE_CUFFT $(CUDA_INC)
+endif
+
+ifeq ($(BUILDOPT_HAVE_CUBLAS), "yes")
+  CFLAGS+=-DHAVE_CUBLAS $(CUDA_INC)
+endif
+
+ifeq ($(BUILDOPT_NO_DELAYED_FINALIZE), "yes")
+  CFLAGS+=-DHAVE_NO_DELAYED_FINALIZE
+endif
+

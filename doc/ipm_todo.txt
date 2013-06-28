@@ -1,0 +1,58 @@
+
+* Overhead measurement rdtsc() for timing -- Nick
+  - use gettimeofday() for now
+
+* Banner information: -- Nick 
+  - load imbalance metrics (Jesus Labarta)?  
+
+* Environment variables for IPM2 -- Karl
+  TODO:
+  - Switching modules ON/OFF
+  - Selecting counters and counter groups: 
+
+* Module further out ideas
+  - www (webserver in rank 0)
+  - vapi for IB
+  - xen/kvm cloud module 
+  - tracing as a module?
+  - HMM generation 
+  - UDP packet reporting every N minutes
+
+* Unit tests
+ - Automated testing framework
+
+* Default counter groups for PAPI -- Nick
+  - Auto-detection of CPU at runtime, 
+    choose groups at runtime?
+  - Should we have IPM_CPU environment variable?
+
+* MPI-IO module testing bringing up to date
+
+* Rewrite of ipm_parse  -- Andrew
+  - Use C instead of Perl
+  - Current parser only for MPI, what about Posix-IO?
+  - What kind of graphs, and other info for I/O banner?
+  - Current parser reads IPM_KEYFILE, get rid of this
+  - Which XML parser library?
+  - 3 functions: reproduce banner terse/full
+      produce HTML page
+
+
+* General open issues wrt. Magellan:
+  - How is "always on" implemented? Modified mpirun?
+    - when and how is ipm_parse run()? 
+      In ipm_finalize(), by a script?
+  - Can we phase-in IPM usage smoothly? 
+    Up to 512 ranks at first for example?
+  - What if PAPI already in use, 
+    or MPI profiling interface already used?
+    How to detect, what to do?
+  - Data generation and storage, where, how, 
+    and in what format?
+  - Webpage generation and hosting
+  - Output format: Do not include hashtable 
+    (hent) by default
+  - What happens if codes don't reach MPI_Finalize()
+    - there's already the atexit() mechanism, does that
+      always work?
+  - What happens when some ranks call MPI_Abort()

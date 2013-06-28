@@ -1,0 +1,100 @@
+#!/bin/sh
+
+DIR=$1
+OUT0=`ls $1/*_0`
+OUT=`basename $OUT0 | sed -e 's/_0/.ipm.xml/'`
+
+rm -f $OUT
+cat > $OUT <<EOF
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ipm_job_profile>
+<calltable nsections="2" >
+<section module="MPI" nentries="50" >
+<entry name="MPI_Init" />
+<entry name="MPI_Init_thread" />
+<entry name="MPI_Finalize" />
+<entry name="MPI_Comm_rank" />
+<entry name="MPI_Comm_size" />
+<entry name="MPI_Send" />
+<entry name="MPI_Ssend" />
+<entry name="MPI_Rsend" />
+<entry name="MPI_Bsend" />
+<entry name="MPI_Isend" />
+<entry name="MPI_Issend" />
+<entry name="MPI_Irsend" />
+<entry name="MPI_Ibsend" />
+<entry name="MPI_Recv" />
+<entry name="MPI_Irecv" />
+<entry name="MPI_Sendrecv" />
+<entry name="MPI_Sendrecv_replace" />
+<entry name="MPI_Wait" />
+<entry name="MPI_Waitany" />
+<entry name="MPI_Waitall" />
+<entry name="MPI_Waitsome" />
+<entry name="MPI_Probe" />
+<entry name="MPI_Iprobe" />
+<entry name="MPI_Send_init" />
+<entry name="MPI_Ssend_init" />
+<entry name="MPI_Rsend_init" />
+<entry name="MPI_Bsend_init" />
+<entry name="MPI_Recv_init" />
+<entry name="MPI_Buffer_attach" />
+<entry name="MPI_Buffer_detach" />
+<entry name="MPI_Test" />
+<entry name="MPI_Testany" />
+<entry name="MPI_Testall" />
+<entry name="MPI_Testsome" />
+<entry name="MPI_Start" />
+<entry name="MPI_Startall" />
+<entry name="MPI_Bcast" />
+<entry name="MPI_Reduce" />
+<entry name="MPI_Reduce_scatter" />
+<entry name="MPI_Barrier" />
+<entry name="MPI_Gather" />
+<entry name="MPI_Gatherv" />
+<entry name="MPI_Scatter" />
+<entry name="MPI_Scatterv" />
+<entry name="MPI_Scan" />
+<entry name="MPI_Allgather" />
+<entry name="MPI_Allgatherv" />
+<entry name="MPI_Allreduce" />
+<entry name="MPI_Alltoall" />
+<entry name="MPI_Alltoallv" />
+</section>
+<section module="POSIXIO" nentries="25" >
+<entry name="fopen" />
+<entry name="fdopen" />
+<entry name="freopen" />
+<entry name="fclose" />
+<entry name="fflush" />
+<entry name="fread" />
+<entry name="fwrite" />
+<entry name="fseek" />
+<entry name="ftell" />
+<entry name="rewind" />
+<entry name="fgetpos" />
+<entry name="fsetpos" />
+<entry name="fgetc" />
+<entry name="getc" />
+<entry name="ungetc" />
+<entry name="read" />
+<entry name="write" />
+<entry name="open" />
+<entry name="open64" />
+<entry name="creat" />
+<entry name="close" />
+<entry name="truncate" />
+<entry name="ftruncate" />
+<entry name="truncate64" />
+<entry name="ftruncate64" />
+</section>
+</calltable>
+EOF
+
+for i in `ls $DIR | sort -n` ; do
+ cat $DIR/$i >> $OUT
+done
+
+echo "<ipm_advise>NO_MPI_Finalize_Called</ipm_advise>" >> $OUT
+echo "</ipm_job_profile>" >> $OUT
+

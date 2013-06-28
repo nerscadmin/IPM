@@ -1,0 +1,9 @@
+#!/bin/sh
+
+tar -xzvf mxml-2.6.tar.gz
+cd mxml-2.6
+./configure --prefix=$PWD/../mxml
+make
+make install
+cd ..
+

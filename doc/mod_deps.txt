@@ -1,0 +1,8 @@
+required: mpi|upc|omp|pthreads
+
+optional: dependedncies in ()
+
+machtopo
+hpm
+posixio
+mpiio (mpi)

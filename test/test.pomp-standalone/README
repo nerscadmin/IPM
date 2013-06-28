@@ -1,0 +1,6 @@
+This directory contains a number of files that would normally be
+created by the OpenMP instrumenter OPARI:
+
+opari_omp.h / pomp_lib.h : Opari/POMP header files
+main.c.opari.inc : contains the region descriptor
+main.c : contains the user code and the Opari instrumentation

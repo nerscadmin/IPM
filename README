@@ -1,0 +1,38 @@
+Integrated Performance Monitoring
+=================================
+
+Overview:
+
+ Scalable, low-overhead performance profiling of application codes
+
+ Reporting and analysis of performance profiles
+
+ Portable & Open Source. 
+
+
+Parallel
+========
+
+interupt_handler()
+
+main() {
+
+ ipm_init()
+ ...
+ ipm_finalize()
+
+}
+
+Serial
+======
+
+atexit_handler()
+
+ipm_init()
+main() {
+ code()
+}
+ipm_finalize()
+
+
+

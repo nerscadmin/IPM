@@ -1,0 +1,61 @@
+
+IPM_ROOT  = $(shell pwd)/../..
+LIBIPM    = $(IPM_ROOT)/src/libipm.a
+
+include $(IPM_ROOT)/make_config
+
+ifneq ($(LINKWRAP), )
+      WRAP = $(shell cat $(IPM_ROOT)/linkwrap.txt)
+endif
+
+ifeq ($(CCC), )
+  CCC=$(MPICC)
+endif
+
+ifeq ($(SOURCE), )
+  CCC=$(MPICC)
+endif
+
+PWD  = $(shell basename `pwd`)
+PAT  = $(shell echo -n $(PWD) )
+PROG = $(shell echo -n $(PAT) | cut -d . -f 2)
+
+all : $(PROG) $(PROG).ipm
+
+ipm : $(PROG).ipm
+
+$(PROG) : main.o 
+	$(CCC) $(LFLAGS) -o $@ $+ 
+
+$(PROG).ipm : main.ipm.o $(LIBIPM) 
+	$(CCC) $(WRAP) -o $@ $+ $(LFLAGS)
+
+$(LIBIPM) : 
+	  make -C $(IPM_ROOT)/src/
+
+%.o : %.c
+	$(CCC) -c $(CFLAGS) -DUTEST -I$(IPM_ROOT)/include $+ 
+
+%.ipm.o : %.c
+	$(CCC) -c $(CFLAGS) -o $@ -DIPM -DUTEST -I$(IPM_ROOT)/include $+ 
+
+%.o : %.cu
+	$(CCC) -c $(CFLAGS) -DUTEST -I$(IPM_ROOT)/include $+ 
+
+clean : 
+	rm -f *.o *~
+	rm -f $(PROG) $(PROG).ipm
+	rm -f *keyhist.*.txt
+	rm -f callgraph.*.txt
+	rm -f callgraph.*.html
+	rm -f evtgraph.*.txt
+	rm -f *.map.txt
+	rm -rf evtgraph.*
+	rm -f *ipm.xml
+	rm -f htable*.txt
+	rm -f *.trace.*.txt
+	rm -f a.txt verify.txt
+
+verify : $(PROG).ipm
+	$(MPIRUN) $(MPIRUN_TASKS) ./$(PROG).ipm > verify.txt
+	ipm_verify.pl verify.txt

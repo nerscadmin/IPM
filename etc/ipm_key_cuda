@@ -1,0 +1,311 @@
+#
+# IPM key file for CUDA
+#
+# parameter names are important:
+# - BYTES_COUNT        - get bytes from 'count' parameter
+# - BYTES_SIZE         - get bytes from 'size' 
+# - BYTES_EXTENT       - get bytes form 'extent' 
+# - BYTES_WIDTH_HEIGHT - get bytes from 'width' and 'height' 
+#
+##module CUDA
+#
+1|CUDA_THREADEXIT_ID|cudaError_t cudaThreadExit(void)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+2|CUDA_THREADSYNCHRONIZE_ID|cudaError_t cudaThreadSynchronize(void)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+3|CUDA_GETERRORSTRING_ID|const char * cudaGetErrorString(cudaError_t error)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+4|CUDA_GETLASTERROR_ID|cudaError_t cudaGetLastError(void)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+5|CUDA_CHOOSEDEVICE_ID|cudaError_t cudaChooseDevice(int *device, const struct cudaDeviceProp *prop)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+6|CUDA_GETDEVICE_ID|cudaError_t cudaGetDevice(int *device)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+7|CUDA_GETDEVICECOUNT_ID|cudaError_t cudaGetDeviceCount(int *count)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+8|CUDA_GETDEVICEPROPERTIES_ID|cudaError_t cudaGetDeviceProperties(struct cudaDeviceProp *prop, int device)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+9|CUDA_SETDEVICE_ID|cudaError_t cudaSetDevice(int device)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+10|CUDA_SETDEVICEFLAGS_ID|cudaError_t cudaSetDeviceFlags(int flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+11|CUDA_SETVALIDDEVICES_ID|cudaError_t cudaSetValidDevices(int *device_arr, int len)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+12|CUDA_STREAMCREATE_ID|cudaError_t cudaStreamCreate(cudaStream_t *pStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+13|CUDA_STREAMDESTROY_ID|cudaError_t cudaStreamDestroy(cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+14|CUDA_STREAMQUERY_ID|cudaError_t cudaStreamQuery(cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+15|CUDA_STREAMSYNCHRONIZE_ID|cudaError_t cudaStreamSynchronize(cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+16|CUDA_EVENTCREATE_ID|cudaError_t cudaEventCreate(cudaEvent_t *event)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+17|CUDA_EVENTCREATEWITHFLAGS_ID|cudaError_t cudaEventCreateWithFlags(cudaEvent_t *event, int flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+18|CUDA_EVENTDESTROY_ID|cudaError_t cudaEventDestroy(cudaEvent_t event)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+19|CUDA_EVENTELAPSEDTIME_ID|cudaError_t cudaEventElapsedTime(float *ms, cudaEvent_t start, cudaEvent_t end)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+20|CUDA_EVENTQUERY_ID|cudaError_t cudaEventQuery(cudaEvent_t event)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+21|CUDA_EVENTRECORD_ID|cudaError_t cudaEventRecord(cudaEvent_t event, cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+22|CUDA_EVENTSYNCHRONIZE_ID|cudaError_t cudaEventSynchronize(cudaEvent_t event)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+23|CUDA_CONFIGURECALL_ID|cudaError_t cudaConfigureCall(dim3 gridDim, dim3 blockDim, size_t sharedMem, cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+24|CUDA_FUNCGETATTRIBUTES_ID|cudaError_t cudaFuncGetAttributes(struct cudaFuncAttributes *attr, const char *func)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# launch
+#
+25|CUDA_LAUNCH_ID|cudaError_t cudaLaunch(const char *entry)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+#
+#
+26|CUDA_SETDOUBLEFORDEVICE_ID|cudaError_t cudaSetDoubleForDevice(double *d)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+27|CUDA_SETDOUBLEFORHOST_ID|cudaError_t cudaSetDoubleForHost(double *d)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+28|CUDA_SETUPARGUMENT_ID|cudaError_t cudaSetupArgument(const void *arg, size_t size, size_t offset)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+29|CUDA_FREE_ID|cudaError_t cudaFree(void *devPtr)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+30|CUDA_FREEARRAY_ID|cudaError_t cudaFreeArray(struct cudaArray *array)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+31|CUDA_FREEHOST_ID|cudaError_t cudaFreeHost(void *ptr)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+32|CUDA_GETSYMBOLADDRESS_ID|cudaError_t cudaGetSymbolAddress(void **devPtr, const char *symbol)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+33|CUDA_GETSYMBOLSIZE_ID|cudaError_t cudaGetSymbolSize(size_t *size, const char *symbol)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+34|CUDA_HOSTALLOC_ID|cudaError_t cudaHostAlloc(void **ptr, size_t size, unsigned int flags)||CS_LOCAL,BYTES_SIZE,RANK_NONE,DATA_NONE,COMM_NONE
+35|CUDA_HOSTGETDEVICEPOINTER_ID|cudaError_t cudaHostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+36|CUDA_HOSTGETFLAGS_ID|cudaError_t cudaHostGetFlags(unsigned int *pFlags, void *pHost)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# malloc
+#
+37|CUDA_MALLOC_ID|cudaError_t cudaMalloc(void **devPtr, size_t size)||CS_LOCAL,BYTES_SIZE,RANK_NONE,DATA_NONE,COMM_NONE
+38|CUDA_MALLOC3D_ID|cudaError_t cudaMalloc3D(struct cudaPitchedPtr *pitchedDevPtr, struct cudaExtent extent)||CS_LOCAL,BYTES_EXTENT,RANK_NONE,DATA_NONE,COMM_NONE
+#39|CUDA_MALLOC3DARRAY_ID|cudaError_t cudaMalloc3DArray(struct cudaArray **arrayPtr, const struct cudaChannelFormatDesc *desc, struct cudaExtent extent)||CS_LOCAL,BYTES_EXTENT,RANK_NONE,DATA_NONE,COMM_NONE
+#40|CUDA_MALLOCARRAY_ID|cudaError_t cudaMallocArray(struct cudaArray **arrayPtr, const struct cudaChannelFormatDesc *desc, size_t width, size_t height)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+41|CUDA_MALLOCHOST_ID|cudaError_t cudaMallocHost(void **ptr, size_t size)||CS_LOCAL,BYTES_SIZE,RANK_NONE,DATA_NONE,COMM_NONE
+42|CUDA_MALLOCPITCH_ID|cudaError_t cudaMallocPitch(void **devPtr, size_t *pitch, size_t width, size_t height)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# memcpy
+#
+43|CUDA_MEMCPY_ID|cudaError_t cudaMemcpy(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+44|CUDA_MEMCPY2D_ID|cudaError_t cudaMemcpy2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+45|CUDA_MEMCPY2DARRAYTOARRAY_ID|cudaError_t cudaMemcpy2DArrayToArray(struct cudaArray *dst, size_t wOffsetDst, size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc, size_t hOffsetSrc, size_t width, size_t height, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+46|CUDA_MEMCPY2DASYNC_ID|cudaError_t cudaMemcpy2DAsync(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+47|CUDA_MEMCPY2DFROMARRAY_ID|cudaError_t cudaMemcpy2DFromArray(void *dst, size_t dpitch, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+48|CUDA_MEMCPY2DFROMARRAYASYNC_ID|cudaError_t cudaMemcpy2DFromArrayAsync(void *dst, size_t dpitch, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+49|CUDA_MEMCPY2DTOARRAY_ID|cudaError_t cudaMemcpy2DToArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+50|CUDA_MEMCPY2DTOARRAYASYNC_ID|cudaError_t cudaMemcpy2DToArrayAsync(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+51|CUDA_MEMCPY3D_ID|cudaError_t cudaMemcpy3D(const struct cudaMemcpy3DParms *p)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+52|CUDA_MEMCPY3DASYNC_ID|cudaError_t cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+53|CUDA_MEMCPYARRAYTOARRAY_ID|cudaError_t cudaMemcpyArrayToArray(struct cudaArray *dst, size_t wOffsetDst, size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc, size_t hOffsetSrc, size_t count, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+54|CUDA_MEMCPYASYNC_ID|cudaError_t cudaMemcpyAsync(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+55|CUDA_MEMCPYFROMARRAY_ID|cudaError_t cudaMemcpyFromArray(void *dst, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+56|CUDA_MEMCPYFROMARRAYASYNC_ID|cudaError_t cudaMemcpyFromArrayAsync(void *dst, const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+57|CUDA_MEMCPYFROMSYMBOL_ID|cudaError_t cudaMemcpyFromSymbol(void *dst, const char *symbol, size_t count, size_t offset, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+58|CUDA_MEMCPYFROMSYMBOLASYNC_ID|cudaError_t cudaMemcpyFromSymbolAsync(void *dst, const char *symbol, size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+59|CUDA_MEMCPYTOARRAY_ID|cudaError_t cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+60|CUDA_MEMCPYTOARRAYASYNC_ID|cudaError_t cudaMemcpyToArrayAsync(struct cudaArray *dst, size_t wOffset, size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+61|CUDA_MEMCPYTOSYMBOL_ID|cudaError_t cudaMemcpyToSymbol(const char *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+62|CUDA_MEMCPYTOSYMBOLASYNC_ID|cudaError_t cudaMemcpyToSymbolAsync(const char *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# memset
+#
+63|CUDA_MEMSET_ID|cudaError_t cudaMemset(void *devPtr, int value, size_t count)||CS_LOCAL,BYTES_COUNT,RANK_NONE,DATA_NONE,COMM_NONE
+64|CUDA_MEMSET2D_ID|cudaError_t cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, size_t height)||CS_LOCAL,BYTES_WIDTH_HEIGHT,RANK_NONE,DATA_NONE,COMM_NONE
+65|CUDA_MEMSET3D_ID|cudaError_t cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, struct cudaExtent extent)||CS_LOCAL,BYTES_EXTENT,RANK_NONE,DATA_NONE,COMM_NONE
+
+# ----------------------------
+#    CUDA DRIVER API 
+# ----------------------------
+
+#
+# Initialization
+#
+1|CUDA_CUINIT_ID|CUresult cuInit(unsigned int Flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Driver Version Query
+#
+2|CUDA_CUDRIVERGETVERSION_ID|CUresult cuDriverGetVersion(int *driverVersion)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+#Device management
+#
+3|CUDA_CUDEVICEGET_ID|CUresult cuDeviceGet(CUdevice *device, int ordinal)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+4|CUDA_CUDEVICEGETCOUNT_ID|CUresult cuDeviceGetCount(int *count)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+5|CUDA_CUDEVICEGETNAME_ID|CUresult cuDeviceGetName(char *name, int len, CUdevice dev)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+6|CUDA_CUDEVICECOMPUTECAPABILITY_ID|CUresult cuDeviceComputeCapability(int *major, int *minor, CUdevice dev)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+7|CUDA_CUDEVICETOTALMEM_ID|CUresult cuDeviceTotalMem(unsigned int *bytes, CUdevice dev)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+8|CUDA_CUDEVICEGETPROPERTIES_ID|CUresult cuDeviceGetProperties(CUdevprop *prop, CUdevice dev)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+9|CUDA_CUDEVICEGETATTRIBUTE_ID|CUresult cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CUdevice dev)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Context management
+#
+10|CUDA_CUCTXCREATE_ID|CUresult cuCtxCreate(CUcontext *pctx, unsigned int flags, CUdevice dev)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+11|CUDA_CUCTXDESTROY_ID|CUresult cuCtxDestroy(CUcontext ctx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+12|CUDA_CUCTXATTACH_ID|CUresult cuCtxAttach(CUcontext *pctx, unsigned int flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+13|CUDA_CUCTXDETACH_ID|CUresult cuCtxDetach(CUcontext ctx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+14|CUDA_CUCTXPUSHCURRENT_ID|CUresult cuCtxPushCurrent(CUcontext ctx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+15|CUDA_CUCTXPOPCURRENT_ID|CUresult cuCtxPopCurrent(CUcontext *pctx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+16|CUDA_CUCTXGETDEVICE_ID|CUresult cuCtxGetDevice(CUdevice *device)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+17|CUDA_CUCTXSYNCHRONIZE_ID|CUresult cuCtxSynchronize(void)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Module management
+#
+18|CUDA_CUMODULELOAD_ID|CUresult cuModuleLoad(CUmodule *module, const char *fname)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+19|CUDA_CUMODULELOADDATA_ID|CUresult cuModuleLoadData(CUmodule *module, const void *image)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+20|CUDA_CUMODULELOADDATAEX_ID|CUresult cuModuleLoadDataEx(CUmodule *module, const void *image, unsigned int numOptions, CUjit_option *options, void **optionValues)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+21|CUDA_CUMODULELOADFATBINARY_ID|CUresult cuModuleLoadFatBinary(CUmodule *module, const void *fatCubin)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+22|CUDA_CUMODULEUNLOAD_ID|CUresult cuModuleUnload(CUmodule hmod)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+23|CUDA_CUMODULEGETFUNCTION_ID|CUresult cuModuleGetFunction(CUfunction *hfunc, CUmodule hmod, const char *name)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+24|CUDA_CUMODULEGETGLOBAL_ID|CUresult cuModuleGetGlobal(CUdeviceptr *dptr, unsigned int *bytes, CUmodule hmod, const char *name)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+25|CUDA_CUMODULEGETTEXREF_ID|CUresult cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, const char *name)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+    
+#
+# Memory management
+#
+26|CUDA_CUMEMGETINFO_ID|CUresult cuMemGetInfo(unsigned int *free, unsigned int *total)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+27|CUDA_CUMEMALLOC_ID|CUresult cuMemAlloc(CUdeviceptr *dptr, unsigned int size)||CS_LOCAL,BYTES_SIZE,RANK_NONE,DATA_NONE,COMM_NONE
+28|CUDA_CUMEMALLOCPITCH_ID|CUresult cuMemAllocPitch(CUdeviceptr *dptr, unsigned int *pPitch, unsigned int WidthInBytes, unsigned int Height, unsigned int ElementSizeBytes)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+29|CUDA_CUMEMFREE_ID|CUresult cuMemFree(CUdeviceptr dptr)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+30|CUDA_CUMEMGETADDRESSRANGE_ID|CUresult cuMemGetAddressRange(CUdeviceptr *pbase, unsigned int *psize, CUdeviceptr dptr)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+31|CUDA_CUMEMALLOCHOST_ID|CUresult cuMemAllocHost(void **pp, unsigned int bytesize)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+32|CUDA_CUMEMFREEHOST_ID|CUresult cuMemFreeHost(void *p)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+33|CUDA_CUMEMHOSTALLOC_ID|CUresult cuMemHostAlloc(void **pp, size_t bytesize, unsigned int Flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+34|CUDA_CUMEMHOSTGETDEVICEPOINTER_ID|CUresult cuMemHostGetDevicePointer(CUdeviceptr *pdptr, void *p, unsigned int Flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+35|CUDA_CUMEMHOSTGETFLAGS_ID|CUresult cuMemHostGetFlags(unsigned int *pFlags, void *p)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Synchronous Memcpy
+#
+# 1D functions
+# system <-> device memory
+36|CUDA_CUMEMCPYHTOD_ID|CUresult cuMemcpyHtoD(CUdeviceptr dstDevice, const void *srcHost, unsigned int ByteCount)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+37|CUDA_CUMEMCPYDTOH_ID|CUresult cuMemcpyDtoH(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+# device <-> device memory
+38|CUDA_CUMEMCPYDTOD_ID|CUresult cuMemcpyDtoD(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+# device <-> array memory
+39|CUDA_CUMEMCPYDTOA_ID|CUresult cuMemcpyDtoA(CUarray dstArray, unsigned int dstIndex, CUdeviceptr srcDevice, unsigned int ByteCount)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+40|CUDA_CUMEMCPYATOD_ID|CUresult cuMemcpyAtoD(CUdeviceptr dstDevice, CUarray hSrc, unsigned int SrcIndex, unsigned int ByteCount)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+# system <-> array memory
+41|CUDA_CUMEMCPYHTOA_ID|CUresult cuMemcpyHtoA(CUarray dstArray, unsigned int dstIndex, const void *pSrc, unsigned int ByteCount)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+42|CUDA_CUMEMCPYATOH_ID|CUresult cuMemcpyAtoH(void *dstHost, CUarray srcArray, unsigned int srcIndex, unsigned int ByteCount)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+# array <-> array memory
+43|CUDA_CUMEMCPYATOA_ID|CUresult cuMemcpyAtoA(CUarray dstArray, unsigned int dstIndex, CUarray srcArray, unsigned int srcIndex, unsigned int ByteCount)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+# 2D memcpy
+44|CUDA_CUMEMCPY2D_ID|CUresult cuMemcpy2D(const CUDA_MEMCPY2D *pCopy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+45|CUDA_CUMEMCPY2DUNALIGNED_ID|CUresult cuMemcpy2DUnaligned(const CUDA_MEMCPY2D *pCopy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#3D memcpy
+46|CUDA_CUMEMCPY3D_ID|CUresult cuMemcpy3D(const CUDA_MEMCPY3D *pCopy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Asynchronous Memcpy
+#
+# 1D functions
+# system <-> device memory
+47|CUDA_CUMEMCPYHTODASYNC_ID|CUresult cuMemcpyHtoDAsync(CUdeviceptr dstDevice, const void *srcHost, unsigned int ByteCount, CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+48|CUDA_CUMEMCPYDTOHASYNC_ID|CUresult cuMemcpyDtoHAsync(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+# system <-> array memory
+49|CUDA_CUMEMCPYHTOAASYNC_ID|CUresult cuMemcpyHtoAAsync(CUarray dstArray, unsigned int dstIndex, const void *pSrc, unsigned int ByteCount, CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+50|CUDA_CUMEMCPYATOHASYNC_ID|CUresult cuMemcpyAtoHAsync(void *dstHost, CUarray srcArray, unsigned int srcIndex, unsigned int ByteCount, CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+# 2D memcpy
+51|CUDA_CUMEMCPY2DASYNC_ID|CUresult cuMemcpy2DAsync(const CUDA_MEMCPY2D *pCopy, CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+# 3D memcpy
+52|CUDA_CUMEMCPY3DASYNC_ID|CUresult cuMemcpy3DAsync(const CUDA_MEMCPY3D *pCopy, CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Memset
+#
+53|CUDA_CUMEMSETD8_ID|CUresult cuMemsetD8(CUdeviceptr dstDevice, unsigned char uc, unsigned int N)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+54|CUDA_CUMEMSETD16_ID|CUresult cuMemsetD16(CUdeviceptr dstDevice, unsigned short us, unsigned int N)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+55|CUDA_CUMEMSETD32_ID|CUresult cuMemsetD32(CUdeviceptr dstDevice, unsigned int ui, unsigned int N)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+56|CUDA_CUMEMSETD2D8_ID|CUresult cuMemsetD2D8(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned char uc, unsigned int Width, unsigned int Height)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+57|CUDA_CUMEMSETD2D16_ID|CUresult cuMemsetD2D16(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned short us, unsigned int Width, unsigned int Height)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+58|CUDA_CUMEMSETD2D32_ID|CUresult cuMemsetD2D32(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned int ui, unsigned int Width, unsigned int Height)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Function management
+#
+59|CUDA_CUFUNCSETBLOCKSHAPE_ID|CUresult cuFuncSetBlockShape(CUfunction hfunc, int x, int y, int z)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+60|CUDA_CUFUNCSETSHAREDSIZE_ID|CUresult cuFuncSetSharedSize(CUfunction hfunc, unsigned int bytes)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+61|CUDA_CUFUNCGETATTRIBUTE_ID|CUresult cuFuncGetAttribute(int *pi, CUfunction_attribute attrib, CUfunction hfunc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Array management 
+#
+62|CUDA_CUARRAYCREATE_ID|CUresult cuArrayCreate(CUarray *pHandle, const CUDA_ARRAY_DESCRIPTOR *pAllocateArray)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+63|CUDA_CUARRAYGETDESCRIPTOR_ID|CUresult cuArrayGetDescriptor(CUDA_ARRAY_DESCRIPTOR *pArrayDescriptor, CUarray hArray)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+64|CUDA_CUARRAYDESTROY_ID|CUresult cuArrayDestroy(CUarray hArray)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+65|CUDA_CUARRAY3DCREATE_ID|CUresult cuArray3DCreate(CUarray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+66|CUDA_CUARRAY3DGETDESCRIPTOR_ID|CUresult cuArray3DGetDescriptor(CUDA_ARRAY3D_DESCRIPTOR *pArrayDescriptor, CUarray hArray)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Texture reference management
+#
+67|CUDA_CUTEXREFCREATE_ID|CUresult cuTexRefCreate(CUtexref *pTexRef)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+68|CUDA_CUTEXREFDESTROY_ID|CUresult cuTexRefDestroy(CUtexref hTexRef)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+69|CUDA_CUTEXREFSETARRAY_ID|CUresult cuTexRefSetArray(CUtexref hTexRef, CUarray hArray, unsigned int Flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+70|CUDA_CUTEXREFSETADDRESS_ID|CUresult cuTexRefSetAddress(unsigned int *ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+71|CUDA_CUTEXREFSETADDRESS2D_ID|CUresult cuTexRefSetAddress2D(CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, unsigned int Pitch)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+72|CUDA_CUTEXREFSETFORMAT_ID|CUresult cuTexRefSetFormat(CUtexref hTexRef, CUarray_format fmt, int NumPackedComponents)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+73|CUDA_CUTEXREFSETADDRESSMODE_ID|CUresult cuTexRefSetAddressMode(CUtexref hTexRef, int dim, CUaddress_mode am)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+74|CUDA_CUTEXREFSETFILTERMODE_ID|CUresult cuTexRefSetFilterMode(CUtexref hTexRef, CUfilter_mode fm)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+75|CUDA_CUTEXREFSETFLAGS_ID|CUresult cuTexRefSetFlags(CUtexref hTexRef, unsigned int Flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+76|CUDA_CUTEXREFGETADDRESS_ID|CUresult cuTexRefGetAddress(CUdeviceptr *pdptr, CUtexref hTexRef)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+77|CUDA_CUTEXREFGETARRAY_ID|CUresult cuTexRefGetArray(CUarray *phArray, CUtexref hTexRef)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+78|CUDA_CUTEXREFGETADDRESSMODE_ID|CUresult cuTexRefGetAddressMode(CUaddress_mode *pam, CUtexref hTexRef, int dim)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+79|CUDA_CUTEXREFGETFILTERMODE_ID|CUresult cuTexRefGetFilterMode(CUfilter_mode *pfm, CUtexref hTexRef)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+80|CUDA_CUTEXREFGETFORMAT_ID|CUresult cuTexRefGetFormat(CUarray_format *pFormat, int *pNumChannels, CUtexref hTexRef)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+81|CUDA_CUTEXREFGETFLAGS_ID|CUresult cuTexRefGetFlags(unsigned int *pFlags, CUtexref hTexRef)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Parameter management
+#
+82|CUDA_CUPARAMSETSIZE_ID|CUresult cuParamSetSize(CUfunction hfunc, unsigned int numbytes)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+83|CUDA_CUPARAMSETI_ID|CUresult cuParamSeti(CUfunction hfunc, int offset, unsigned int value)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+84|CUDA_CUPARAMSETF_ID|CUresult cuParamSetf(CUfunction hfunc, int offset, float value)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+85|CUDA_CUPARAMSETV_ID|CUresult cuParamSetv(CUfunction hfunc, int offset, void * ptr, unsigned int numbytes)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+86|CUDA_CUPARAMSETTEXREF_ID|CUresult cuParamSetTexRef(CUfunction hfunc, int texunit, CUtexref hTexRef)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+# 
+# Launch functions
+# 
+87|CUDA_CULAUNCH_ID|CUresult cuLaunch(CUfunction f)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+88|CUDA_CULAUNCHGRID_ID|CUresult cuLaunchGrid(CUfunction f, int grid_width, int grid_height)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+89|CUDA_CULAUNCHGRIDASYNC_ID|CUresult cuLaunchGridAsync(CUfunction f, int grid_width, int grid_height, CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Events
+#
+90|CUDA_CUEVENTCREATE_ID|CUresult cuEventCreate(CUevent *phEvent, unsigned int Flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+91|CUDA_CUEVENTRECORD_ID|CUresult cuEventRecord(CUevent hEvent, CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+92|CUDA_CUEVENTQUERY_ID|CUresult cuEventQuery(CUevent hEvent)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+93|CUDA_CUEVENTSYNCHRONIZE_ID|CUresult cuEventSynchronize(CUevent hEvent)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+94|CUDA_CUEVENTDESTROY_ID|CUresult cuEventDestroy(CUevent hEvent)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+95|CUDA_CUEVENTELAPSEDTIME_ID|CUresult cuEventElapsedTime(float *pMilliseconds, CUevent hStart, CUevent hEnd)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+#
+# Streams
+#
+96|CUDA_CUSTREAMCREATE_ID|CUresult cuStreamCreate(CUstream *phStream, unsigned int Flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+97|CUDA_CUSTREAMQUERY_ID|CUresult cuStreamQuery(CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+98|CUDA_CUSTREAMSYNCHRONIZE_ID|CUresult cuStreamSynchronize(CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+99|CUDA_CUSTREAMDESTROY_ID|CUresult cuStreamDestroy(CUstream hStream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+
+#
+#
+#
+100|CUDA_EXEC00_ID|void @CUDA_EXEC_STRM00()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+101|CUDA_EXEC01_ID|void @CUDA_EXEC_STRM01()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+102|CUDA_EXEC02_ID|void @CUDA_EXEC_STRM02()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+103|CUDA_EXEC03_ID|void @CUDA_EXEC_STRM03()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+104|CUDA_EXEC04_ID|void @CUDA_EXEC_STRM04()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+105|CUDA_EXEC05_ID|void @CUDA_EXEC_STRM05()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+106|CUDA_EXEC06_ID|void @CUDA_EXEC_STRM06()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+107|CUDA_EXEC07_ID|void @CUDA_EXEC_STRM07()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+108|CUDA_EXEC08_ID|void @CUDA_EXEC_STRM08()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+109|CUDA_EXEC09_ID|void @CUDA_EXEC_STRM09()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+110|CUDA_EXEC10_ID|void @CUDA_EXEC_STRM10()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+111|CUDA_EXEC11_ID|void @CUDA_EXEC_STRM11()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+112|CUDA_EXEC12_ID|void @CUDA_EXEC_STRM12()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+113|CUDA_EXEC13_ID|void @CUDA_EXEC_STRM13()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+114|CUDA_EXEC14_ID|void @CUDA_EXEC_STRM14()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+115|CUDA_EXEC15_ID|void @CUDA_EXEC_STRM15()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+
+116|CUDA_HOST_IDLE_ID|void @CUDA_HOST_IDLE()||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE

@@ -1,0 +1,4 @@
+
+clean-local:
+	-rm -f *keyhist.*.txt
+	-rm -f compat.xml.map.txt

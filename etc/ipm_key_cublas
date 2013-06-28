@@ -1,0 +1,172 @@
+#
+# IPM key file for CUBLAS
+#
+##module CUBLAS
+#
+# BYTES_NONE
+#
+1|CUBLAS_INIT_ID|cublasStatus cublasInit(void)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+2|CUBLAS_SHUTDOWN_ID|cublasStatus cublasShutdown(void)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+3|CUBLAS_GETERROR_ID|cublasStatus cublasGetError(void)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+4|CUBLAS_ALLOC_ID|cublasStatus cublasAlloc(int n, int elemSize, void **devicePtr)||CS_LOCAL,BYTES_NELEMSIZE,RANK_NONE,DATA_NONE,COMM_NONE
+5|CUBLAS_FREE_ID|cublasStatus cublasFree(const void *devicePtr)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+6|CUBLAS_SETVECTOR_ID|cublasStatus cublasSetVector(int n, int elemSize, const void *x, int incx, void *devicePtr, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+7|CUBLAS_GETVECTOR_ID|cublasStatus cublasGetVector(int n, int elemSize, const void *x, int incx, void *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+8|CUBLAS_SETMATRIX_ID|cublasStatus cublasSetMatrix(int rows, int cols, int elemSize, const void *A, int lda, void *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+9|CUBLAS_GETMATRIX_ID|cublasStatus cublasGetMatrix(int rows, int cols, int elemSize, const void *A, int lda, void *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+10|CUBLAS_SETKERNELSTREAM_ID|cublasStatus cublasSetKernelStream(cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+11|CUBLAS_SETVECTORASYNC_ID|cublasStatus cublasSetVectorAsync(int n, int elemSize, const void *hostPtr, int incx, void *devicePtr, int incy, cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+12|CUBLAS_GETVECTORASYNC_ID|cublasStatus cublasGetVectorAsync(int n, int elemSize,const void *devicePtr, int incx, void *hostPtr, int incy, cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+13|CUBLAS_SETMATRIXASYNC_ID|cublasStatus cublasSetMatrixAsync(int rows, int cols, int elemSize,const void *A, int lda, void *B, int ldb, cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+14|CUBLAS_GETMATRIXASYNC_ID|cublasStatus cublasGetMatrixAsync(int rows, int cols, int elemSize,const void *A, int lda, void *B, int ldb, cudaStream_t stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+15|CUBLAS_ISAMAX_ID|int cublasIsamax(int n, const float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+16|CUBLAS_ISAMIN_ID|int cublasIsamin(int n, const float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+17|CUBLAS_SASUM_ID|float cublasSasum(int n, const float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+18|CUBLAS_SAXPY_ID|void cublasSaxpy(int n, float alpha, const float *x, int incx, float *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+19|CUBLAS_SCOPY_ID|void cublasScopy(int n, const float *x, int incx, float *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+20|CUBLAS_SDOT_ID|float cublasSdot(int n, const float *x, int incx, const float *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+21|CUBLAS_SNRM2_ID|float cublasSnrm2(int n, const float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+22|CUBLAS_SROT_ID|void cublasSrot(int n, float *x, int incx, float *y, int incy, float sc, float ss)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+23|CUBLAS_SROTG_ID|void cublasSrotg(float *host_sa, float *host_sb, float *host_sc, float *host_ss)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+24|CUBLAS_SROTM_ID|void cublasSrotm(int n, float *x, int incx, float *y, int incy, const float* sparam)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+25|CUBLAS_SROTMG_ID|void cublasSrotmg(float *host_sd1, float *host_sd2, float *host_sx1, const float *host_sy1, float* host_sparam)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+26|CUBLAS_SSCAL_ID|void cublasSscal(int n, float alpha, float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+27|CUBLAS_SSWAP_ID|void cublasSswap(int n, float *x, int incx, float *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+28|CUBLAS_CAXPY_ID|void cublasCaxpy(int n, cuComplex alpha, const cuComplex *x, int incx, cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+29|CUBLAS_CCOPY_ID|void cublasCcopy(int n, const cuComplex *x, int incx, cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+30|CUBLAS_ZCOPY_ID|void cublasZcopy(int n, const cuDoubleComplex *x, int incx, cuDoubleComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+31|CUBLAS_CSCAL_ID|void cublasCscal(int n, cuComplex alpha, cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+#32|CUBLAS_CROTG_ID|__host__ void cublasCrotg(cuComplex *host_ca, cuComplex cb, float *host_sc, cuComplex *host_cs)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+33|CUBLAS_CROT_ID|void cublasCrot(int n, cuComplex *x, int incx, cuComplex *y, int incy, float c, cuComplex s)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+34|CUBLAS_CSROT_ID|void cublasCsrot(int n, cuComplex *x, int incx, cuComplex *y, int incy, float c, float s)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+35|CUBLAS_CSSCAL_ID|void cublasCsscal(int n, float alpha, cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+36|CUBLAS_CSWAP_ID|void cublasCswap(int n, cuComplex *x, int incx, cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+37|CUBLAS_ZSWAP_ID|void cublasZswap(int n, cuDoubleComplex *x, int incx, cuDoubleComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+38|CUBLAS_CDOTU_ID|cuComplex cublasCdotu(int n, const cuComplex *x, int incx, const cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+39|CUBLAS_CDOTC_ID|cuComplex cublasCdotc(int n, const cuComplex *x, int incx, const cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+40|CUBLAS_ICAMAX_ID|int cublasIcamax(int n, const cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+41|CUBLAS_ICAMIN_ID|int cublasIcamin(int n, const cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+42|CUBLAS_SCASUM_ID|float cublasScasum(int n, const cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+43|CUBLAS_SCNRM2_ID|float cublasScnrm2(int n, const cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+44|CUBLAS_ZAXPY_ID|void cublasZaxpy(int n, cuDoubleComplex alpha, const cuDoubleComplex *x, int incx, cuDoubleComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+45|CUBLAS_ZDOTU_ID|cuDoubleComplex cublasZdotu(int n, const cuDoubleComplex *x, int incx, const cuDoubleComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+46|CUBLAS_ZDOTC_ID|cuDoubleComplex cublasZdotc( int n, const cuDoubleComplex *x, int incx, const cuDoubleComplex *y, int incy )||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+47|CUBLAS_ZSCAL_ID|void cublasZscal(int n, cuDoubleComplex alpha, cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+48|CUBLAS_ZDSCAL_ID|void cublasZdscal(int n, double alpha, cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+49|CUBLAS_DZNRM2_ID|double cublasDznrm2(int n, const cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+50|CUBLAS_ZROTG_ID|void cublasZrotg(cuDoubleComplex *host_ca, cuDoubleComplex cb, double *host_sc, cuDoubleComplex *host_cs)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+51|CUBLAS_ZROT_ID|void cublasZrot(int n, cuDoubleComplex *x, int incx, cuDoubleComplex *y, int incy, double sc, cuDoubleComplex cs)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+52|CUBLAS_ZDROT_ID|void cublasZdrot(int n, cuDoubleComplex *x, int incx, cuDoubleComplex *y, int incy, double c, double s)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+53|CUBLAS_IZAMAX_ID|int cublasIzamax(int n, const cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+54|CUBLAS_IZAMIN_ID|int cublasIzamin(int n, const cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+55|CUBLAS_DZASUM_ID|double cublasDzasum(int n, const cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+56|CUBLAS_SGBMV_ID|void cublasSgbmv(char trans, int m, int n, int kl, int ku, float alpha, const float *A, int lda, const float *x, int incx, float beta, float *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+57|CUBLAS_SGEMV_ID|void cublasSgemv(char trans, int m, int n, float alpha,const float *A, int lda, const float *x, int incx, float beta, float *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+58|CUBLAS_SGER_ID|void cublasSger(int m, int n, float alpha, const float *x, int incx, const float *y, int incy, float *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+59|CUBLAS_SSBMV_ID|void cublasSsbmv(char uplo, int n, int k, float alpha, const float *A, int lda, const float *x, int incx, float beta, float *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+60|CUBLAS_SSPMV_ID|void cublasSspmv(char uplo, int n, float alpha, const float *AP, const float *x, int incx, float beta, float *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+61|CUBLAS_SSPR_ID|void cublasSspr(char uplo, int n, float alpha, const float *x, int incx, float *AP)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+62|CUBLAS_SSPR2_ID|void cublasSspr2(char uplo, int n, float alpha, const float *x, int incx, const float *y, int incy, float *AP)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+63|CUBLAS_SSYMV_ID|void cublasSsymv(char uplo, int n, float alpha, const float *A,int lda, const float *x, int incx, float beta, float *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+64|CUBLAS_SSYR_ID|void cublasSsyr(char uplo, int n, float alpha, const float *x, int incx, float *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+65|CUBLAS_SSYR2_ID|void cublasSsyr2(char uplo, int n, float alpha, const float *x, int incx, const float *y, int incy, float *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+66|CUBLAS_STBMV_ID|void cublasStbmv(char uplo, char trans, char diag, int n, int k, const float *A, int lda, float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+67|CUBLAS_STBSV_ID|void cublasStbsv(char uplo, char trans, char diag, int n, int k, const float *A, int lda, float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+68|CUBLAS_STPMV_ID|void cublasStpmv(char uplo, char trans, char diag, int n, const float *AP, float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+69|CUBLAS_STPSV_ID|void cublasStpsv(char uplo, char trans, char diag, int n, const float *AP, float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+70|CUBLAS_STRMV_ID|void cublasStrmv(char uplo, char trans, char diag, int n, const float *A, int lda, float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+71|CUBLAS_STRSV_ID|void cublasStrsv(char uplo, char trans, char diag, int n, const float *A, int lda, float *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+72|CUBLAS_ZTRMV_ID|void cublasZtrmv(char uplo, char trans, char diag, int n, const cuDoubleComplex *A, int lda, cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+73|CUBLAS_ZGBMV_ID|void cublasZgbmv(char trans, int m, int n, int kl, int ku, cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, const cuDoubleComplex *x, int incx, cuDoubleComplex beta, cuDoubleComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+74|CUBLAS_ZTBMV_ID|void cublasZtbmv(char uplo, char trans, char diag, int n,int k, const cuDoubleComplex *A, int lda, cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+75|CUBLAS_ZTBSV_ID|void cublasZtbsv(char uplo, char trans, char diag, int n,int k, const cuDoubleComplex *A, int lda, cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+76|CUBLAS_ZHEMV_ID|void cublasZhemv(char uplo, int n, cuDoubleComplex alpha,const cuDoubleComplex *A, int lda, const cuDoubleComplex *x, int incx, cuDoubleComplex beta, cuDoubleComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+77|CUBLAS_ZHPMV_ID|void cublasZhpmv(char uplo, int n, cuDoubleComplex alpha,const cuDoubleComplex *AP, const cuDoubleComplex *x, int incx, cuDoubleComplex beta, cuDoubleComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+78|CUBLAS_ZGEMV_ID|void cublasZgemv(char trans, int m, int n, cuDoubleComplex alpha,const cuDoubleComplex *A, int lda, const cuDoubleComplex *x, int incx, cuDoubleComplex beta, cuDoubleComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+79|CUBLAS_ZTPMV_ID|void cublasZtpmv(char uplo, char trans, char diag, int n, const cuDoubleComplex *AP, cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+80|CUBLAS_ZTPSV_ID|void cublasZtpsv(char uplo, char trans, char diag, int n, const cuDoubleComplex *AP, cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+81|CUBLAS_CGEMV_ID|void cublasCgemv(char trans, int m, int n, cuComplex alpha,const cuComplex *A, int lda, const cuComplex *x, int incx, cuComplex beta, cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+82|CUBLAS_CGBMV_ID|void cublasCgbmv(char trans, int m, int n, int kl, int ku, cuComplex alpha, const cuComplex *A, int lda, const cuComplex *x, int incx, cuComplex beta, cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+83|CUBLAS_CHEMV_ID|void cublasChemv(char uplo, int n, cuComplex alpha, const cuComplex *A, int lda, const cuComplex *x, int incx, cuComplex beta, cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+84|CUBLAS_CHBMV_ID|void cublasChbmv(char uplo, int n, int k, cuComplex alpha, const cuComplex *A, int lda, const cuComplex *x, int incx, cuComplex beta, cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+85|CUBLAS_CHPMV_ID|void cublasChpmv(char uplo, int n, cuComplex alpha, const cuComplex *AP, const cuComplex *x, int incx, cuComplex beta, cuComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+86|CUBLAS_CTRMV_ID|void cublasCtrmv(char uplo, char trans, char diag, int n, const cuComplex *A, int lda, cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+87|CUBLAS_CTBMV_ID|void cublasCtbmv(char uplo, char trans, char diag, int n, int k, const cuComplex *A, int lda, cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+88|CUBLAS_CTPMV_ID|void cublasCtpmv(char uplo, char trans, char diag, int n, const cuComplex *AP, cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+89|CUBLAS_CTRSV_ID|void cublasCtrsv(char uplo, char trans, char diag, int n, const cuComplex *A, int lda, cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+90|CUBLAS_CTBSV_ID|void cublasCtbsv(char uplo, char trans, char diag, int n, int k, const cuComplex *A, int lda, cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+91|CUBLAS_CTPSV_ID|void cublasCtpsv(char uplo, char trans, char diag, int n, const cuComplex *AP, cuComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+92|CUBLAS_CGERU_ID|void cublasCgeru(int m, int n, cuComplex alpha, const cuComplex *x,int incx, const cuComplex *y, int incy, cuComplex *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+93|CUBLAS_CGERC_ID|void cublasCgerc(int m, int n, cuComplex alpha, const cuComplex *x,int incx, const cuComplex *y, int incy, cuComplex *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+94|CUBLAS_CHER_ID|void cublasCher(char uplo, int n, float alpha, const cuComplex *x, int incx, cuComplex *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+95|CUBLAS_CHPR_ID|void cublasChpr(char uplo, int n, float alpha, const cuComplex *x, int incx, cuComplex *AP)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+96|CUBLAS_CHPR2_ID|void cublasChpr2(char uplo, int n, cuComplex alpha,const cuComplex *x, int incx, const cuComplex *y, int incy, cuComplex *AP)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+97|CUBLAS_CHER2_ID|void cublasCher2(char uplo, int n, cuComplex alpha,const cuComplex *x, int incx, const cuComplex *y, int incy, cuComplex *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+99|CUBLAS_SGEMM_ID|void cublasSgemm(char transa, char transb, int m, int n, int k, float alpha, const float *A, int lda, const float *B, int ldb, float beta, float *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+100|CUBLAS_SSYMM_ID|void cublasSsymm(char side, char uplo, int m, int n, float alpha, const float *A, int lda, const float *B, int ldb, float beta, float *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+101|CUBLAS_SSYRK_ID|void cublasSsyrk(char uplo, char trans, int n, int k, float alpha, const float *A, int lda, float beta, float *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+102|CUBLAS_SSYR2K_ID|void cublasSsyr2k(char uplo, char trans, int n, int k, float alpha, const float *A, int lda, const float *B, int ldb, float beta, float *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+103|CUBLAS_STRMM_ID|void cublasStrmm(char side, char uplo, char transa, char diag,int m, int n, float alpha, const float *A, int lda, float *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+104|CUBLAS_STRSM_ID|void cublasStrsm(char side, char uplo, char transa, char diag,int m, int n, float alpha, const float *A, int lda, float *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+105|CUBLAS_CGEMM_ID|void cublasCgemm(char transa, char transb, int m, int n, int k, cuComplex alpha, const cuComplex *A, int lda, const cuComplex *B, int ldb, cuComplex beta, cuComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+106|CUBLAS_CSYMM_ID|void cublasCsymm(char side, char uplo, int m, int n,cuComplex alpha, const cuComplex *A, int lda, const cuComplex *B, int ldb, cuComplex beta, cuComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+107|CUBLAS_CHEMM_ID|void cublasChemm(char side, char uplo, int m, int n,cuComplex alpha, const cuComplex *A, int lda, const cuComplex *B, int ldb, cuComplex beta, cuComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+108|CUBLAS_CSYRK_ID|void cublasCsyrk(char uplo, char trans, int n, int k,cuComplex alpha, const cuComplex *A, int lda, cuComplex beta, cuComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+109|CUBLAS_CHERK_ID|void cublasCherk(char uplo, char trans, int n, int k,float alpha, const cuComplex *A, int lda, float beta, cuComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+110|CUBLAS_CSYR2K_ID|void cublasCsyr2k(char uplo, char trans, int n, int k,cuComplex alpha, const cuComplex *A, int lda, const cuComplex *B, int ldb, cuComplex beta, cuComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+111|CUBLAS_CHER2K_ID|void cublasCher2k(char uplo, char trans, int n, int k,cuComplex alpha, const cuComplex *A, int lda, const cuComplex *B, int ldb, float beta, cuComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+112|CUBLAS_CTRMM_ID|void cublasCtrmm(char side, char uplo, char transa, char diag,int m, int n, cuComplex alpha, const cuComplex *A, int lda, cuComplex *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+113|CUBLAS_CTRSM_ID|void cublasCtrsm(char side, char uplo, char transa, char diag,int m, int n, cuComplex alpha, const cuComplex *A, int lda, cuComplex *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+114|CUBLAS_XERBLA_ID|void cublasXerbla(const char *srName, int info)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+115|CUBLAS_DASUM_ID|double cublasDasum(int n, const double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+116|CUBLAS_DAXPY_ID|void cublasDaxpy(int n, double alpha, const double *x, int incx, double *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+117|CUBLAS_DCOPY_ID|void cublasDcopy(int n, const double *x, int incx, double *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+118|CUBLAS_DDOT_ID|double cublasDdot(int n, const double *x, int incx, const double *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+119|CUBLAS_DNRM2_ID|double cublasDnrm2(int n, const double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+120|CUBLAS_DROT_ID|void cublasDrot(int n, double *x, int incx, double *y, int incy, double sc, double ss)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+121|CUBLAS_DROTG_ID|void cublasDrotg(double *host_sa, double *host_sb, double *host_sc, double *host_ss)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+122|CUBLAS_DROTM_ID|void cublasDrotm(int n, double *x, int incx, double *y, int incy, const double* sparam)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+123|CUBLAS_DROTMG_ID|void cublasDrotmg(double *host_sd1, double *host_sd2, double *host_sx1, const double *host_sy1, double* host_sparam)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+124|CUBLAS_DSCAL_ID|void cublasDscal(int n, double alpha, double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+125|CUBLAS_DSWAP_ID|void cublasDswap(int n, double *x, int incx, double *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+126|CUBLAS_IDAMAX_ID|int cublasIdamax(int n, const double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+127|CUBLAS_IDAMIN_ID|int cublasIdamin(int n, const double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+128|CUBLAS_DGEMV_ID|void cublasDgemv(char trans, int m, int n, double alpha, const double *A, int lda, const double *x, int incx, double beta, double *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+129|CUBLAS_DGER_ID|void cublasDger(int m, int n, double alpha, const double *x,int incx, const double *y, int incy, double *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+130|CUBLAS_DSYR_ID|void cublasDsyr(char uplo, int n, double alpha,const double *x, int incx, double *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+131|CUBLAS_DSYR2_ID|void cublasDsyr2(char uplo, int n, double alpha,const double *x, int incx, const double *y, int incy, double *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+132|CUBLAS_DSPR_ID|void cublasDspr(char uplo, int n, double alpha, const double *x, int incx, double *AP)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+133|CUBLAS_DSPR2_ID|void cublasDspr2(char uplo, int n, double alpha,const double *x, int incx, const double *y, int incy, double *AP)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+134|CUBLAS_DTRSV_ID|void cublasDtrsv(char uplo, char trans, char diag, int n, const double *A, int lda, double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+135|CUBLAS_DTRMV_ID|void cublasDtrmv(char uplo, char trans, char diag, int n, const double *A, int lda, double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+136|CUBLAS_DGBMV_ID|void cublasDgbmv(char trans, int m, int n, int kl, int ku, double alpha, const double *A, int lda, const double *x, int incx, double beta, double *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+137|CUBLAS_DTBMV_ID|void cublasDtbmv(char uplo, char trans, char diag, int n,int k, const double *A, int lda, double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+138|CUBLAS_DTPMV_ID|void cublasDtpmv(char uplo, char trans, char diag, int n, const double *AP, double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+139|CUBLAS_DTPSV_ID|void cublasDtpsv(char uplo, char trans, char diag, int n, const double *AP, double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+140|CUBLAS_DTBSV_ID|void cublasDtbsv(char uplo, char trans, char diag, int n,int k, const double *A, int lda, double *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+141|CUBLAS_DSYMV_ID|void cublasDsymv(char uplo, int n, double alpha,const double *A, int lda, const double *x, int incx, double beta, double *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+142|CUBLAS_DSBMV_ID|void cublasDsbmv(char uplo, int n, int k, double alpha, const double *A, int lda, const double *x, int incx, double beta, double *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+143|CUBLAS_DSPMV_ID|void cublasDspmv(char uplo, int n, double alpha,const double *AP, const double *x, int incx, double beta, double *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+144|CUBLAS_DGEMM_ID|void cublasDgemm(char transa, char transb, int m, int n, int k,double alpha, const double *A, int lda, const double *B, int ldb, double beta, double *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+145|CUBLAS_DTRSM_ID|void cublasDtrsm(char side, char uplo, char transa,char diag, int m, int n, double alpha, const double *A, int lda, double *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+146|CUBLAS_ZTRSM_ID|void cublasZtrsm(char side, char uplo, char transa,char diag, int m, int n, cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, cuDoubleComplex *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+147|CUBLAS_DTRMM_ID|void cublasDtrmm(char side, char uplo, char transa,char diag, int m, int n, double alpha, const double *A, int lda, double *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+148|CUBLAS_DSYMM_ID|void cublasDsymm(char side, char uplo, int m, int n,double alpha, const double *A, int lda, const double *B, int ldb, double beta, double *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+149|CUBLAS_ZSYMM_ID|void cublasZsymm(char side, char uplo, int m, int n,cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, const cuDoubleComplex *B, int ldb, cuDoubleComplex beta, cuDoubleComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+150|CUBLAS_DSYRK_ID|void cublasDsyrk(char uplo, char trans, int n, int k,double alpha, const double *A, int lda, double beta, double *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+151|CUBLAS_ZSYRK_ID|void cublasZsyrk(char uplo, char trans, int n, int k,cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, cuDoubleComplex beta, cuDoubleComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+152|CUBLAS_ZSYR2K_ID|void cublasZsyr2k(char uplo, char trans, int n, int k,cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, const cuDoubleComplex *B, int ldb, cuDoubleComplex beta, cuDoubleComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+153|CUBLAS_ZHER2K_ID|void cublasZher2k(char uplo, char trans, int n, int k,cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, const cuDoubleComplex *B, int ldb, double beta, cuDoubleComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+154|CUBLAS_ZHER_ID|void cublasZher(char uplo, int n, double alpha, const cuDoubleComplex *x, int incx, cuDoubleComplex *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+156|CUBLAS_ZHPR_ID|void cublasZhpr(char uplo, int n, double alpha, const cuDoubleComplex *x, int incx, cuDoubleComplex *AP)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+157|CUBLAS_ZHPR2_ID|void cublasZhpr2(char uplo, int n, cuDoubleComplex alpha,const cuDoubleComplex *x, int incx, const cuDoubleComplex *y, int incy, cuDoubleComplex *AP)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+158|CUBLAS_ZHER2_ID|void cublasZher2(char uplo, int n, cuDoubleComplex alpha,const cuDoubleComplex *x, int incx, const cuDoubleComplex *y, int incy, cuDoubleComplex *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+159|CUBLAS_DSYR2K_ID|void cublasDsyr2k(char uplo, char trans, int n, int k, double alpha, const double *A, int lda, const double *B, int ldb, double beta, double *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+160|CUBLAS_ZGEMM_ID|void cublasZgemm(char transa, char transb, int m, int n, int k, cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, const cuDoubleComplex *B, int ldb, cuDoubleComplex beta, cuDoubleComplex *C, int ldc)||CS_LOCAL,BYTES_MNK,RANK_NONE,DATA_NONE,COMM_NONE
+161|CUBLAS_ZTRMM_ID|void cublasZtrmm(char side, char uplo, char transa,char diag, int m, int n, cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, cuDoubleComplex *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+162|CUBLAS_ZGERU_ID|void cublasZgeru(int m, int n, cuDoubleComplex alpha, const cuDoubleComplex *x, int incx, const cuDoubleComplex *y, int incy, cuDoubleComplex *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+163|CUBLAS_ZGERC_ID|void cublasZgerc(int m, int n, cuDoubleComplex alpha, const cuDoubleComplex *x, int incx, const cuDoubleComplex *y, int incy, cuDoubleComplex *A, int lda)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+164|CUBLAS_ZHERK_ID|void cublasZherk(char uplo, char trans, int n, int k,double alpha, const cuDoubleComplex *A, int lda, double beta, cuDoubleComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+165|CUBLAS_ZHEMM_ID|void cublasZhemm(char side, char uplo, int m, int n,cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, const cuDoubleComplex *B, int ldb, cuDoubleComplex beta, cuDoubleComplex *C, int ldc)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+166|CUBLAS_ZTRSV_ID|void cublasZtrsv(char uplo, char trans, char diag, int n, const cuDoubleComplex *A, int lda, cuDoubleComplex *x, int incx)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+167|CUBLAS_ZHBMV_ID|void cublasZhbmv(char uplo, int n, int k, cuDoubleComplex alpha, const cuDoubleComplex *A, int lda, const cuDoubleComplex *x, int incx, cuDoubleComplex beta, cuDoubleComplex *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE

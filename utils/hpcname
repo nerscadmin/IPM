@@ -1,0 +1,345 @@
+#!/bin/sh
+
+###
+# hpcname : reports information about hpc resources that is sometimes
+# difficult or impossible to determine automatically and emprically.
+# this is essentially a cheat sheet mapping hostnames to resources.
+#
+# To add a new computer make new case entries in steps 1 & 2 below
+###
+
+EMAIL="dskinner@nersc.gov"
+
+function usage  {
+cat << EOF
+
+Usage: hpcname [options] [hostname]
+       hpcname -a apptext
+       hpcname -A apptext appname (no spaces) 
+
+ reports basic information about various hpc resources
+
+ -h help
+ -n the colloquial HPCNAME for the resource (default) 
+ -N to add a new resource
+ --switch for switch
+ --cpu for cpu
+ --compiler for os 
+ --arch for architecture
+ --os for operating system
+ --switch for switch
+ --logdir for the IPM log directory
+ --all for all variables
+ -a attempt to determine the HPC app based on a path/filename
+ -A add a canonical app name which is keyed to by some text
+
+EOF
+
+}
+
+function enternew_machine  {
+ echo -n "Would you like to add a machine description now? (y/n) > "
+ read ASK
+ if [ "$ASK" == "y" ] ; then 
+  echo " "
+  echo "Please answer the following few questions to help us understand the "
+  echo "machine that you're installing IPM on. If you don't see the right choice"
+  echo "in the list of examples take your best guess. "
+  echo " "
+  echo -n "Give a single word name of this machine? e.g. seaborg,datastar,etc.>"
+  read HPCNAME;
+  echo -n "What is the overall computer architecture?, e.g. IBMSP, XT4, BGL, etc.> "
+  read ARCH
+  echo -n "what is the CPU type? e.g. X86, OPTERON, PPC440, etc.> "
+  read CPU
+  echo -n "What is the OS? e.g. LINUX, AIX, CNL, BLRTS, etc.> "
+  read OS
+  echo -n "What is the MPI implementation? e.g. MPICH, IBMPE, OPENMPI, etc.> "
+  read MPI
+  echo -n "What is the base compiler for MPI codes? e.g. PGI, INTEL, GNU, etc.> "
+  read COMPILER
+  echo -n "Does this machine have a cross compile environement? (y/n) > "
+  read XCOMPILE
+  echo -n "Over which switch or interface does MPI go? ETH, FEDERATION, SEASTAR2, etc.> "
+  read SWITCH
+  echo -n "To which directory should IPM logfiles be written by default? > "
+  read IPM_SYSLOG_DIR
+  echo " "
+
+  cat << EOF 
+
+Please send this in an email to $EMAIL 
+
+ HOSTNAME=`hostname`
+
+ $HPCNAME)
+        SWITCH=$SWITCH
+        OS=$OS
+        ARCH=$ARCH
+        CPU=$CPU
+        MPI=$MPI
+        COMPILER=$COMPILER
+	XCOMPILE=$XCOMPILE
+	IPM_SYSLOG_DIR=$IPM_SYSLOG_DIR
+        ;;
+
+EOF
+else 
+ echo "ok, add your host to ./bin/hpcname or contact $EMAIL"
+fi
+exit 1
+}
+
+function enternew_machine  {
+ echo -n "Would you like to add an application description now? (y/n) > "
+ read ASK
+ if [ "$ASK" == "y" ] ; then 
+  echo " "
+  echo "Please answer the following few questions to help us understand the "
+  echo "application that you're installing IPM on. If you don't see the right choice"
+  echo "in the list of examples take your best guess. "
+  echo " "
+  echo -n "Give a single word name of this application? e.g. NAMD,NWChem,VASP,etc.>"
+  read APPNAME;
+  echo -n "What is the science area?, e.g. Chemistry,Physics,Climate etc.> "
+  read APPSCI
+  echo -n "What is the dominant algorithm or applied method invovled?? e.g. etc.> "
+  read APPALG
+  echo -n "What is a string or regex found in the binary command(s) for this app? e.g. LINUX, AIX, CNL, BLRTS, etc.> "
+  read APPTXT
+ fi
+}
+
+HPCNAME=""
+REPORT=HPCNAME
+TEST_TASKS=2
+NIGHTLY_TESTS="test-build"
+
+for opt in "$@" ; do
+ case "$opt" in 
+  -n | --name) REPORT=HPCNAME ;;
+  -s | --switch) REPORT=SWITCH ;;
+  -o | --os) REPORT=OS ;;
+  -c | --compiler) REPORT=COMPILER ;;
+  -C | --cpu) REPORT=CPU ;;
+  -a | --arch) REPORT=ARCH ;;
+  -t | --testtasks) REPORT=TEST_TASKS ;;
+  -h | --help)  usage;;
+  -a | --app) REPORT=APP;;
+  -N | --new_machine)  enternew_machine;;
+  -A | --new_app)  enternew_app;;
+  -v | --all)  REPORT=ALL;;
+  *)
+	 HOST=-1
+	 HPCNAME=$opt
+	;;
+ esac
+done
+
+if [ "$HPCNAME" == "" ] ; then 
+ HOST=`hostname`
+fi
+
+
+###
+# 1) Determine the name of this computer based on hostname
+###
+
+case "$HOST" in
+
+ lego*) HPCNAME=lego ;;
+ s00[56][01][359]) HPCNAME=seaborg ;;
+ b0[23]01) HPCNAME=bassi ;;
+ davinci.nersc.gov) HPCNAME=davinci ;;
+ nid*) HPCNAME=franklin ;;
+ jacin*) HPCNAME=jacquard ;;
+ ds*) HPCNAME=datastar ;;
+ lslogin*) HPCNAME=lonestar ;;
+ cvrsv*) HPCNAME=carver ;;
+ hopper*) HPCNAME=hopper ;;
+ euclid*) HPCNAME=euclid ;;
+ 
+-1) ;;
+ *)
+	echo " "
+	echo " Error: unknown HPC resource"
+	echo " hostnme appears to be \"$HOST\""
+	echo " Can't map hostname to a known hpcname"
+	echo " "
+	echo " Add a new resource with hpcname -N "
+	exit 1
+	;;
+
+esac
+
+###
+# 2) State things we think we know about this computer
+###
+
+case "$HPCNAME" in 
+ lego)
+	SWITCH=proc_eth0
+	OS=BSD
+	ARCH=X86
+	CPU=CORE2DUO
+	MPI=OPENMPI
+	COMPILER=GNU
+	IPM_SYSLOG_DIR=/tmp
+	;;
+ old-lego)
+	SWITCH=proc_eth0
+	OS=LINUX
+	ARCH=X86
+	CPU=PENTIUM_M
+	MPI=OPENMPI
+	COMPILER=GNU
+	;;
+ bassi) 
+	SWITCH=FEDERATION
+	OS=AIX
+	ARCH=IBMSP
+	CPU=POWER5
+	MPI=IBMPE
+	COMPILER=IBM
+	IPM_SYSLOG_DIR=/usr/common/usg/log/ipm
+	;;
+ seaborg) 
+	SWITCH=COLONY
+	OS=AIX
+	ARCH=IBMSP
+	CPU=POWER3
+	MPI=IBMPE
+	COMPILER=IBM
+	IPM_SYSLOG_DIR=/usr/common/usg/log/ipm
+	;;
+ franklin)
+	SWITCH=SEASTAR2
+	OS=LINUX
+	ARCH=XT4
+	CPU=OPTERON
+	MPI=MPICH
+	COMPILER=PGI
+	IPM_SYSLOG_DIR=/usr/common/usg/log/ipm
+	;;
+ davinci) 
+	SWITCH=ALTIX
+	OS=LINUX
+	ARCH=X86
+	CPU=ITANIUM2
+	MPI=MPICH
+	COMPILER=INTEL
+	NIGHTLY_TESTS="test-build test-run"
+	TEST_TASKS=16
+	IPM_SYSLOG_DIR=/usr/common/usg/log/ipm
+	;;
+ jacquard) 
+	SWITCH=INFINIBAND
+	OS=LINUX
+	ARCH=X86
+	CPU=OPTERON
+	MPI=MPICH
+	COMPILER=PATH
+	IPM_SYSLOG_DIR=/usr/common/usg/log/ipm
+	;;
+ bgl-sdsc)
+	SWITCH=BGL
+	OS=BLRTS
+	ARCH=PPC
+	CPU=PPC440D
+	MPI=MPICH
+        COMPILER=IBM
+	;;
+ datastar)
+        SWITCH=FEDERATION
+        OS=AIX
+        ARCH=IBMSP
+        CPU=POWER4
+        MPI=IBMPE
+        COMPILER=IBM
+        IPM_SYSLOG_DIR=./
+        ;;
+lonestar)
+        SWITCH=INFINIBAND
+        OS=LINUX
+        ARCH=X86
+        CPU=WOODCREST
+        MPI=MPVAPICH
+        COMPILER=INTEL
+        ;;
+
+carver)
+        SWITCH=INFINIBAND
+        OS=LINUX
+        ARCH=X86
+        CPU=NEHALEM
+        MPI=OPENMPI
+        COMPILER=PGI
+        ;;
+euclid)
+        SWITCH=NONE
+        OS=LINUX
+        ARCH=X86
+        CPU=OPTERON
+        MPI=OPENMPI
+        COMPILER=PGI
+        ;;
+
+hopper)
+        SWITCH=GEMINI
+        OS=LINUX
+        ARCH=X86
+        CPU=MAGNYCOURS
+        MPI=MPICH
+        COMPILER=PGI
+        ;;
+
+ *)	
+	echo "Error: unrecognized HPCNAME $HPCNAME"
+	exit 1
+	;;
+
+esac
+
+# things that are true by implication 
+#
+#XCOMPILE=1 --> this is a cross compile environment a.out will not run 
+#               from the command line
+#
+
+case "$OS" in 
+ QK)
+	XCOMPILE=1
+	;;
+ *)
+	XCOMPILE=0
+	;;
+esac
+
+###
+# Report requested information for this computer
+###
+
+#echo ${!REPORT}
+
+case "$REPORT" in 
+ HPCNAME) echo $HPCNAME ;;
+ SWITCH) echo $SWITCH ;;
+ CPU) echo $CPU ;;
+ OS) echo $OS ;;
+ MPI) echo $MPI ;;
+ ARCH) echo $ARCH ;;
+ TEST_TASKS) echo $TEST_TASKS ;;
+ COMPILER) echo $COMPILER ;;
+ XCOMPILE) echo $XCOMPILE ;;
+ IPM_SYSLOG_DIR) echo $IPM_SYSLOG_DIR ;;
+ ALL) echo "SWITCH=$SWITCH" ;
+ 	echo "OS=$OS"; 
+        echo "ARCH=$ARCH";
+        echo "CPU=$CPU";
+        echo "MPI=$MPI";
+        echo "COMPILER=$COMPILER";
+	echo "XCOMPILE=$XCOMPILE";
+	echo "IPM_SYSLOG_DIR=$IPM_SYSLOG_DIR";
+	echo "TEST_TASKS=$TEST_TASKS";
+	;;
+esac

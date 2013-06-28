@@ -1,0 +1,55 @@
+New IPM projects to work on 
+
+* Download IPM, build it on your laptop. If you hit snags document them, 
+get help, and suggest changes to improve the overall usability of IPM 
+from build to run. If you need help getting IPM on your laptop get help from 
+Karl or David. Move on from laptops to running on ipm2dev box in Soda. Build and
+run IPM2 in a sandbox on that machine. 
+
+* Demonstrate coverage levels for runs on Magellan. Take in PBS logs and IPM 
+log files looking for any gaps. If there are trends in jobs (by user, runtime, 
+app) that we are missing in the IPM data report on these. This will require 
+pulling small pieces of data from the XML such as start/stop times and 
+node counts. There is also a case to check where some but not XML gets 
+written for a job, i.e., checking for incomplete data in the logfiles. 
+
+http://www.nersc.gov/news/reports/technical/seaborg_scaling/perspective.html
+
+* Unit testing. Run all exisiting unit tests. Fix unit tests that don't work. 
+Set up a cron job to run unit tests and post them to the ipm-hpc.org logged in 
+side of the website. 
+
+* Improving the website in a general sense, making it work, allowing developers to have LDAP authd web access, adding documentation and content. All of that 
+can be done through the razor-cms interface http://www.ipm-hpc.org. The 
+web site can be accessed from the server side by logging into franklin and 
+looking in /project/projectdirs/ipm/www. What's there is a partially configured version of razor-cms which has been modded to allow LDAP auth. The previous
+working but non-LDAP version lays to one side of that. One thing missing 
+from either is a scratchpad area where developers can comment about things 
+they are working on, what they have fixed or intend to fix in the near future. This would be a good place to keep notes on the progress Michael, Eric, and Swaraj are making. 
+
+* Web data manipulation. Choose a JS graphing libary like rapheal that can take 
+a JSON strong which encode N values (equally spaced) and represent them as a line graph. Choosing N suffciently large that a relatively complex line graph can 
+be encoded, but not so large that it makes the browser choke, write a mapper 
+from M data points where is potentially M >> N to a N member JSON vector. This mapper, written in MPI or as a C prototype is then a conduit to solving the 
+graphing problem of representing a large number (>10K) of data points in a 
+browser. The mapper should take in the long (M) vector and emit the short vector (N) as a JSON string and also a coeffcient of variation vecotr also length N 
+that shows the realtive variation in each of the N bins. N ~ 256-512 would be good for most browsers.  This could all be done using SVG instead
+
+http://raphaeljs.com/ichart.html
+http://www.ibm.com/developerworks/xml/library/x-svggrph/
+
+* Identify IB counters on Magellan adapters and implement a module to read 
+these at job start and stop time. There might be an effort at UTK to do this 
+already, if so we may need to test it or implment our own. The overall complexity is not great since we know where to read the information from . 
+
+
+On 10/12/09 12:16 PM, Boris Shpolyansky wrote:
+> David,
+> The performance counters are accessible through the sys file system
+> under:
+> /sys/class/infiniband/<hca_id>/ports/<port number>/counters/
+Hi Boris,
+This is exactly what I needed. Thanks much. I looked at this long ago when our first production IB cluster arrived.
+-David
+
+

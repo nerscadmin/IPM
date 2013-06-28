@@ -1,0 +1,44 @@
+
+IPM_ROOT = $(shell pwd)/../..
+
+include $(IPM_ROOT)/make_config
+
+ifneq ($(LINKWRAP), )
+      WRAP = $(shell cat $(IPM_ROOT)/linkwrap.txt)
+endif
+
+LIBIPM = $(IPM_ROOT)/src/libipm.a
+
+PWD  = $(shell basename `pwd`)
+PAT  = $(shell echo -n $(PWD) )
+PROG = $(shell echo -n $(PAT) | cut -d . -f 2)
+
+all : $(PROG) $(PROG).ipm
+
+ipm : $(PROG).ipm
+
+
+$(PROG) : main.o $(EXTRADEP)
+	$(MPIF90) $(MPIF90OPTS)  $(LFLAGS) -o $@ $+ 
+
+$(PROG).ipm : main.o $(LIBIPM) $(EXTRADEP)
+	$(MPIF90) $(MPIF90OPTS) $(LFLAGS) $(WRAP) -o $@ $+ 
+
+$(LIBIPM) :
+	make -C $(IPM_ROOT)/src/  
+
+%.o : %.f
+	$(MPIF90) $(MPIF90OPTS) -c $+ 
+
+clean : 
+	rm -f *.o *~
+	rm -f $(PROG) $(PROG).ipm
+	rm -f *keyhist.*.txt
+	rm -f callgraph.*.txt
+	rm -f callgraph.*.html
+	rm -f evtgraph.*.txt
+	rm -rf evtgraph
+	rm -f compat*.xml
+	rm -f htable*.txt
+	rm -f trace.*.txt
+	rm -f a.txt

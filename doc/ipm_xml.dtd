@@ -1,0 +1,98 @@
+<!DOCTYPE ipm_job_profile [
+   <!ELEMENT ipm_job_profile (task+)>
+
+   <!ELEMENT task (job,host,perf,switch,cmdline,env*,ru_s_ti,ru_s_tf,ru_c_ti,
+	           ru_c_tf,call_mask,regions,hash,internal)>
+      <!ATTLIST ipm_version CDATA #REQUIRED>
+      <!ATTLIST cookie type CDATA #REQUIRED>
+      <!ATTLIST mpi_rank type CDATA #REQUIRED>
+      <!ATTLIST mpi_size type CDATA #REQUIRED>
+      <!ATTLIST stamp_init type CDATA #REQUIRED>
+      <!ATTLIST stamp_final type CDATA #REQUIRED>
+      <!ATTLIST username type CDATA #REQUIRED>
+      <!ATTLIST gnoupname type CDATA #REQUIRED>
+      <!ATTLIST flags type CDATA #REQUIRED>
+      <!ATTLIST pid type CDATA #REQUIRED>
+
+   <!ELEMENT job (#PCDATA)>
+      <!ATTLIST nhosts type CDATA #REQUIRED>
+      <!ATTLIST ntasks type CDATA #REQUIRED>
+      <!ATTLIST start type CDATA #REQUIRED>
+      <!ATTLIST final type CDATA #REQUIRED>
+      <!ATTLIST cookie type CDATA #REQUIRED>
+      <!ATTLIST code type CDATA #REQUIRED>
+
+   <!ELEMENT host (#PCDATA)>
+      <!ATTLIST mach_name type CDATA #REQUIRED>
+      <!ATTLIST mach_info type CDATA #REQUIRED>
+
+   <!ELEMENT perf (#PCDATA)>
+      <!ATTLIST wtime type CDATA #REQUIRED>
+      <!ATTLIST utime type CDATA #REQUIRED>
+      <!ATTLIST stime type CDATA #REQUIRED>
+      <!ATTLIST mtime type CDATA #REQUIRED>
+      <!ATTLIST gflop type CDATA #REQUIRED>
+      <!ATTLIST gbyte type CDATA #REQUIRED>
+
+   <!ELEMENT switch (#PCDATA)>
+      <!ATTLIST bytes_tx type CDATA #REQUIRED>
+      <!ATTLIST bytes_rx type CDATA #REQUIRED>
+
+   <!ELEMENT cmdline (#PCDATA)>
+      <!ATTLIST realpath type CDATA #REQUIRED>
+
+   <!ELEMENT env (#PCDATA)>
+
+   <!ELEMENT ru_s_ti (#PCDATA)>
+   <!ELEMENT ru_s_tf (#PCDATA)>
+   <!ELEMENT ru_c_ti (#PCDATA)>
+   <!ELEMENT ru_c_tf (#PCDATA)>
+   <!ELEMENT call_mask (#PCDATA)>
+   <!ELEMENT regions (region*)>
+      <!ATTLIST n type CDATA #REQUIRED>
+
+   <!ELEMENT hash (hent*)>
+      <!ATTLIST nlog type CDATA #REQUIRED>
+      <!ATTLIST nkey type CDATA #REQUIRED>
+
+   <!ELEMENT internal (#PCDATA)>
+      <!ATTLIST ipm_version type CDATA #REQUIRED>
+      <!ATTLIST cookie type CDATA #REQUIRED>
+      <!ATTLIST mpi_rank type CDATA #REQUIRED>
+      <!ATTLIST stamp_init type CDATA #REQUIRED>
+      <!ATTLIST stamp_final type CDATA #REQUIRED>
+      <!ATTLIST  type CDATA #REQUIRED>
+      <!ATTLIST username type CDATA #REQUIRED>
+      <!ATTLIST groupname type CDATA #REQUIRED>
+      <!ATTLIST pid type CDATA #REQUIRED>
+
+   <!ELEMENT region (hpm, func*)>
+      <!ATTLIST label type CDATA #REQUIRED>
+      <!ATTLIST nexits type CDATA #REQUIRED>
+      <!ATTLIST wtime type CDATA #REQUIRED>
+      <!ATTLIST utime type CDATA #REQUIRED>
+      <!ATTLIST stime type CDATA #REQUIRED>
+      <!ATTLIST mtime type CDATA #REQUIRED>
+
+   <!ELEMENT hent (#PCDATA)>
+      <!ATTLIST key type CDATA #REQUIRED>
+      <!ATTLIST call type CDATA #REQUIRED>
+      <!ATTLIST bytes type CDATA #REQUIRED>
+      <!ATTLIST orank type CDATA #REQUIRED>
+      <!ATTLIST region type CDATA #REQUIRED>
+      <!ATTLIST count type CDATA #REQUIRED>
+
+   <!ELEMENT hpm (counter*)>
+      <!ATTLIST api type CDATA #REQUIRED>
+      <!ATTLIST ncounter type CDATA #REQUIRED>
+      <!ATTLIST  type CDATA #REQUIRED>
+      <!ATTLIST ventlist type CDATA #REQUIRED>
+      <!ATTLIST gflop type CDATA #REQUIRED>
+
+   <!ELEMENT func (#PCDATA)>
+      <!ATTLIST name type CDATA #REQUIRED>
+      <!ATTLIST count type CDATA #REQUIRED>
+
+   <!ELEMENT counter (#PCDATA)>
+      <!ATTLIST name type CDATA #REQUIRED>
+]>

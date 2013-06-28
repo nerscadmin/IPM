@@ -1,0 +1,72 @@
+
+s/*
+ * init and shutdown procedures:
+ */
+
+// ipm return/error values, use signed integers
+#define IPM_OK           0
+#define IPM_ENOMEM       1 /* insufficient memory */
+#define IPM_EINVAL       2 /* invalid argument(s) */
+#define IPM_ESYS         3 /* system call failed */
+#define IPM_EOTHER       
+
+// ipm_state:
+#define STATE_NOTINIT         0
+#define STATE_IN_INIT         1
+#define STATE_ACTIVE          2
+#define STATE_NOTACTIVE       3
+#define STATE_IN_FINALIZE     4
+#define STATE_FINALIZED       5
+#define STATE_ERROR          99
+
+// ipm_state starts out as STATE_NOTINIT
+// ACTIVE and NOTACTIVE means state is ok and monitoring is on/off
+
+
+// no monitoring, data structures not initialized, before ipm_init()
+// no monitoring, data structures deallocated, after ipm_finalize()
+// flags: TBD, could be errors_are_fatal, etc. 
+int ipm_init(int flags);
+int ipm_finalize(int flags);
+
+
+ipm_init():
+ * check if state is STATE_NOTINIT, if not, return error
+ * set ipm_state to STATE_ININIT
+ * initialize local data structures
+ * initialize modules (mod_xxx_init())
+ * if all OK set ipm_state to IPM_ACTIVE
+   - enter default IPM region for program global stats
+   - init task.wtime, task.utime, task.stime, task.ctime
+ * else set state to STATE_ERROR
+
+
+ipm_finalize():
+ * check if state is STATE_ACTIVE or STATE_NOTACTIVE
+  - if yes, continue, if no return error 
+ * set state to STATE_IN_FINALIZE - this disables all monitoring
+ * update task.wtime, task.utime, task.stime, task.ctime
+ * exit default IPM region for program global stats
+ * print banner (call ipm_banner())
+ * call mod_xxx_output() for all modules 
+ * call mod_xxx_finalize() for all modules, 
+     modules can also do output in finalize()
+ * set state to STATE_FINALIZED
+
+
+What calls ipm_init():
+======================
+ * MPI_Init() and MPI_Init_thread()
+ * Each wrapped call in posixio checks if state==STATE_NOTINIT 
+   and if yes, calls ipm_init()
+ * User-added initialization?
+
+
+What calls ipm_finalize():
+==========================
+ * ipm_atexit_handler() if installed (DELAYED_MPI_FINALIZE)
+ * MPI_Finalize() if not DELAYED_MPI_FINALIZE
+
+
+Dependencies between modules:
+=============================

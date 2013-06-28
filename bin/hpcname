@@ -1,0 +1,498 @@
+#!/usr/bin/env bash
+
+###
+# hpcname : reports information about hpc resources that is sometimes
+# difficult or impossible to determine automatically and emprically.
+# This is essentially a cheat sheet mapping hostnames to resources
+# and command lines and paths to application names.
+#
+# To add a new computer or app make new case entries in steps 1 & 2 below
+###
+
+EMAIL="dskinner@nersc.gov"
+
+function usage  {
+cat << EOF
+
+Usage: hpcname [options] [hostname]
+
+ reports basic information about various hpc resources
+
+ -h help
+ -n the canonical HPCNAME for the given hostname (default) 
+ -a the canonical HPCAPP for the given cmdline
+ -N to add a new resource
+ --switch for switch
+ --cpu for cpu
+ --compiler for os 
+ --arch for architecture
+ --os for operating system
+ --switch for switch
+ --logdir for the IPM log directory
+ --all for all variables
+EOF
+
+}
+
+function enternew  {
+ echo -n "Would you like to add a machine description now? (y/n) > "
+ read ASK
+ if [ "$ASK" == "y" ] ; then 
+  echo " "
+  echo "Please answer the following few questions to help us understand the "
+  echo "machine that your installing IPM on. If you don't see the right choice"
+  echo "in the list of examples take your ebst guess. "
+  echo " "
+  echo -n "Give a single word name of this machine? e.g. seaborg,datastar,etc.>"
+  read HPCNAME;
+  echo -n "What is the overall computer architecture?, e.g. IBMSP, XT4, BGL, etc.> "
+  read ARCH
+  echo -n "what is the CPU type? e.g. X86, OPTERON, PPC440, etc.> "
+  read CPU
+  echo -n "What is the OS? e.g. LINUX, AIX, CNL, BLRTS, etc.> "
+  read OS
+  echo -n "What is the MPI implementation? e.g. MPICH, IBMPE, OPENMPI, etc.> "
+  read MPI
+  echo -n "What is the base compiler for MPI codes? e.g. PGI, INTEL, GNU, etc.> "
+  read COMPILER
+  echo -n "Does this machine have a cross compile environement? (y/n) > "
+  read XCOMPILE
+  echo -n "Over which switch or interface does MPI go? ETH, FEDERATION, SEASTAR2, etc.> "
+  read SWITCH
+  echo -n "To which directory should IPM logfiles be written by default? > "
+  read IPM_SYSLOG_DIR
+  echo " "
+
+  cat << EOF 
+
+Please send this in an email to $EMAIL 
+
+ HOSTNAME=`hostname`
+
+ $HPCNAME)
+        SWITCH=$SWITCH
+        OS=$OS
+        ARCH=$ARCH
+        CPU=$CPU
+        MPI=$MPI
+        COMPILER=$COMPILER
+	XCOMPILE=$XCOMPILE
+	IPM_SYSLOG_DIR=$IPM_SYSLOG_DIR
+        ;;
+
+EOF
+else 
+ echo "ok, add your host to ./bin/hpcname or contact $EMAIL"
+fi
+exit 1
+}
+
+function app_guess() {
+
+ case "$1" in 
+  *usr/common/usg*) WHERE=/usr/common/usg;;
+  *home*) WHERE=/home;;
+  *scratch*) WHERE=/scratch;;
+ esac 
+
+#awk '{print "*"$1"*) APP="tolower($1)";;"}' apps
+ case "$1" in 
+  *abinit*) APP=abinit;;
+  *cut3d*) APP=abinit;;
+  *afdropmpi*) APP=afdropmpi;;
+  *afneutronmpi*) APP=afneutronmpi;;
+  *afnuc*) APP=afnuc;;
+  *amber*) APP=amber;;
+  *bbsim3d*) APP=bbsim3d;;
+  *bcomp*) APP=bcomp;;
+  *bcompc3*) APP=bcompc3;;
+  *bigstick*) APP=bigstick;;
+  *beopest*) APP=beopest;;
+  *castep*) APP=castep;;
+  *cpl_driver*) APP=cpl_driver;;
+  *dltMPI*) APP=dltmpi;;
+  *espresso*) APP=espresso;;
+  *EULAG2D1024*) APP=eulag2d1024;;
+  *EULAg3D*) APP=eulag3d;;
+  *ex2d.x*) APP=exdiag;;
+  *gnet_mpi*) APP=gnet_mpi;;
+  *graph500*) APP=graph500;;
+  *gromacs*) APP=gromacs;;
+  *GTS*) APP=gts;;
+  *gyro*) APP=gyro;;
+  *hypernuc*) APP=hypernuc;;
+  *littleeasy*) APP=littleeasy;;
+  *lmp_car*) APP=lammps;;
+  *namd2*) APP=namd;;
+  *nwchem*) APP=nwchem;;
+  *psitet*) APP=psitet;;
+  *RIXS_Rotation*) APP=rixs_rotation;;
+  *ryd_ion*) APP=ryd_ion;;
+  *ryd_ion3d_sP.x*) APP=ryd_ion3d_sp.x;;
+  *sextet*) APP=sextet;;
+  *siesta*) APP=siesta;;
+  *stapl*) APP=stapl;;
+  *su3_rmd*) APP=milc;;
+  *susp3d*) APP=susp3d;;
+  *test_armi*) APP=test_armi;;
+  *tgyro*) APP=tgyro;;
+  *ttt*) APP=ttt;;
+  *vasp*) APP=vasp;;
+  *vorpal*) APP=vorpal;;
+  *xdlu*) APP=xdlu;;
+  *xmfdn*) APP=xmfdn;;
+  *mhdcar2d*) APP=mhdcar2d;;
+  *xqlg*) APP=xqlg;;
+  *xscalarsym*) APP=xscalarsym;;
+  *yambo*) APP=yambo;;
+  *zori*) APP=zori;;
+  *) APP=unknown_app" "$1;;
+ esac
+ echo $APP
+
+ exit;
+}
+
+HPCNAME=""
+REPORT=HPCNAME
+TEST_TASKS=2
+NIGHTLY_TESTS="test-build"
+
+while(($#)); do 
+ case "$1" in 
+  -n | --name) REPORT=HPCNAME ;;
+  -s | --switch) REPORT=SWITCH ;;
+  -o | --os) REPORT=OS ;;
+  -c | --compiler) REPORT=COMPILER ;;
+  -C | --cpu) REPORT=CPU ;;
+  -A | --arch) REPORT=ARCH ;;
+  -l | --logdir) REPORT=IPM_SYSLOG_DIR ;;
+  -t | --testtasks) REPORT=TEST_TASKS ;;
+  -h | --help)  usage;;
+  -N | --new)  enternew;;
+  -v | --all)  REPORT=ALL;;
+  -a | --app)  CMDLINE=$2; REPORT=APP;;
+  *)
+	 HOST=-1
+	 HPCNAME=$opt
+	;;
+ esac
+ shift
+done
+
+if [ "$HPCNAME" == "" ] ; then 
+ HOST=`hostname`
+fi
+
+HPCNAME="unknown"
+SWITCH="unknown"
+CPU="unknown"
+ARCH="unknown"
+IPM_SYSLOG_DIR="./"
+
+###
+# 1) Determine the name of this computer based on hostname
+###
+
+case "$HOST" in
+
+ lego*) HPCNAME=lego ;;
+ s00[56][01][359]) HPCNAME=seaborg ;;
+ b0[23]01) HPCNAME=bassi ;;
+ bdev*) HPCNAME=bassidev ;;
+ davinci*) HPCNAME=davinci ;;
+ nid*) HPCNAME=franklin ;;
+ cvr*) HPCNAME=carver ;;
+ euclid*) HPCNAME=euclid ;;
+ hopper*) HPCNAME=hopper ;;
+ jacin*) HPCNAME=jacquard ;;
+ ds*) HPCNAME=datastar ;;
+ bg-login*) HPCNAME=bgl-sdsc;;
+ lslogin*) HPCNAME=lonestar ;;
+ login1) HPCNAME=bgp-anl ;;
+ *ranger.tacc.utexas.edu) HPCNAME=ranger;;
+ honest*) HPCNAME=abe;;
+ jars-desktop) HPCNAME=nicklaptop ;;
+ mozart) HPCNAME=nicklaptop ;;
+ *.bigben.psc.teragrid.org) HPCNAME=bigben ;;
+ *.pople.psc.teragrid.org) HPCNAME=pople;;
+ jaguar*) HPCNAME=jaguar;;
+ kraken*) HPCNAME=kraken;;
+ be*ucar.edu) HPCNAME=bluefire;;
+-1) ;;
+ *) HPCNAME=unknown;;
+esac
+
+###
+# 2) State things we think we know about this computer
+###
+
+case "$HPCNAME" in 
+ lego)
+	SWITCH=proc_eth0
+	OS=BSD
+	ARCH=X86
+	CPU=CORE2DUO
+	MPI=OPENMPI
+	COMPILER=GNU
+	IPM_SYSLOG_DIR=/tmp
+	;;
+ old-lego)
+	SWITCH=proc_eth0
+	OS=LINUX
+	ARCH=X86
+	CPU=PENTIUM_M
+	MPI=OPENMPI
+	COMPILER=GNU
+	;;
+
+ bluefire)
+        SWITCH=INFINIBAND
+        OS=AIX
+        ARCH=IBMSP
+        CPU=POWER6
+        MPI=IBMPE
+        COMPILER=IBM
+        IPM_SYSLOG_DIR=.
+        ;;
+
+ bassi) 
+	SWITCH=FEDERATION
+	OS=AIX
+	ARCH=IBMSP
+	CPU=POWER5
+	MPI=IBMPE
+	COMPILER=IBM
+	IPM_SYSLOG_DIR=/scratch/scratchdirs/consult/log/ipm
+	;;
+ bassidev) 
+	SWITCH=FEDERATION
+	OS=AIX
+	ARCH=IBMSP
+	CPU=POWER5
+	MPI=IBMPE
+	COMPILER=IBM
+	IPM_SYSLOG_DIR=/scratch/scratchdirs/consult/log/ipm
+	;;
+ seaborg) 
+	SWITCH=COLONY
+	OS=AIX
+	ARCH=IBMSP
+	CPU=POWER3
+	MPI=IBMPE
+	COMPILER=IBM
+	IPM_SYSLOG_DIR=/usr/common/usg/log/ipm
+	;;
+ franklin)
+	SWITCH=SEASTAR2
+	OS=LINUX
+	ARCH=XT4
+	CPU=OPTERON
+	MPI=MPICH
+	COMPILER=PGI
+	IPM_SYSLOG_DIR=/scratch/usglogs/ipm
+	;;
+ carver)
+	SWITCH=INFINIBAND
+	OS=LINUX
+	ARCH=IDATAPLEX
+	CPU=NEHALEM
+	MPI=OPENMPI
+	COMPILER=PGI
+	IPM_SYSLOG_DIR=/project/projectdirs/ipm/log/carver
+	;;
+ euclid)
+	SWITCH=NONE
+	OS=LINUX
+	ARCH=SUNFIRE
+	CPU=OPTERON
+	MPI=OPENMPI
+	COMPILER=PGI
+	IPM_SYSLOG_DIR=/project/projectdirs/ipm/log/carver
+	;;
+ hopper)
+	SWITCH=GEMINI
+	OS=LINUX
+	ARCH=XE6
+	CPU=MAGNYCOURS
+	MPI=CRAY
+	COMPILER=PGI
+	IPM_SYSLOG_DIR=/project/projectdirs/ipm/log/hopper
+	;;
+ jaguar)
+        SWITCH=SEASTAR2
+        OS=LINUX
+        ARCH=XT4
+        CPU=OPTERON
+        MPI=MPICH
+        COMPILER=PGI
+        IPM_SYSLOG_DIR=.
+        ;;
+ kraken)
+        SWITCH=SEASTAR2
+        OS=LINUX
+        ARCH=XT4
+        CPU=OPTERON
+        MPI=MPICH
+        COMPILER=PGI
+        IPM_SYSLOG_DIR=.
+        ;;
+ davinci) 
+	SWITCH=ALTIX
+	OS=LINUX
+	ARCH=X86
+	CPU=ITANIUM2
+	MPI=MPICH
+	COMPILER=INTEL
+	NIGHTLY_TESTS="test-build test-run"
+	TEST_TASKS=16
+	IPM_SYSLOG_DIR=/scratch/scrathdirs/consult/log/ipm
+	;;
+ jacquard) 
+	SWITCH=INFINIBAND
+	OS=LINUX
+	ARCH=X86
+	CPU=OPTERON
+	MPI=MPICH
+	COMPILER=PATH
+	IPM_SYSLOG_DIR=/scratch/scrathdirs/consult/log/ipm
+	;;
+ bgl-sdsc)
+	SWITCH=BGL
+	OS=BLRTS
+	ARCH=PPC
+	CPU=PPC440D
+	MPI=MPICH
+        COMPILER=IBM
+        IPM_SYSLOG_DIR=./
+	;;
+ bgp-anl)
+        SWITCH=BGL
+        OS=BLRTS
+        ARCH=PPC
+        CPU=PPC450D
+        MPI=MPICH
+        COMPILER=IBM
+        IPM_SYSLOG_DIR=./
+        ;;
+ datastar)
+        SWITCH=FEDERATION
+        OS=AIX
+        ARCH=IBMSP
+        CPU=POWER4
+        MPI=IBMPE
+        COMPILER=IBM
+        IPM_SYSLOG_DIR=./
+        ;;
+lonestar)
+        SWITCH=INFINIBAND
+        OS=LINUX
+        ARCH=X86
+        CPU=WOODCREST
+        MPI=MPVAPICH
+        COMPILER=INTEL
+        IPM_SYSLOG_DIR=./
+        ;;
+abe)
+        SWITCH=INFINIBAND
+        OS=LINUX
+        ARCH=X86
+        CPU=CLOVERTOWN
+        MPI=MPVAPICH
+        COMPILER=INTEL
+        IPM_SYSLOG_DIR=./
+        ;;
+
+ranger)
+        SWITCH=INFINIBAND
+        OS=LINUX
+        ARCH=X86
+        CPU=OPTERON
+        MPI=MPVAPICH
+        COMPILER=PGI
+	TEST_TASKS=1
+        IPM_SYSLOG_DIR=./
+        ;;
+
+ nicklaptop)
+        SWITCH=proc_eth0
+        OS=LINUX
+        ARCH=X86
+        CPU=CORE2DUO
+        MPI=MPICH2
+        COMPILER=INTEL
+        IPM_SYSLOG_DIR=.
+        ;;
+
+bigben)
+        SWITCH=SEASTAR
+        OS=LINUX
+        ARCH=XT3
+        CPU=OPTERON
+        MPI=MPICH
+        COMPILER=PGI
+        IPM_SYSLOG_DIR=.
+        PAPI=/opt/xt-tools/papi/3.2.1/
+        ;;
+
+pople)
+        SWITCH=ALTIX
+        OS=LINUX
+        ARCH=ALTIX
+        CPU=ITANIUM2
+        MPI=MPICH
+        COMPILER=INTEL
+        IPM_SYSLOG_DIR=.
+        ;;
+
+ *)	
+	;;
+
+esac
+
+# things that are true by implication 
+#
+#XCOMPILE=1 --> this is a cross compile environment a.out will not run 
+#               from the command line
+#
+
+case "$OS" in 
+ QK)
+	XCOMPILE=1
+	;;
+ *)
+	XCOMPILE=0
+	;;
+esac
+
+###
+# Report requested information for this computer
+###
+
+#echo ${!REPORT}
+
+case "$REPORT" in 
+ HPCNAME) echo $HPCNAME ;;
+ SWITCH) echo $SWITCH ;;
+ CPU) echo $CPU ;;
+ OS) echo $OS ;;
+ MPI) echo $MPI ;;
+ ARCH) echo $ARCH ;;
+ TEST_TASKS) echo $TEST_TASKS ;;
+ COMPILER) echo $COMPILER ;;
+ XCOMPILE) echo $XCOMPILE ;;
+ IPM_SYSLOG_DIR) echo $IPM_SYSLOG_DIR ;;
+ ALL) echo "SWITCH=$SWITCH" ;
+ 	echo "OS=$OS"; 
+        echo "ARCH=$ARCH";
+        echo "CPU=$CPU";
+        echo "MPI=$MPI";
+        echo "COMPILER=$COMPILER";
+	echo "XCOMPILE=$XCOMPILE";
+	echo "IPM_SYSLOG_DIR=$IPM_SYSLOG_DIR";
+	echo "TEST_TASKS=$TEST_TASKS";
+	;;
+ APP) 
+    app_guess "$CMDLINE";
+    ;;
+esac
