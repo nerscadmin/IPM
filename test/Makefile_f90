@@ -27,7 +27,7 @@ $(PROG).ipm : main.o $(LIBIPM) $(EXTRADEP)
 $(LIBIPM) :
 	make -C $(IPM_ROOT)/src/  
 
-%.o : %.f
+%.o : %.f90
 	$(MPIF90) $(MPIF90OPTS) -c $+ 
 
 clean : 

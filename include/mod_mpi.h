@@ -52,80 +52,84 @@ extern MPI_Group ipm_world_group;
 #define MPI_STATUS_COUNT  count
 #endif
 
-#define IPM_MPI_BYTES_NONE_C(size_) \
+#define IPM_MPI_BYTES_NONE_C(size_)		\
   size_=0;
 
-#define IPM_MPI_BYTES_SCOUNT_C(size_)                           \
-	{                                                           \
-		PMPI_Type_size(stype, &size_);      \
-		size_*=scount;                                          \
-	}
+#define IPM_MPI_BYTES_SCOUNT_C(size_)					\
+  {									\
+    PMPI_Type_size(stype, &size_);					\
+    size_*=scount;							\
+  }
+
 //
 //  This is added to support the all case of gather since all of the sbuf must be ignored, but data is sent
 //
 //  For the gather and gatherv
-#define IPM_MPI_BYTES_SCOUNT_GA_C(size_)                           \
-	{                                                           \
-		int tcount;                                             \
-		if (sbuf != MPI_IN_PLACE) {PMPI_Type_size(stype, &size_); tcount = scount;}     \
-		else {size_ = 0; tcount = 0;}     \
-		size_*=tcount;                                          \
-	}
+#define IPM_MPI_BYTES_SCOUNT_GA_C(size_)				\
+  {									\
+    int tcount;								\
+    if (sbuf != MPI_IN_PLACE) {PMPI_Type_size(stype, &size_); tcount = scount;}	\
+    else {size_ = 0; tcount = 0;}					\
+    size_*=tcount;							\
+  }
+
 //  For the reductions
-#define IPM_MPI_BYTES_SCOUNT_RE_C(size_)                           \
-	{                                                           \
-		PMPI_Type_size(stype, &size_);      \
-		size_*=scount;                                          \
-	}
+#define IPM_MPI_BYTES_SCOUNT_RE_C(size_)				\
+  {									\
+    PMPI_Type_size(stype, &size_);					\
+    size_*=scount;							\
+  }
 //  For the allgather
-#define IPM_MPI_BYTES_SCOUNT_ALL_C(size_)                           \
-	{                                                           \
-		int tcount;                                             \
-		if (sbuf != MPI_IN_PLACE) {PMPI_Type_size(stype, &size_); tcount = scount;}     \
-		else {PMPI_Type_size(rtype, &size_); tcount = rcount;}     \
-		size_*=tcount;                                          \
-	}
+#define IPM_MPI_BYTES_SCOUNT_ALL_C(size_)				\
+  {									\
+    int tcount;								\
+    if (sbuf != MPI_IN_PLACE) {PMPI_Type_size(stype, &size_); tcount = scount;}	\
+    else {PMPI_Type_size(rtype, &size_); tcount = rcount;}		\
+    size_*=tcount;							\
+  }
 // For the allgetherv
-#define IPM_MPI_BYTES_SCOUNT_ALLV_C(size_)                           \
-	{                                                           \
-		int tcount;                                             \
-    		int myrank; \
-    		PMPI_Comm_rank(comm, &myrank);   \
-		if (sbuf != MPI_IN_PLACE) {PMPI_Type_size(stype, &size_); tcount = scount;}     \
-		else {PMPI_Type_size(rtype, &size_); tcount = rcounts[myrank];}     \
-		size_*=tcount;                                          \
-	}
+#define IPM_MPI_BYTES_SCOUNT_ALLV_C(size_)				\
+  {									\
+    int tcount;								\
+    int myrank;								\
+    PMPI_Comm_rank(comm_in, &myrank);					\
+    if (sbuf != MPI_IN_PLACE) {PMPI_Type_size(stype, &size_); tcount = scount;}	\
+    else {PMPI_Type_size(rtype, &size_); tcount = rcounts[myrank];}     \
+    size_*=tcount;							\
+  }
+
 //
 //  This needs updated once we figure out how to determine MPI_IN_PLACE for fortran
 //
-#define IPM_MPI_BYTES_SCOUNT_F(size_)                               \
-	{                                                           \
-		PMPI_Type_size(stype, &size_); tcount = (*scount);  \
-		size_*=tcount;                                             \
-	}
+#define IPM_MPI_BYTES_SCOUNT_F(size_)					\
+  {									\
+    PMPI_Type_size(stype, &size_); tcount = (*scount);			\
+    size_*=tcount;							\
+  }
 
-#define IPM_MPI_BYTES_RCOUNT_C(size_)  \
-	{								\
-		PMPI_Type_size(rtype, &size_); \
-   		size_*=rcount;						\
-	}
+#define IPM_MPI_BYTES_RCOUNT_C(size_)					\
+  {									\
+    PMPI_Type_size(rtype, &size_);					\
+    size_*=rcount;							\
+  }
+
 //
 //  THis is for the scatter functions
 //
-#define IPM_MPI_BYTES_RCOUNT_SC_C(size_)  \
-	{								\
-		int tcount;						\
-		if (rbuf != MPI_IN_PLACE) {PMPI_Type_size(rtype, &size_); tcount = rcount;}	\
-		else { size_ = 0; tcount = 0;}	\
-   		size_*=tcount;						\
-	}
+#define IPM_MPI_BYTES_RCOUNT_SC_C(size_)				\
+  {									\
+    int tcount;								\
+    if (rbuf != MPI_IN_PLACE) {PMPI_Type_size(rtype, &size_); tcount = rcount;}	\
+    else { size_ = 0; tcount = 0;}					\
+    size_*=tcount;							\
+  }
 
 #define IPM_MPI_BYTES_RCOUNT_F(size_)  \
-   PMPI_Type_size(rtype, &size_);      \
-   size_*=(*rcount);
+  PMPI_Type_size(rtype, &size_);       \
+  size_*=(*rcount);
 
-#define IPM_MPI_BYTES_RCOUNTI_C(size_)  \
-   size_=0;
+#define IPM_MPI_BYTES_RCOUNTI_C(size_)		\
+  size_=0;
 
 #define IPM_MPI_BYTES_STATUS_C(size_)             \
   if(status && (status)!=MPI_STATUS_IGNORE )      \
@@ -147,25 +151,26 @@ extern MPI_Group ipm_world_group;
   }
 
 
-#define IPM_MPI_BYTES_SCOUNTI_C(size_) \
-  { \
-    int myrank; \
-    PMPI_Comm_rank(comm, &myrank);   \
-    PMPI_Type_size(stype, &size_);   \
-    size_=scounts[myrank]*size_;     \
-  }
-#define IPM_MPI_BYTES_SCOUNTI_F(size_) \
-  {				       \
-    int myrank;			       \
-    PMPI_Comm_rank(*comm, &myrank);     \
-    PMPI_Type_size(*stype, &size_);     \
-    size_=scounts[myrank]*size_;       \
+#define IPM_MPI_BYTES_SCOUNTI_C(size_)		\
+  {						\
+    int myrank;					\
+    PMPI_Comm_rank(comm_in, &myrank);		\
+    PMPI_Type_size(stype, &size_);		\
+    size_=scounts[myrank]*size_;		\
   }
 
-#define IPM_MPI_BYTES_SCOUNTS_C(size_) \
-  { \
-    int myrank; \
-    PMPI_Comm_rank(comm, &myrank);   \
+#define IPM_MPI_BYTES_SCOUNTI_F(size_)	   \
+  {					   \
+    int myrank;				   \
+    PMPI_Comm_rank(*comm_in, &myrank);     \
+    PMPI_Type_size(*stype, &size_);	   \
+    size_=scounts[myrank]*size_;	   \
+  }
+
+#define IPM_MPI_BYTES_SCOUNTS_C(size_)		\
+  {						\
+    int myrank;					\
+    PMPI_Comm_rank(comm_in, &myrank);		\
     PMPI_Type_size(stype, &size_);   \
     size_=scounts[myrank]*size_;     \
   }

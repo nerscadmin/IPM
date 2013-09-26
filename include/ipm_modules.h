@@ -21,12 +21,12 @@
 #define IPM_MODULE_CLUSTERING       12
 
 #define MOD_MPI_OFFSET                  0
-#define MOD_MPIIO_OFFSET                60 
-#define MOD_POSIXIO_OFFSET              120 
-#define MOD_OMPTRACEPOINTS_OFFSET       180 
-#define MOD_CUDA_OFFSET                 200
-#define MOD_CUFFT_OFFSET                380
-#define MOD_CUBLAS_OFFSET               400
+#define MOD_MPIIO_OFFSET                80 
+#define MOD_POSIXIO_OFFSET              140 
+#define MOD_OMPTRACEPOINTS_OFFSET       200 
+#define MOD_CUDA_OFFSET                 220
+#define MOD_CUFFT_OFFSET                400
+#define MOD_CUBLAS_OFFSET               420
 
 #define MOD_MPI_RANGE                   (MOD_MPIIO_OFFSET-MOD_MPI_OFFSET)
 #define MOD_MPIIO_RANGE                 (MOD_POSIXIO_OFFSET-MOD_MPIIO_OFFSET)

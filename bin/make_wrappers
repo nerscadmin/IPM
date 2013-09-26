@@ -270,6 +270,7 @@ $call{$id}{car} =~ s/int//g;
  $call{$id}{car} =~ s/MPI_Request \*//g;
  $call{$id}{car} =~ s/MPIO_Request \*//g;
  $call{$id}{car} =~ s/MPI_Status \*//g;
+ $call{$id}{car} =~ s/MPI_Comm \*//g;
  $call{$id}{car} =~ s/MPI_Comm//g;
  $call{$id}{car} =~ s/MPI_Op//g;
  $call{$id}{car} =~ s/MPI_File \*//g;
@@ -280,6 +281,7 @@ $call{$id}{car} =~ s/int//g;
  $call{$id}{car} =~ s/MPI_Offset \*//g;
  $call{$id}{car} =~ s/MPI_Offset//g;
  $call{$id}{car} =~ s/MPI_Group \*//g;
+ $call{$id}{car} =~ s/MPI_Group//g;
  $call{$id}{car} =~ s/MPI_Info \*//g;
  $call{$id}{car} =~ s/MPI_Info//g;
  $call{$id}{car} =~ s/const char \*//g; # posixio
@@ -356,7 +358,11 @@ $call{$id}{car} =~ s/int//g;
  @args = split(/,/, $call{$id}{f2c});
  foreach $_ (@args )
  {
-     s/^comm$/MPI_Comm_f2c(*comm)/g;
+     s/^comm_in$/MPI_Comm_f2c(*comm_in)/g;
+     s/^comm1_in$/MPI_Comm_f2c(*comm1_in)/g;
+     s/^comm2_in$/MPI_Comm_f2c(*comm2_in)/g;
+     s/^group_out$/(MPI_Group*)group_out/g;
+     s/^group_in$/MPI_Group_f2c(*group_in)/g;
      s/^stype$/MPI_Type_f2c(*stype)/g;
      s/^rtype$/MPI_Type_f2c(*rtype)/g;
      s/^type$/MPI_Type_f2c(*type)/g;
@@ -372,6 +378,9 @@ $call{$id}{car} =~ s/int//g;
      s/^root$/*root/g;
      s/^inum$/*inum/g;
      s/^num$/*num/g;
+     s/^mpikey$/*mpikey/g;
+     s/^mpicol$/*mpicol/g;
+     
      s/^src$/*src/g;
      s/^size$/*size/g;
      #s/^osize$/osize/g; #osize unchanged
