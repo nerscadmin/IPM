@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ipm.h"
 #include "report.h"
 
 /**
@@ -54,7 +55,8 @@ void ipm_print_banner(FILE *f, banner_t *data)
   nowstruct = localtime( &(data->tstop.tv_sec) );
   strftime( endstr, 128, "%a %b %d %T %Y", nowstruct );
 
-  fprintf(f, "##IPM2v0.xx########################################################\n");
+  fprintf(f, "##IPMv%s########################################################\n",
+	  IPM_VERSION);
   fprintf(f, "#\n");
   fprintf(f, "# command   : %-26s\n", 
 	  data->cmdline);

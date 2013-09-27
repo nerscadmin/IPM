@@ -209,7 +209,7 @@ int xml_task_header(void *ptr, taskdata_t *t) {
   res+=ipm_printf(ptr, "<task ipm_version=\"%s\" cookie=\"%s\" mpi_rank=\"%d\" mpi_size=\"%d\" "
 		  "stamp_init=\"%.6f\" stamp_final=\"%.6f\" username=\"%s\" allocationname=\"%s\" "
 		  "flags=\"%lld\" pid=\"%d\" >\n",
-		  "2.0.0", "nocookie", t->taskid, t->ntasks,
+		  IPM_VERSION, "nocookie", t->taskid, t->ntasks,
 		  IPM_TIMEVAL(t->t_start), IPM_TIMEVAL(t->t_stop), 
 		  t->user, t->allocation, (long long)0, t->pid);
   return res;

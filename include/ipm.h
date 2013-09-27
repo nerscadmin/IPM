@@ -1,7 +1,7 @@
 #ifndef IPM_H_INCLUDED
 #define IPM_H_INCLUDED
 
-#define IPM_VERSION 2.0
+#define IPM_VERSION "2.0.2"
 
 #include "config.h"
 #include "perfdata.h"
