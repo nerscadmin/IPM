@@ -8,8 +8,8 @@
 1|MPI_INIT_ID|int MPI_Init(int *argc, char ***argv)|void mpi_init(int *info)|CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 2|MPI_INIT_THREAD_ID|int MPI_Init_thread(int *argc, char ***argv, int request, int *provide)|void mpi_init_thread(int *request, int *provide, int *ierr)|CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 3|MPI_FINALIZE_ID|int MPI_Finalize(void)|void mpi_finalize(int *info)|CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
-4|MPI_COMM_SIZE_ID|int MPI_Comm_rank(MPI_Comm comm_in, int *rank)|void mpi_comm_rank(int *comm_in, int *rank, int *info)|CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_ONE
-5|MPI_COMM_RANK_ID|int MPI_Comm_size(MPI_Comm comm_in, int *osize)|void mpi_comm_size(int *comm_in, int *osize, int *info)|CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_ONE
+4|MPI_COMM_RANK_ID|int MPI_Comm_rank(MPI_Comm comm_in, int *rank)|void mpi_comm_rank(int *comm_in, int *rank, int *info)|CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_ONE
+5|MPI_COMM_SIZE_ID|int MPI_Comm_size(MPI_Comm comm_in, int *osize)|void mpi_comm_size(int *comm_in, int *osize, int *info)|CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_ONE
 6|MPI_SEND_ID|int MPI_Send(const void *sbuf, int scount, MPI_Datatype stype, int dest, int tag, MPI_Comm comm_in)|void mpi_send(void *sbuf, int *scount, int *stype, int *dest, int *tag, int *comm_in, int *info)|CS_REMOTE,BYTES_SCOUNT,RANK_DEST,DATA_TX,COMM_ONE
 7|MPI_SSEND_ID|int MPI_Ssend(const void *sbuf, int scount, MPI_Datatype stype, int dest, int tag, MPI_Comm comm_in)|void mpi_ssend(void *sbuf, int *scount, int *stype, int *dest, int *tag, int *comm_in, int *info)|CS_REMOTE,BYTES_SCOUNT,RANK_DEST,DATA_TX,COMM_ONE
 8|MPI_RSEND_ID|int MPI_Rsend(const void *sbuf, int scount, MPI_Datatype stype, int dest, int tag, MPI_Comm comm_in)|void mpi_rsend(void *sbuf, int *scount, int *stype, int *dest, int *tag, int *comm_in, int *info)|CS_REMOTE,BYTES_SCOUNT,RANK_DEST,DATA_TX,COMM_ONE
