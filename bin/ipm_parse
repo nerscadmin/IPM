@@ -419,7 +419,7 @@ while(!$done) {
 
 
   $got_version = 0;
-  if($iversion =~ "0.8[56789]" || $iversion =~ "0.[89][0-9][0-9]" || $iversion =~ "2.0.0") {
+  if($iversion =~ "0.8[56789]" || $iversion =~ "0.[89][0-9][0-9]" || $iversion =~ "2.0.[0-9]") {
    $got_version = 1;
    if($line =~ /^<task (.*)>/) {
     if($flags{debug}) { print "IPM parse: task $1\n"; } 
