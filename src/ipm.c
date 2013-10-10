@@ -11,7 +11,6 @@
 #include <errno.h>
 
 
-
 int flags=0;
 
 #define VERBOSE       (1<< 0)
