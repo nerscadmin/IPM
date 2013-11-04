@@ -20,11 +20,13 @@
 #include "mod_keyhist.h"
 #endif
 
+#ifndef MPI3CONST
 #if MPI_VERSION >= 3 
 #define MPI3CONST const
 #else
 #define MPI3CONST 
 #endif 
+#endif
 
 
 /** HEADER_END **/
