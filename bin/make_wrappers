@@ -363,7 +363,7 @@ $call{$id}{car} =~ s/int//g;
      s/^comm2_in$/MPI_Comm_f2c(*comm2_in)/g;
      s/^comm_inout/&ccomm_inout/g;
      s/^comm_out/&ccomm_out/g;
-     s/^group_out$/(MPI_Group*)group_out/g;
+     s/^group_out$/&cgroup_out/g;
      s/^group_in$/MPI_Group_f2c(*group_in)/g;
      s/^stype$/MPI_Type_f2c(*stype)/g;
      s/^rtype$/MPI_Type_f2c(*rtype)/g;
@@ -589,6 +589,10 @@ EOF
 	if( $c->{f2c}=~/ccomm_inout/ ) {
 	    $have_ccomm_inout=1;
 	}
+	$have_cgroup_out=0;
+	if( $c->{f2c}=~/cgroup_out/ ) {
+	    $have_cgroup_out=1;
+	}
 
 	if( ($c->{fai}=~/request/) || # this also matches requests
 	    ($c->{fai}=~/indices/) ||
@@ -610,6 +614,7 @@ EOF
 		$line=~s/HAVE_CREQ/$have_creq/;
 		$line=~s/HAVE_CSTAT/$have_cstat/;
 		$line=~s/HAVE_CCOMM_OUT/$have_ccomm_out/;
+		$line=~s/HAVE_CGROUP_OUT/$have_cgroup_out/;
 		$line=~s/HAVE_CCOMM_INOUT/$have_ccomm_inout/;
 		print FH $line;
 	    }

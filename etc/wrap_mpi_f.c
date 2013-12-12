@@ -24,6 +24,10 @@ FRET FFNAME(FPARAMS)
   ccomm_inout = MPI_Comm_f2c(*comm_inout);
 #endif 
 
+#if HAVE_CGROUP_OUT /* HAVE _CGROUP_OUT */
+  MPI_Group cgroup_out;
+#endif
+
   *info=CFNAME(F2CARGS);
   
 #if HAVE_CSTAT   /* HAVE_CSTAT */ 
@@ -45,6 +49,12 @@ FRET FFNAME(FPARAMS)
   if( *info==MPI_SUCCESS ) 
     *comm_inout=MPI_Comm_c2f(ccomm_inout);
 #endif
+
+#if HAVE_CGROUP_OUT /* HAVE _CGROUP_OUT */
+  if( *info==MPI_SUCCESS )
+    *group_out=MPI_Group_c2f(cgroup_out);
+#endif
+
 }
 
 
