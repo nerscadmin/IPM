@@ -10,7 +10,7 @@ CONFIG_LOG=config.test.log
 
 MPI_STATUS_COUNT=""
 
-for tag in val1 count _count size _ucount; do
+for tag in val1 count _count size _ucount st_count; do
 	TEST_NAME="simplec_MPI_STATUS_COUNT"
 #	echo -n "$tag"
 	rm -rf $TEST_DIR ; mkdir $TEST_DIR ; cd $TEST_DIR
