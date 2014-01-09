@@ -1,5 +1,5 @@
 
-AC_INIT([ipm], [2.0.2], [ipm-dev@nersc.gov])
+AC_INIT([ipm], [2.0.3], [ipm-dev@nersc.gov])
 AC_CONFIG_SRCDIR([src/ipm_core.c])
 
 AC_CANONICAL_TARGET
