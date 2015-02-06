@@ -28,6 +28,18 @@ FRET FFNAME(FPARAMS)
   MPI_Group cgroup_out;
 #endif
 
+#if HAVE_COLLECTIVE   /* HAVE _COLLECTIVE */
+#ifdef MPICH2
+  extern void* MPIR_F_MPI_IN_PLACE;
+  if (sbuf == MPIR_F_MPI_IN_PLACE) sbuf = MPI_IN_PLACE;
+#endif
+#ifdef OPEN_MPI
+#include "openmpi/opal_config.h"
+#include "openmpi/ompi/mpi/f77/constants.h"
+  sbuf = (char *) OMPI_F2C_IN_PLACE(sbuf);
+#endif
+#endif
+
   *info=CFNAME(F2CARGS);
   
 #if HAVE_CSTAT   /* HAVE_CSTAT */ 
