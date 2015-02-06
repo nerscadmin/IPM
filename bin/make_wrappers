@@ -581,6 +581,12 @@ EOF
 	if( $c->{f2c}=~/cstat/ ) {
 	    $have_cstat=1;
 	}
+
+	$have_collective=0;
+	if( $c->{dat}=~/DATA_COLLECTIVE/ ) {
+	    $have_collective=1;
+	}
+
 	$have_ccomm_out=0;
 	if( $c->{f2c}=~/ccomm_out/ ) {
 	    $have_ccomm_out=1;
@@ -613,6 +619,7 @@ EOF
 		$line=~s/F2CARGS/$c->{f2c}/;
 		$line=~s/HAVE_CREQ/$have_creq/;
 		$line=~s/HAVE_CSTAT/$have_cstat/;
+		$line=~s/HAVE_COLLECTIVE/$have_collective/;
 		$line=~s/HAVE_CCOMM_OUT/$have_ccomm_out/;
 		$line=~s/HAVE_CGROUP_OUT/$have_cgroup_out/;
 		$line=~s/HAVE_CCOMM_INOUT/$have_ccomm_inout/;
