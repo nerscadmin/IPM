@@ -1,5 +1,4 @@
-IPM
-===
+# IPM
 
 Integrated Performance Monitoring for HPC
 
@@ -26,3 +25,23 @@ IPM is modular. You can measure just what you want. In addition to the core timi
   *   **Power:** Joules of energy consumed by the app. 
   
 The 'integrated' in IPM is multi-faceted. It refers to combining the above information together through a common interface and also the integration of the records from all the parallel tasks into a single report. At a high level we seek to integrate together the information useful to all stakeholders in HPC into a common interface that enables a deeper understanding. This includes application developers, science teams using applications, HPC managers, and system architects.
+
+## Quick start
+
+IPM uses the common GNU autotools build system for compilation. As such, a
+typical install of IPM from this repository must begin by generating the
+autoconf `configure` script via:
+
+    autoreconf -f -i
+
+Once this is done, you should be able to run
+
+    ./configure
+    make
+    make install
+
+As usual, you will likely want to examine key options available for the
+`configure` script, which can be viewed by running `./configure --help`. For
+example, you can enable support for hardware performance counter collection via
+PAPI by specifying the PAPI installation path using the `--with-papi=<path>`
+option.
