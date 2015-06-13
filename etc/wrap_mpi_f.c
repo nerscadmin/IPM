@@ -35,7 +35,13 @@ FRET FFNAME(FPARAMS)
 #endif
 #ifdef OPEN_MPI
 #include "openmpi/opal_config.h"
+
+#if (OPAL_MINOR_VERSION > 6)
+#include "openmpi/ompi_config.h"
+#else
 #include "openmpi/ompi/mpi/f77/constants.h"
+#endif
+
   sbuf = (char *) OMPI_F2C_IN_PLACE(sbuf);
 #endif
 #endif
