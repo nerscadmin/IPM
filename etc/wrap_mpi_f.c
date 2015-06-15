@@ -33,7 +33,7 @@ FRET FFNAME(FPARAMS)
   extern void* MPIR_F_MPI_IN_PLACE;
   if (sbuf == MPIR_F_MPI_IN_PLACE) sbuf = MPI_IN_PLACE;
 #endif
-#ifdef OPEN_MPI
+#if defined(OPEN_MPI) && OMPI_MAJOR_VERSION == 1 && OMPI_MINOR_VERSION <= 6
 #include "openmpi/opal_config.h"
 #include "openmpi/ompi/mpi/f77/constants.h"
   sbuf = (char *) OMPI_F2C_IN_PLACE(sbuf);
