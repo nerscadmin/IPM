@@ -1,12 +1,14 @@
 
-/* ---- wrapping FFNAME ---- */
+/* ---- wrapping __FFNAME__ ---- */
  
 /*
  *
  */
 
-FRET FFNAME(FPARAMS)
+__FRET__ __FFNAME__(__FPARAMS__)
 {
+  double tstart, tstop;
+
 #if HAVE_CREQ    /* HAVE _CREQ */ 
   MPI_Request creq; 
 #endif
@@ -28,19 +30,13 @@ FRET FFNAME(FPARAMS)
   MPI_Group cgroup_out;
 #endif
 
-#if HAVE_COLLECTIVE   /* HAVE _COLLECTIVE */
-#ifdef MPICH2
-  extern void* MPIR_F_MPI_IN_PLACE;
-  if (sbuf == MPIR_F_MPI_IN_PLACE) sbuf = MPI_IN_PLACE;
-#endif
-#ifdef OPEN_MPI
-#include "openmpi/opal_config.h"
-#include "openmpi/ompi/mpi/f77/constants.h"
-  sbuf = (char *) OMPI_F2C_IN_PLACE(sbuf);
-#endif
-#endif
+  IPM_TIMESTAMP(tstart);
+  p__FFNAME__(__FARGS__);
+  IPM_TIMESTAMP(tstop);
 
-  *info=CFNAME(F2CARGS);
+  if( ipm_state!=STATE_ACTIVE ) {
+    return;
+  }
   
 #if HAVE_CSTAT   /* HAVE_CSTAT */ 
   if (*info==MPI_SUCCESS) 
@@ -66,6 +62,7 @@ FRET FFNAME(FPARAMS)
   if( *info==MPI_SUCCESS )
     *group_out=MPI_Group_c2f(cgroup_out);
 #endif
+  IPM___CFNAME__(__F2CARGS__, tstart, tstop);
 
 }
 

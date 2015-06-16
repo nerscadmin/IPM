@@ -611,12 +611,12 @@ EOF
 	    foreach $_ (@template_f)
 	    {
 		$line = $_;
-		$line=~s/CFNAME/$1$c->{cfn}/;
-		$line=~s/FFNAME/$c->{ffn}/;
-		$line=~s/FRET/$c->{frv}/;
-		$line=~s/FPARAMS/$c->{fai}/;
-		$line=~s/FARGS/$c->{far}/;
-		$line=~s/F2CARGS/$c->{f2c}/;
+		$line=~s/__CFNAME__/$1$c->{cfn}/;
+		$line=~s/__FFNAME__/$c->{ffn}/;
+		$line=~s/__FRET__/$c->{frv}/;
+		$line=~s/__FPARAMS__/$c->{fai}/;
+		$line=~s/__FARGS__/$c->{far}/;
+		$line=~s/__F2CARGS__/$c->{f2c}/;
 		$line=~s/HAVE_CREQ/$have_creq/;
 		$line=~s/HAVE_CSTAT/$have_cstat/;
 		$line=~s/HAVE_COLLECTIVE/$have_collective/;
