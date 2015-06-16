@@ -9,7 +9,7 @@ EXTRA_DIST = $(WRAPPER_HELPER) $(WRAPPER_TEMPLATES)
              
 install-exec-hook:
 	mkdir -p $(prefix)/etc
-	for i in $(WRAPPER_HELPER); do \
+	for i in $(top_srcdir)/etc/$(WRAPPER_HELPER); do \
 		cp $$i $(prefix)/etc; \
 	done
 

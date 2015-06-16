@@ -438,9 +438,9 @@ if( $DUMMIES ) {
 } else {
     write_libipm("GEN.wrapper_${WRAP_WHAT}.c",  ${WRAP_WHAT});
 }
-write_fproto("../include/GEN.fproto.${WRAP_WHAT}.h");
+write_fproto("include/GEN.fproto.${WRAP_WHAT}.h");
 
-write_calltable_h("../include/GEN.calltable_${WRAP_WHAT}.h", ${WRAP_WHAT});
+write_calltable_h("include/GEN.calltable_${WRAP_WHAT}.h", ${WRAP_WHAT});
 write_calltable_c("GEN.calltable_${WRAP_WHAT}.c", ${WRAP_WHAT});
 
 
@@ -448,7 +448,7 @@ write_calltable_c("GEN.calltable_${WRAP_WHAT}.c", ${WRAP_WHAT});
 sub write_fproto() {
     my $fname = shift;
      
-    open(FH,"> $fname")  || die "Cannot open $fname";
+    open(FH,"> $IPM_ROOT/$fname")  || die "Cannot open $IPM_ROOT/$fname";
 
     print "Generating $fname\n";
     print FH<<"EOF";
@@ -638,7 +638,7 @@ sub write_calltable_h() {
     my $fname = shift;
     my $module = shift;
     
-    open(FH,"> $fname")  || die "Cannot open $fname";
+    open(FH,"> $IPM_ROOT/$fname")  || die "Cannot open $IPM_ROOT/$fname";
 
     print "Generating $fname\n";
     print FH<<"EOF";
