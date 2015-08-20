@@ -50,3 +50,11 @@ IPM is modular. You can measure just what you want. In addition to the core timi
   *   **Power:** Joules of energy consumed by the app. 
   
 The 'integrated' in IPM is multi-faceted. It refers to combining the above information together through a common interface and also the integration of the records from all the parallel tasks into a single report. At a high level we seek to integrate together the information useful to all stakeholders in HPC into a common interface that enables a deeper understanding. This includes application developers, science teams using applications, HPC managers, and system architects.
+
+## Known issues
+
+The following are known issues affecting the current `master` branch of IPM:
+* `VPATH` builds are not yet supported
+* Depending on the compiler wrappers associated with your MPI implementation,
+  you may need to use the MPI fortran compiler (e.g. `mpif90`) for linking your
+  program when IPM is build from commit `8074f3f` or later
