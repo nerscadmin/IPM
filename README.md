@@ -2,6 +2,31 @@
 
 Integrated Performance Monitoring for HPC
 
+## Quick start
+
+IPM uses the common GNU autotools build system for compilation. As such, a
+typical install of IPM from this repository must begin by generating the
+autoconf `configure` script via:
+
+    autoreconf -f -i
+
+Once this is done, you should be able to run
+
+    ./configure
+    make
+    make install
+
+As usual, you will likely want to examine key options available for the
+`configure` script, which can be viewed by running `./configure --help`. For
+example, you can enable support for hardware performance counter collection via
+PAPI by specifying the PAPI installation path using the `--with-papi=<path>`
+option.
+
+**Note**: The `master` branch of IPM is in general usable, but should be
+considered development software. We strongly recommend that for production use
+you build a tagged release of IPM. The most recent release is `2.0.3`.
+
+## About IPM
 
 **IPM is a portable profiling infrastructure for parallel codes.** It provides a low-overhead profile of application performance and resource utilization in a parallel program. Communication, computation, and IO are the primary focus. While the design scope targets production computing in HPC centers, IPM has found use in application development, performance debugging and parallel computing education. The level of detail is selectable at runtime and presented through a variety of text and web reports.
 
@@ -25,23 +50,3 @@ IPM is modular. You can measure just what you want. In addition to the core timi
   *   **Power:** Joules of energy consumed by the app. 
   
 The 'integrated' in IPM is multi-faceted. It refers to combining the above information together through a common interface and also the integration of the records from all the parallel tasks into a single report. At a high level we seek to integrate together the information useful to all stakeholders in HPC into a common interface that enables a deeper understanding. This includes application developers, science teams using applications, HPC managers, and system architects.
-
-## Quick start
-
-IPM uses the common GNU autotools build system for compilation. As such, a
-typical install of IPM from this repository must begin by generating the
-autoconf `configure` script via:
-
-    autoreconf -f -i
-
-Once this is done, you should be able to run
-
-    ./configure
-    make
-    make install
-
-As usual, you will likely want to examine key options available for the
-`configure` script, which can be viewed by running `./configure --help`. For
-example, you can enable support for hardware performance counter collection via
-PAPI by specifying the PAPI installation path using the `--with-papi=<path>`
-option.
