@@ -46,21 +46,12 @@
  * GET_RANK   __GET_RANK__
  */
 
-__CRET__ __CFNAME__(__CPARAMS__)
+static void IPM___CFNAME__(__CPARAMS__, double tstart, double tstop)
 {
-  __CRET__ rv;
   int bytes, irank;
+  double t;
   int csite, idx, idx2, regid; 
-  double tstart, tstop, t;
   IPM_KEY_TYPE key;
-
-  IPM_TIMESTAMP(tstart);
-  rv = __PCFNAME__(__CARGS__);
-  IPM_TIMESTAMP(tstop);
-
-  if( ipm_state!=STATE_ACTIVE ) {
-    return rv;
-  }
 
   t=tstop-tstart;
   
@@ -157,8 +148,26 @@ __CRET__ __CFNAME__(__CPARAMS__)
 #ifdef HAVE_SNAP
  IPM_SNAP;
 #endif
+}
+
+__CRET__ __CFNAME__(__CPARAMS__)
+{
+  __CRET__ rv;
+  double tstart, tstop;
+
+  IPM_TIMESTAMP(tstart);
+  rv = __PCFNAME__(__CARGS__);
+  IPM_TIMESTAMP(tstop);
+
+  if( ipm_state!=STATE_ACTIVE ) {
+    return rv;
+  }
+
+  IPM___CFNAME__(__CARGS__, tstart, tstop);
  
   return rv;
 }
+
+
 
 
