@@ -37,8 +37,10 @@ IPM_TIME_DEPS = $(top_srcdir)/include/hashtable.h \
 AM_CFLAGS = -DMPI_STATUS_COUNT=$(IPM_MPISTATUSCOUNT)
 
 IPMFILES_MODULES= 
+IPMFILES_MODULES_F= 
 
 IPMFILES_MODULES_NODIST= 
+IPMFILES_MODULES_NODIST_F= 
 
 IMP_CORE = \
     calltable.c \
@@ -85,11 +87,13 @@ MPI_MODULE_DIST = mod_mpi.c $(top_srcdir)/include/mod_mpi.h \
 	mpi_init.c \
 	mpi_finalize.c \
 	mpi_pcontrol.c \
-	machtopo.c \
-	mpi_fortran.c
+	machtopo.c
+
+MPI_MODULE_DIST_F = mpi_fortran.c
 	
 MPI_MODULE_NODIST = GEN.wrapper_mpi.c  \
     GEN.calltable_mpi.c $(top_srcdir)/include/GEN.calltable_mpi.h 
+MPI_MODULE_NODIST_F = GEN.wrapper_mpif.c
 
 MPIIO_MODULE_DIST = mod_mpiio.c $(top_srcdir)/include/mod_mpiio.h
 MPIIO_MODULE_NODIST = GEN.wrapper_mpiio.c \
@@ -153,6 +157,7 @@ ALL_MODULES_DIST = 	\
 					$(KEYHIST_MODULE_DIST) \
                    	$(MEM_MODULE_DIST) \
 					$(MPI_MODULE_DIST) \
+					$(MPI_MODULE_DIST_F) \
                    	$(MPIIO_MODULE_DIST) \
                    	$(PAPI_MODULE_DIST) \
 					$(POSIXIO_MODULE_DIST) \
@@ -171,7 +176,9 @@ ALL_MODULES_DIST = 	\
 if ENABLE_MPI
   AM_CFLAGS+=-DHAVE_MPI
   IPMFILES_MODULES += $(MPI_MODULE_DIST)
+  IPMFILES_MODULES_F += $(MPI_MODULE_DIST_F)
   IPMFILES_MODULES_NODIST += $(MPI_MODULE_NODIST) 
+  IPMFILES_MODULES_NODIST_F += $(MPI_MODULE_NODIST_F) 
   REPORT_DEPS   += GEN.calltable_mpi.c $(top_srcdir)/include/GEN.calltable_mpi.h
   IPM_TIME_DEPS += GEN.calltable_mpi.c $(top_srcdir)/include/GEN.calltable_mpi.h
 endif ENABLE_MPI
@@ -265,6 +272,7 @@ ipm_time.c: $(IPM_TIME_DEPS)
 
 GEN.wrapper_mpi.c : $(IPM_KEYFILE_MPI) $(WRAPMAKER) $(top_srcdir)/include/GEN.calltable_mpi.h
 	$(WRAPMAKER) $(WRAPMAKER_ARGS) $(IPM_KEYFILE_MPI)
+GEN.wrapper_mpif.c : GEN.wrapper_mpi.c
 $(top_srcdir)/include/GEN.calltable_mpi.h: GEN.calltable_mpi.c	
 GEN.calltable_mpi.c : $(IPM_KEYFILE_MPI) $(WRAPMAKER)
 	$(WRAPMAKER) $(WRAPMAKER_ARGS) $(IPM_KEYFILE_MPI)
@@ -338,11 +346,15 @@ GEN.fake_cublas.c : $(IPM_KEYFILE_CUBLAS) $(WRAPMAKER)
 ###############################################################################
 
 lib_LTLIBRARIES = libipm.la
-
 libipm_la_CFLAGS = $(AM_CFLAGS)
-
 libipm_la_SOURCES = $(IMP_CORE) $(IPMFILES_MODULES)
 nodist_libipm_la_SOURCES = $(IPMFILES_MODULES_NODIST)
+
+lib_LTLIBRARIES += libipmf.la
+libipmf_la_CFLAGS = $(AM_CFLAGS)
+libipmf_la_SOURCES = $(IPMFILES_MODULES_F)
+nodist_libipmf_la_SOURCES = $(IPMFILES_MODULES_NODIST_F)
+
 EXTRA_DIST = $(ALL_MODULES_DIST)
 	
 ###############################################################################

@@ -46,7 +46,7 @@
  * GET_RANK   __GET_RANK__
  */
 
-static void IPM___CFNAME__(__CPARAMS__, double tstart, double tstop)
+void IPM___CFNAME__(__CPARAMS__, double tstart, double tstop)
 {
   int bytes, irank;
   double t;
@@ -163,7 +163,9 @@ __CRET__ __CFNAME__(__CPARAMS__)
     return rv;
   }
 
-  IPM___CFNAME__(__CARGS__, tstart, tstop);
+  if( ipm_in_fortran_pmpi==IPM_NOT_IN_FORTRAN_PMPI ) {
+    IPM___CFNAME__(__CARGS__, tstart, tstop);
+  }
  
   return rv;
 }

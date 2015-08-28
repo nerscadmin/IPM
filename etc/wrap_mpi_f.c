@@ -5,6 +5,8 @@
  *
  */
 
+extern void IPM___CFNAME__(__CPARAMS__, double tstart, double tstop);
+
 __FRET__ __FFNAME__(__FPARAMS__)
 {
   double tstart, tstop;
@@ -30,9 +32,13 @@ __FRET__ __FFNAME__(__FPARAMS__)
   MPI_Group cgroup_out;
 #endif
 
+  ipm_in_fortran_pmpi = IPM_IN_FORTRAN_PMPI;
+
   IPM_TIMESTAMP(tstart);
   p__FFNAME__(__FARGS__);
   IPM_TIMESTAMP(tstop);
+
+  ipm_in_fortran_pmpi = IPM_NOT_IN_FORTRAN_PMPI;
 
   if( ipm_state!=STATE_ACTIVE ) {
     return;

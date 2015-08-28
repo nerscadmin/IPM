@@ -13,6 +13,10 @@
 #define STATE_FINALIZED       5
 #define STATE_ERROR          99
 
+#ifdef HAVE_MPI
+#define IPM_NOT_IN_FORTRAN_PMPI 0
+#define IPM_IN_FORTRAN_PMPI     1
+#endif
 
 /* 
  * IPM flags
@@ -56,6 +60,10 @@
 
 
 extern int ipm_state;
+
+#ifdef HAVE_MPI
+extern int ipm_in_fortran_pmpi;
+#endif
 
 int ipm_init(int flags);
 int ipm_finalize(int flags);

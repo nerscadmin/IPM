@@ -436,7 +436,11 @@ if( $DUMMIES ) {
     write_libipm("GEN.fake_${WRAP_WHAT}.c", ${WRAP_WHAT});
     write_linkertable("../linkwrap.txt");
 } else {
-    write_libipm("GEN.wrapper_${WRAP_WHAT}.c",  ${WRAP_WHAT});
+    if( $WRAP_FORTRAN && $WRAP_WHAT eq "mpi" ) {
+        write_libipm("GEN.wrapper_${WRAP_WHAT}.c",  ${WRAP_WHAT}, "GEN.wrapper_${WRAP_WHAT}f.c");
+    } else {
+        write_libipm("GEN.wrapper_${WRAP_WHAT}.c",  ${WRAP_WHAT});
+    }
 }
 write_fproto("../include/GEN.fproto.${WRAP_WHAT}.h");
 
@@ -510,10 +514,15 @@ EOF
 sub write_libipm() {
     my $fname = shift;
     my $module = shift;
+    my $fnamefort = shift;
 
     $module = uc($module);
    
     open(FH,"> $fname")  || die "Cannot open $fname";
+    if ($fnamefort ne "")
+    {
+        open(FHF,"> $fnamefort") || die "Cannot open $fnamefort";
+    }
 
     print "Generating $fname\n";
     print FH<<"EOF";
@@ -525,6 +534,10 @@ EOF
 
 ;# de-confuse emacs indentation
     print FH @header_c;
+    if ($fnamefort ne "")
+    {
+        print FHF @header_c;
+    }
     
     foreach $id (sort numy keys %call) 
     { 
@@ -612,6 +625,7 @@ EOF
 	    {
 		$line = $_;
 		$line=~s/__CFNAME__/$1$c->{cfn}/;
+		$line=~s/__CPARAMS__/$1$c->{cai}/;
 		$line=~s/__FFNAME__/$c->{ffn}/;
 		$line=~s/__FRET__/$c->{frv}/;
 		$line=~s/__FPARAMS__/$c->{fai}/;
@@ -623,12 +637,22 @@ EOF
 		$line=~s/HAVE_CCOMM_OUT/$have_ccomm_out/;
 		$line=~s/HAVE_CGROUP_OUT/$have_cgroup_out/;
 		$line=~s/HAVE_CCOMM_INOUT/$have_ccomm_inout/;
-		print FH $line;
+		if ($fnamefort eq "")
+		{
+		    print FH $line;
+		}
+		else {
+		    print FHF $line;
+		}
 	    }
 	}
     }
 	
     close(FH);
+    if ($fnamefort ne "")
+    {
+        close(FHF);
+    }
 }
 
 

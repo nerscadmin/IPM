@@ -76,6 +76,10 @@
 
 int ipm_state=STATE_NOTINIT;
 
+#ifdef HAVE_MPI
+int ipm_in_fortran_pmpi=0;
+#endif
+
 void ipm_atexit_handler();
 void ipm_sig_handler(int sig);
 void ipm_write_profile_log();
