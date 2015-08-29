@@ -431,11 +431,24 @@ if( $WRAP_FORTRAN )
 }
 
 
+$inheader=0;
+for( $i=0; $i<scalar(@template_f); $i++ ) {
+    $_=$template_f[$i];
+    if( /HEADER_BEGIN/ ) { $inheader=1; delete $template_f[$i]; next; }
+    if( /HEADER_END / ) { $inheader=0; delete $template_f[$i]; next; }
+    
+    if( $inheader ) {
+	push @header_f, $_;
+	delete $template_f[$i];
+    }
+}
+
 
 if( $DUMMIES ) {
     write_libipm("GEN.fake_${WRAP_WHAT}.c", ${WRAP_WHAT});
     write_linkertable("../linkwrap.txt");
 } else {
+    # in the event we're wrapping fortran MPI, generate wrappers separately
     if( $WRAP_FORTRAN && $WRAP_WHAT eq "mpi" ) {
         write_libipm("GEN.wrapper_${WRAP_WHAT}.c",  ${WRAP_WHAT}, "GEN.wrapper_${WRAP_WHAT}f.c");
     } else {
@@ -532,11 +545,22 @@ sub write_libipm() {
  */
 EOF
 
+    if ($fnamefort ne "")
+    {
+        print "Generating $fnamefort\n";
+        print FHF<<"EOF";
+/*
+ * $fnamefort
+ * DO NOT EDIT: automatically generated at build time
+ */
+EOF
+    }
+
 ;# de-confuse emacs indentation
     print FH @header_c;
     if ($fnamefort ne "")
     {
-        print FHF @header_c;
+        print FHF @header_f;
     }
     
     foreach $id (sort numy keys %call) 
