@@ -7,6 +7,8 @@
 
 extern void IPM___CFNAME__(__CPARAMS__, double tstart, double tstop);
 
+extern void p__FFNAME__(__FPARAMS__);
+
 __FRET__ __FFNAME__(__FPARAMS__)
 {
   double tstart, tstop;
