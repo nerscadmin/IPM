@@ -28,6 +28,8 @@
 
 #include <GEN.calltable_posixio.h>
 
+#define MPI3CONST const
+
 /** HEADER_END **/
 
 

@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#define MPI3CONST const
+
 /** HEADER_END **/
 
 
