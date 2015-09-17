@@ -1,4 +1,23 @@
 
+/** HEADER_BEGIN **/
+
+#include <mpi.h>
+
+#include "ipm.h"
+#include "ipm_core.h"
+
+#ifndef MPI3CONST
+#if MPI_VERSION >= 3 
+#define MPI3CONST const
+#else
+#define MPI3CONST 
+#endif 
+#endif
+
+
+/** HEADER_END **/
+
+
 /* ---- wrapping __FFNAME__ ---- */
  
 /*
