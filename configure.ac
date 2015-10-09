@@ -4,12 +4,12 @@ AC_CONFIG_SRCDIR([src/ipm_core.c])
 
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([no-dependencies])
-dnl AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_MACRO_DIR([m4])
 
-sinclude(m4/ax_mpi.m4)
-sinclude(m4/ipm_underscore.m4)
-sinclude(m4/ipm_mpistatuscount.m4)
-sinclude(m4/ipm_hostdetection.m4)
+sinclude(ax_mpi.m4)
+sinclude(ipm_underscore.m4)
+sinclude(ipm_mpistatuscount.m4)
+sinclude(ipm_hostdetection.m4)
 
 dnl CRAY is not the default
 CRAY=0    
@@ -41,6 +41,7 @@ AX_IPM_MPISTATUSCOUNT
 if test "x$CRAY" = "x0"; then
    CC=$MPICC
    F77=$MPIF77
+   FC=$MPIFC
    AC_CHECK_HEADERS([dlfcn.h], 
 	[
           CFLAGS="$CFLAGS -DHAVE_DYNLOAD"

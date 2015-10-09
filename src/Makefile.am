@@ -354,6 +354,7 @@ lib_LTLIBRARIES += libipmf.la
 libipmf_la_CFLAGS = $(AM_CFLAGS)
 libipmf_la_SOURCES = $(IPMFILES_MODULES_F)
 nodist_libipmf_la_SOURCES = $(IPMFILES_MODULES_NODIST_F)
+nodist_EXTRA_libipmf_la_SOURCES = dummy.f90
 
 EXTRA_DIST = $(ALL_MODULES_DIST)
 	
