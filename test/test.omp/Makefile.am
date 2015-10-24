@@ -6,7 +6,7 @@ OMP_SOURCES = main.c
 CC = $(MPICC)
 
 omp_ipm_SOURCES = $(OMP_SOURCES)
-omp_ipm_LDADD   = $(top_srcdir)/src/.libs/libipm.a
+omp_ipm_LDADD   = $(top_builddir)/src/.libs/libipm.a
 
 omp_SOURCES = $(OMP_SOURCES)
 
