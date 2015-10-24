@@ -306,6 +306,8 @@ test/test.simple_mpi/Makefile
 test/test.status_ignore/Makefile 
 ])
 
+AC_CONFIG_FILES([bin/make_wrappers], [chmod +x bin/make_wrappers])
+
 dnl test/test.pomp-standalone/Makefile
 
 AC_OUTPUT

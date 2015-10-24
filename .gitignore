@@ -36,3 +36,7 @@ install-sh
 ltmain.sh
 INSTALL
 *~
+
+# other generated files
+GEN.calltable_mpi.h
+GEN.fproto.mpi.h
