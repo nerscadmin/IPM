@@ -447,7 +447,7 @@ for( $i=0; $i<scalar(@template_f); $i++ ) {
 
 if( $DUMMIES ) {
     write_libipm("GEN.fake_${WRAP_WHAT}.c", ${WRAP_WHAT});
-    write_linkertable("${IPM_ROOT}/linkwrap.txt");
+    #write_linkertable("${IPM_ROOT}/linkwrap.txt");
 } else {
     # in the event we're wrapping fortran MPI, generate wrappers separately
     if( $WRAP_FORTRAN && $WRAP_WHAT eq "mpi" ) {
@@ -456,9 +456,9 @@ if( $DUMMIES ) {
         write_libipm("GEN.wrapper_${WRAP_WHAT}.c",  ${WRAP_WHAT});
     }
 }
-write_fproto("${IPM_ROOT}/include/GEN.fproto.${WRAP_WHAT}.h");
+write_fproto("GEN.fproto.${WRAP_WHAT}.h");
 
-write_calltable_h("${IPM_ROOT}/include/GEN.calltable_${WRAP_WHAT}.h", ${WRAP_WHAT});
+write_calltable_h("GEN.calltable_${WRAP_WHAT}.h", ${WRAP_WHAT});
 write_calltable_c("GEN.calltable_${WRAP_WHAT}.c", ${WRAP_WHAT});
 
 
