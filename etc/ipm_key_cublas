@@ -9,7 +9,7 @@
 2|CUBLAS_SHUTDOWN_ID|cublasStatus cublasShutdown(void)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 3|CUBLAS_GETERROR_ID|cublasStatus cublasGetError(void)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 4|CUBLAS_ALLOC_ID|cublasStatus cublasAlloc(int n, int elemSize, void **devicePtr)||CS_LOCAL,BYTES_NELEMSIZE,RANK_NONE,DATA_NONE,COMM_NONE
-5|CUBLAS_FREE_ID|cublasStatus cublasFree(const void *devicePtr)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+5|CUBLAS_FREE_ID|cublasStatus cublasFree(void *devicePtr)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 6|CUBLAS_SETVECTOR_ID|cublasStatus cublasSetVector(int n, int elemSize, const void *x, int incx, void *devicePtr, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 7|CUBLAS_GETVECTOR_ID|cublasStatus cublasGetVector(int n, int elemSize, const void *x, int incx, void *y, int incy)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 8|CUBLAS_SETMATRIX_ID|cublasStatus cublasSetMatrix(int rows, int cols, int elemSize, const void *A, int lda, void *B, int ldb)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE

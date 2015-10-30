@@ -27,6 +27,8 @@
 
 #include <GEN.calltable_cublas.h>
 
+#define MPI3CONST const
+
 /** HEADER_END **/
 
 

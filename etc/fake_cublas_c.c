@@ -9,6 +9,8 @@
 #include "cuda.h"
 #include "cublas.h"
 
+#define MPI3CONST const
+
 /** HEADER_END **/
 
 
