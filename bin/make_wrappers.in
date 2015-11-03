@@ -1,0 +1,843 @@
+#!/usr/bin/perl 
+#use strict;
+
+#####
+#   Parse arguments
+#####
+
+$FUNDERSCORE_POST  = "";
+$FUNDERSCORE_PRE   = "";
+$SPLIT_COLLECTIVE  = 0;
+$WRAP_FORTRAN      = 1;
+$DUMMIES           = 0;
+$WRAP_WHAT         = "mpi";
+$build_id          = time();
+
+$PWD           = `pwd`; chomp $PWD;
+#$IPM_ROOT      = "$PWD/$0";
+#$IPM_ROOT      =~ s!/?[^/]*/*$!!;
+#$IPM_ROOT      = $IPM_ROOT."/../";
+$IPM_ROOT      = "@top_srcdir@";
+
+$done = 0;
+while($done == 0) {
+    if($ARGV[0] =~ /^-nofort$/) {
+	$WRAP_FORTRAN=0;
+    } elsif($ARGV[0] =~ /^-dummy$/) {
+	$DUMMIES=1;
+    } elsif($ARGV[0] =~ /^-split_collectives$/) {
+	$SPLIT_COLLECTIVE=1;
+    } elsif($ARGV[0] =~ /^-funderscore_post$/) {
+	$FUNDERSCORE_POST = $FUNDERSCORE_POST."_";
+    } elsif($ARGV[0] =~ /^-funderscore_pre$/) {
+	$FUNDERSCORE_PRE = $FUNDERSCORE_PRE."_";
+    } elsif($ARGV[0] =~ /^-prep$/) {
+	$ONLY_PREP=1;
+    } else {
+	$IPM_KEYFILE = $ARGV[0];
+	$done = 1;
+    }
+    shift @ARGV;
+}
+
+
+unless (-e $IPM_KEYFILE) {
+ print "ipm_key file not found (IPM_KEYFILE=$IPM_KEYFILE)\n";
+ exit(1);
+}
+
+
+@tmp = split("ipm_key_", $IPM_KEYFILE);
+$WRAP_WHAT = $tmp[1];
+
+#####
+#   Parse the key file
+#####
+%call = ();
+%tag  = ();
+sub numy { $a <=> $b }
+
+#$n = nfind("a",\@A); $n gives number of "a" elements in @A
+sub nfind {
+    my $pelem = shift;
+    my $arryr = shift;
+    my $n = 0;
+    warn "Not an array reference" if ref($arryr) ne "ARRAY";
+    for my $elem (@$arryr) {
+     if($elem =~ /^$pelem$/) {
+       $n++;
+     }
+    }
+    return $n;
+}
+
+
+$maxid=0;
+$minid=0xFFFF;
+$modname="";
+$offval="";
+$nextid=0;
+open(FH,"< $IPM_KEYFILE") || die "Cannot open $IPM_KEYFILE";
+while(defined($line = <FH>)) {
+#    if($line =~ /^\#\#offset (\d+)/ ) { $offval=$1; }
+    if($line =~ /^\#\#module (\S+)/ ) { $modname=$1; }
+    
+    if($line =~ /^\s*\#.*/  ) {next;}
+    if($line =~ /^\s*$/  ) {next;}
+
+ chomp($line);
+ @v = split('\|',$line);
+# $id = $v[0];
+    $id = $nextid; $nextid++;
+ next if ($SPLIT_COLLECTIVE==0 && $line =~ "MPE_I");
+ @u = split('\,',$v[4]);
+ if( $id > $maxid ) { $maxid=$id; }
+ if( $id < $minid ) { $minid=$id; }
+ $call{$id} = {
+  idv => "$id",
+  idl => "$v[1]",
+  cpt => "$v[2]",
+  fpt => "$v[3]",
+  sem => "$u[0]",
+  byt => "$u[1]",
+  rnk => "$u[2]",
+  dat => "$u[3]",
+  com => "$u[4]"};
+
+ $_ = $call{$id}->{cpt};
+ /(.*) (.*)\((.*)\)/;
+ $call{$id}{crv} = $1;
+
+ 
+# $call{$id}{crv} =~ s/ //g;  # <- problem if return val is "const char *"
+ $call{$id}{lab} = $2;
+ $call{$id}{cfn} = $2;
+ $call{$id}{cai} = $3;
+ $call{$id}{car} = $3;
+ $call{$id}{caf} = $3;
+ $call{$id}{crf} = $call{$id}{crv};
+ $call{$id}{car} =~ s/\(//;
+ $call{$id}{car} =~ s/\)//;
+
+ $call{$id}{cai} =~ s/const/MPI3CONST/g;
+	
+#
+# cufft
+#
+$call{$id}{car} =~ s/cufftDoubleComplex \*//g;
+$call{$id}{car} =~ s/cufftDoubleComplex//g;
+$call{$id}{car} =~ s/cufftDoubleReal \*//g;
+$call{$id}{car} =~ s/cufftDoubleReal//g;
+$call{$id}{car} =~ s/cufftCompatibility \*//g;
+$call{$id}{car} =~ s/cufftCompatibility//g;
+$call{$id}{car} =~ s/cufftHandle \*//g;
+$call{$id}{car} =~ s/cufftHandle//g;
+$call{$id}{car} =~ s/cufftComplex \*//g;
+$call{$id}{car} =~ s/cufftComplex//g;
+$call{$id}{car} =~ s/cufftType \*//g;
+$call{$id}{car} =~ s/cufftType//g;
+$call{$id}{car} =~ s/cufftReal \*//g;
+$call{$id}{car} =~ s/cufftReal//g;
+
+
+#
+# cublas
+#
+$call{$id}{car} =~ s/cuDoubleComplex \*//g;
+$call{$id}{car} =~ s/cuDoubleComplex//g;
+$call{$id}{car} =~ s/cuComplex \*//g;
+$call{$id}{car} =~ s/cuComplex//g;
+$call{$id}{car} =~ s/double \*//g;
+$call{$id}{car} =~ s/double\*//g;
+$call{$id}{car} =~ s/double//g;
+$call{$id}{car} =~ s/char \*//g;
+$call{$id}{car} =~ s/char\*//g;
+$call{$id}{car} =~ s/char//g;
+$call{$id}{car} =~ s/unsigned \*//g;
+$call{$id}{car} =~ s/unsigned\*//g;
+$call{$id}{car} =~ s/unsigned//g;
+$call{$id}{car} =~ s/short \*//g;
+$call{$id}{car} =~ s/short\*//g;
+$call{$id}{car} =~ s/short//g;
+
+
+#
+# cuda driver api
+#    
+
+$call{$id}{car} =~ s/const CUDA_MEMCPY3D \*//g;
+$call{$id}{car} =~ s/const CUDA_MEMCPY2D \*//g;
+$call{$id}{car} =~ s/const CUDA_ARRAY_DESCRIPTOR \*//g;
+$call{$id}{car} =~ s/CUDA_ARRAY_DESCRIPTOR \*//g;
+$call{$id}{car} =~ s/const CUDA_ARRAY3D_DESCRIPTOR \*//g;
+$call{$id}{car} =~ s/CUDA_ARRAY3D_DESCRIPTOR \*//g;
+$call{$id}{car} =~ s/CUfunction_attribute//g;
+$call{$id}{car} =~ s/CUdevice_attribute//g;
+$call{$id}{car} =~ s/CUjit_option \*//g;
+
+$call{$id}{car} =~ s/CUdeviceptr \*//g;
+$call{$id}{car} =~ s/CUdeviceptr //g;
+$call{$id}{car} =~ s/CUdevprop \*//g;
+
+$call{$id}{car} =~ s/CUdevice \*//g;
+$call{$id}{car} =~ s/CUdevice//g;
+
+$call{$id}{car} =~ s/CUfunction \*//g;
+$call{$id}{car} =~ s/CUfunction//g;
+
+$call{$id}{car} =~ s/CUcontext \*//g;
+$call{$id}{car} =~ s/CUcontext//g;
+
+$call{$id}{car} =~ s/CUmodule \*//g;
+$call{$id}{car} =~ s/CUmodule//g;
+
+$call{$id}{car} =~ s/CUstream \*//g;
+$call{$id}{car} =~ s/CUstream//g;
+
+$call{$id}{car} =~ s/CUtexref \*//g;
+
+$call{$id}{car} =~ s/CUarray_format \*//g;
+$call{$id}{car} =~ s/CUarray_format//g;
+
+$call{$id}{car} =~ s/CUarray \*//g;
+$call{$id}{car} =~ s/CUarray//g;
+
+$call{$id}{car} =~ s/CUtexref \*//g;
+$call{$id}{car} =~ s/CUtexref//g;
+
+$call{$id}{car} =~ s/CUaddress_mode \*//g;
+$call{$id}{car} =~ s/CUaddress_mode//g;
+
+$call{$id}{car} =~ s/CUfilter_mode \*//g;
+$call{$id}{car} =~ s/CUfilter_mode//g;
+
+$call{$id}{car} =~ s/CUevent \*//g;
+$call{$id}{car} =~ s/CUevent//g;
+
+
+
+
+
+ 
+### start cuda ##
+$call{$id}{car} =~ s/const struct cudaChannelFormatDesc \*//g;
+$call{$id}{car} =~ s/const struct cudaMemcpy3DParms \*//g;
+$call{$id}{car} =~ s/const struct cudaDeviceProp \*//g;
+$call{$id}{car} =~ s/struct cudaFuncAttributes \*//g;
+$call{$id}{car} =~ s/const struct cudaArray \*//g;
+$call{$id}{car} =~ s/struct cudaPitchedPtr \*//g;
+$call{$id}{car} =~ s/struct cudaDeviceProp \*//g;
+$call{$id}{car} =~ s/struct cudaPitchedPtr//g;
+$call{$id}{car} =~ s/struct cudaArray \*\*//g;
+$call{$id}{car} =~ s/enum cudaMemcpyKind//g;
+$call{$id}{car} =~ s/struct cudaArray \*//g;
+$call{$id}{car} =~ s/struct cudaExtent//g;
+$call{$id}{car} =~ s/cudaStream_t \*//g;
+$call{$id}{car} =~ s/unsigned int \*//g;
+$call{$id}{car} =~ s/cudaEvent_t \*//g;
+$call{$id}{car} =~ s/cudaStream_t//g;
+$call{$id}{car} =~ s/const void \*//g;
+$call{$id}{car} =~ s/const char \*//g;
+$call{$id}{car} =~ s/unsigned short//g;
+$call{$id}{car} =~ s/unsigned char//g;
+$call{$id}{car} =~ s/unsigned int//g;
+$call{$id}{car} =~ s/cudaError_t//g;
+$call{$id}{car} =~ s/cudaEvent_t//g;
+$call{$id}{car} =~ s/size_t \*//g;
+$call{$id}{car} =~ s/double \*//g;
+$call{$id}{car} =~ s/const float \*//g;
+$call{$id}{car} =~ s/const float\*//g;
+$call{$id}{car} =~ s/float \*//g;
+$call{$id}{car} =~ s/float\*//g;
+$call{$id}{car} =~ s/float//g;
+$call{$id}{car} =~ s/void \*\*//g;
+$call{$id}{car} =~ s/size_t//g;
+$call{$id}{car} =~ s/void \*//g;
+$call{$id}{car} =~ s/int \*//g;
+$call{$id}{car} =~ s/dim3//g;
+$call{$id}{car} =~ s/void//g;
+$call{$id}{car} =~ s/int//g;
+### end cuda ##
+ 
+ $call{$id}{car} =~ s/void \*\*//g;
+ $call{$id}{car} =~ s/void \*//g;
+ $call{$id}{car} =~ s/void//g;
+ $call{$id}{car} =~ s/int \*//g;
+ $call{$id}{car} =~ s/char \*//g;
+ $call{$id}{car} =~ s/char \*\*\*//g;
+ $call{$id}{car} =~ s/int //g;
+ $call{$id}{car} =~ s/MPI_Datatype \*//g;
+ $call{$id}{car} =~ s/MPI_Datatype//g;
+ $call{$id}{car} =~ s/MPI_Request \*//g;
+ $call{$id}{car} =~ s/MPIO_Request \*//g;
+ $call{$id}{car} =~ s/MPI_Status \*//g;
+ $call{$id}{car} =~ s/MPI_Comm \*//g;
+ $call{$id}{car} =~ s/MPI_Comm//g;
+ $call{$id}{car} =~ s/MPI_Op//g;
+ $call{$id}{car} =~ s/MPI_File \*//g;
+ $call{$id}{car} =~ s/MPI_File//g;
+ $call{$id}{car} =~ s/MPI_Errhandler \*//g;
+ $call{$id}{car} =~ s/MPI_Errhandler//g;
+ $call{$id}{car} =~ s/MPI_File//g;
+ $call{$id}{car} =~ s/MPI_Offset \*//g;
+ $call{$id}{car} =~ s/MPI_Offset//g;
+ $call{$id}{car} =~ s/MPI_Group \*//g;
+ $call{$id}{car} =~ s/MPI_Group//g;
+ $call{$id}{car} =~ s/MPI_Info \*//g;
+ $call{$id}{car} =~ s/MPI_Info//g;
+ $call{$id}{car} =~ s/const char \*//g; # posixio
+ $call{$id}{car} =~ s/const void \*//g; # posixio
+ $call{$id}{car} =~ s/FILE \*//g; # posixio
+ $call{$id}{car} =~ s/size_t//g; # posixio
+ $call{$id}{car} =~ s/off_t//g;  # posixio
+ $call{$id}{car} =~ s/off64_t//g;  # posixio
+ $call{$id}{car} =~ s/fpos_t \*//g;  # posixio
+ $call{$id}{car} =~ s/mode_t//g;  # posixio
+ $call{$id}{car} =~ s/long//g;  # posixio
+ $call{$id}{car} =~ s/const//g;
+ $call{$id}{car} =~ s/ //g;
+
+ $call{$id}{caf} =~ s/void \*/%p/g;
+ $call{$id}{caf} =~ s/int \*/%p/g;
+ $call{$id}{caf} =~ s/char \*\*\*/%s/g;
+ $call{$id}{caf} =~ s/int /%d/g;
+ $call{$id}{caf} =~ s/MPI_Datatype/%d/g;
+ $call{$id}{caf} =~ s/MPI_Request \*/%p/g;
+ $call{$id}{caf} =~ s/MPI_Status \*/%p/g;
+ $call{$id}{caf} =~ s/MPI_Comm/%d/g;
+ $call{$id}{caf} =~ s/MPI_Op/%d/g;
+ $call{$id}{caf} =~ s/const char \*/'%s'/g;
+ $call{$id}{caf} =~ s/const void \*/%p/g;
+ $call{$id}{caf} =~ s/FILE \*/%p/g;
+ $call{$id}{caf} =~ s/size_t/%d/g;
+ $call{$id}{caf} =~ s/off_t/%d/g;
+ $call{$id}{caf} =~ s/off64_t/%lld/g;
+ $call{$id}{caf} =~ s/fpos_t \*/%p/g;
+ $call{$id}{caf} =~ s/mode_t/%d/g;
+ $call{$id}{caf} =~ s/long/%d/g;
+ $call{$id}{caf} =~ s/const//g;
+ $call{$id}{caf} =~ s/ //g;
+ $call{$id}{caf} =~ s/(%[a-z])([a-z]*)/$1/g;
+ $call{$id}{caf} =~ s/'%s'([a-z]*)/'%s'/g;
+ 
+ $call{$id}{crf} =~ s/FILE\*/%p/g;
+ $call{$id}{crf} =~ s/int/%d/g;
+ $call{$id}{crf} =~ s/off_t/%d/g;
+ $call{$id}{crf} =~ s/off64_t/%d/g;
+ $call{$id}{crf} =~ s/ssize_t/%d/g;
+ $call{$id}{crf} =~ s/size_t/%d/g;
+ $call{$id}{crf} =~ s/long/%d/g;
+ $call{$id}{crf} =~ s/void//g;
+ 
+ $_ = $call{$id}{fpt};
+ /(.*) (.*)\((.*)\)/;
+ $call{$id}{frv} = $1;
+ $call{$id}{ffn} = $2.$FUNDERSCORE_POST;
+ $call{$id}{fai} = $3;
+ $call{$id}{far} = $3;
+
+ $call{$id}{far} =~ s/\(//;
+ $call{$id}{far} =~ s/\)//;
+ $call{$id}{far} =~ s/void \*//g;
+ $call{$id}{far} =~ s/char \*//g;
+ $call{$id}{far} =~ s/int \*//g;
+ $call{$id}{far} =~ s/int //g;
+ $call{$id}{far} =~ s/MPI_Datatype \*//g;
+ $call{$id}{far} =~ s/MPI_Request \*//g;
+ $call{$id}{far} =~ s/MPI_Status \*//g;
+ $call{$id}{far} =~ s/MPI_Comm \*//g;
+ $call{$id}{far} =~ s/MPI_Op//g;
+ $call{$id}{far} =~ s/MPI_Comm//g;
+ $call{$id}{far} =~ s/MPI_Info//g;
+ $call{$id}{far} =~ s/MPI_File//g;
+ $call{$id}{far} =~ s/ //g;
+
+ $call{$id}{fai} =~ s/int/MPI_Fint/g;
+
+ $call{$id}{f2c} =  $call{$id}{far};
+ $call{$id}{f2c} =~ s/,info//g;
+ @args = split(/,/, $call{$id}{f2c});
+ foreach $_ (@args )
+ {
+     s/^comm_in$/MPI_Comm_f2c(*comm_in)/g;
+     s/^comm1_in$/MPI_Comm_f2c(*comm1_in)/g;
+     s/^comm2_in$/MPI_Comm_f2c(*comm2_in)/g;
+     s/^comm_inout/&ccomm_inout/g;
+     s/^comm_out/&ccomm_out/g;
+     s/^group_out$/&cgroup_out/g;
+     s/^group_in$/MPI_Group_f2c(*group_in)/g;
+     s/^stype$/MPI_Type_f2c(*stype)/g;
+     s/^rtype$/MPI_Type_f2c(*rtype)/g;
+     s/^type$/MPI_Type_f2c(*type)/g;
+     s/^op$/MPI_Op_f2c(*op)/g;
+     s/^req$/&creq/g;
+     s/^request$/MPI_Request_f2c(*request)/g;
+     s/^scount$/*scount/g;
+     s/^rcount$/*rcount/g;
+     s/^dest$/*dest/g;
+     s/^tag$/*tag/g;
+     s/^stag$/*stag/g;
+     s/^rtag$/*rtag/g;
+     s/^root$/*root/g;
+     s/^inum$/*inum/g;
+     s/^num$/*num/g;
+     s/^mpikey$/*mpikey/g;
+     s/^mpicol$/*mpicol/g;
+     
+     s/^src$/*src/g;
+     s/^size$/*size/g;
+     #s/^osize$/osize/g; #osize unchanged
+     s/^info$//g;
+     s/^status$/&cstat/g;
+ }
+ $"=",";
+ $call{$id}{f2c} = "@args";
+}
+close(FH);
+
+# read C wrapper template
+
+if( $DUMMIES )
+{
+    open(FH,"< $IPM_ROOT/etc/fake_${WRAP_WHAT}_c.c") || die " missing template for $WRAP_WHAT in etc \n Cannot open $IPM_ROOT/etc/fake_${WRAP_WHAT}_c.c";
+    @template_c = <FH>;
+    close(FH);
+} else {
+    open(FH,"< $IPM_ROOT/etc/wrap_${WRAP_WHAT}_c.c") || die " missing template for $WRAP_WHAT in etc \n Cannot open $IPM_ROOT/etc/wrap_${WRAP_WHAT}_c.c";
+    @template_c = <FH>;
+    close(FH);
+}
+
+
+
+$inheader=0;
+for( $i=0; $i<scalar(@template_c); $i++ ) {
+    $_=$template_c[$i];
+    if( /HEADER_BEGIN/ ) { $inheader=1; delete $template_c[$i]; next; }
+    if( /HEADER_END / ) { $inheader=0; delete $template_c[$i]; next; }
+    
+    if( $inheader ) {
+	push @header_c, $_;
+	delete $template_c[$i];
+    }
+}
+
+
+if( $WRAP_FORTRAN )
+{
+# read FORTRAN wrapper template
+    open(FH,"< $IPM_ROOT/etc/wrap_${WRAP_WHAT}_f.c") || die " Cannot open $IPM_ROOT/etc/wrap_${WRAP_WHAT}_f.c";
+    @template_f = <FH>;
+    close(FH);
+}
+
+
+$inheader=0;
+for( $i=0; $i<scalar(@template_f); $i++ ) {
+    $_=$template_f[$i];
+    if( /HEADER_BEGIN/ ) { $inheader=1; delete $template_f[$i]; next; }
+    if( /HEADER_END / ) { $inheader=0; delete $template_f[$i]; next; }
+    
+    if( $inheader ) {
+	push @header_f, $_;
+	delete $template_f[$i];
+    }
+}
+
+
+if( $DUMMIES ) {
+    write_libipm("GEN.fake_${WRAP_WHAT}.c", ${WRAP_WHAT});
+    #write_linkertable("${IPM_ROOT}/linkwrap.txt");
+} else {
+    # in the event we're wrapping fortran MPI, generate wrappers separately
+    if( $WRAP_FORTRAN && $WRAP_WHAT eq "mpi" ) {
+        write_libipm("GEN.wrapper_${WRAP_WHAT}.c",  ${WRAP_WHAT}, "GEN.wrapper_${WRAP_WHAT}f.c");
+    } else {
+        write_libipm("GEN.wrapper_${WRAP_WHAT}.c",  ${WRAP_WHAT});
+    }
+}
+write_fproto("GEN.fproto.${WRAP_WHAT}.h");
+
+write_calltable_h("GEN.calltable_${WRAP_WHAT}.h", ${WRAP_WHAT});
+write_calltable_c("GEN.calltable_${WRAP_WHAT}.c", ${WRAP_WHAT});
+
+
+
+sub write_fproto() {
+    my $fname = shift;
+     
+    open(FH,"> $fname")  || die "Cannot open $fname";
+
+    print "Generating $fname\n";
+    print FH<<"EOF";
+/*
+ * $fname
+ *
+ * #####
+ * # Fortran Function Prototypes (not in mpif.h)
+ * #####
+ * 
+ * DO NOT EDIT: automatically generated at build time
+ */
+/* FUNDERSCORE_PRE  = "$FUNDERSCORE_PRE"  */
+/* FUNDERSCORE_POST = "$FUNDERSCORE_POST" */
+
+#ifndef FPROTO_H_INCLUDED
+#define FPROTO_H_INCLUDED
+
+#include <mpi.h>
+EOF
+;# de-confuse emacs indentation
+
+    $name_f=$FUNDERSCORE_PRE.mpi_pcontrol.$FUNDERSCORE_POST;
+    
+    if($WRAP_FORTRAN == 1) {
+	print FH <<"EOF"
+
+/* not in ipm_key: */
+
+#define MPI_PCONTROL_F $name_f
+	    
+/* generated via ipm_key: */
+EOF
+;
+	foreach $id (sort numy keys %call) { 
+	    $c = $call{$id};
+	    $name_f=$c->{idl};
+	    $name_f =~ s/_ID/_F/;
+	    print FH <<EOF; 
+#define $name_f ${FUNDERSCORE_PRE}$c->{ffn}
+#define P$name_f ${FUNDERSCORE_PRE}p$c->{ffn}
+$c->{frv} ${FUNDERSCORE_PRE}$c->{ffn}($c->{fai});
+$c->{frv} ${FUNDERSCORE_PRE}p$c->{ffn}($c->{fai});
+
+EOF
+    ;	
+	}
+	
+    }
+
+    print FH <<EOF; 
+#endif /* FPROTO_H_INCLUDED */
+EOF
+    ;
+    close(FH);
+}
+
+
+sub write_libipm() {
+    my $fname = shift;
+    my $module = shift;
+    my $fnamefort = shift;
+
+    $module = uc($module);
+   
+    open(FH,"> $fname")  || die "Cannot open $fname";
+    if ($fnamefort ne "")
+    {
+        open(FHF,"> $fnamefort") || die "Cannot open $fnamefort";
+    }
+
+    print "Generating $fname\n";
+    print FH<<"EOF";
+/*
+ * $fname
+ * DO NOT EDIT: automatically generated at build time
+ */
+EOF
+
+    if ($fnamefort ne "")
+    {
+        print "Generating $fnamefort\n";
+        print FHF<<"EOF";
+/*
+ * $fnamefort
+ * DO NOT EDIT: automatically generated at build time
+ */
+EOF
+    }
+
+;# de-confuse emacs indentation
+    print FH @header_c;
+    if ($fnamefort ne "")
+    {
+        print FHF @header_f;
+    }
+    
+    foreach $id (sort numy keys %call) 
+    { 
+	$c = $call{$id};
+	next if($c->{idl} =~ "MPI_INIT_ID");
+	next if($c->{idl} =~ "MPI_INIT_THREAD_ID");
+	next if($c->{idl} =~ "MPI_FINALIZE_ID");
+	next if($c->{cfn} =~ /^\@/);
+
+	$lang="_C";
+
+	$getbytes="GET_BYTES_unset";
+	if( $c->{byt} =~ /^BYTES_/) {
+	    $getbytes="IPM_${module}_$c->{byt}";
+	}
+
+	$getrank="GET_RANK_unset";
+	if( $c->{rnk} =~ /^RANK_/) {
+	    $getrank="IPM_${module}_$c->{rnk}";
+	}
+
+	if( "$c->{crv}" eq "void" ) {
+	    $returnvalue="0";
+	} else {
+	    $returnvalue="1";
+	}
+	
+	foreach $_ (@template_c)
+	{
+	    $line = $_;
+	    $line=~s/([\W_]|^)__CFNAME__/$1$c->{cfn}/g;
+	    $line=~s/(\W|^)__PCFNAME__/$1P$c->{cfn}/;
+	    $line=~s/(\W|^)__CRET__/$1$c->{crv}/;
+	    $line=~s/(\W|^)__CPARAMS__/$1$c->{cai}/;
+	    $line=~s/(\W|^)__CARGS__/$1$c->{car}/;
+	    $line=~s/(\W|^)__CARGFMT__/$1$c->{caf}/;
+	    $line=~s/(\W|^)__CRETFMT__/$1$c->{crf}/;
+	    $line=~s/(\W|^)__CFID__/$1$c->{idl}/;
+	    $line=~s/(\W|^)__GET_BYTES__/$1$getbytes$lang/;
+#	    $line=~s/(\W|^)__GET_SSIZE__/$1$sendsize$lang/;
+#	    $line=~s/(\W|^)__GET_RSIZE__/$1$recvsize$lang/;
+	    $line=~s/(\W|^)__GET_RANK__/$1$getrank$lang/;
+	    $line=~s/(\W|^)__RETURN_VALUE__/$1$returnvalue/;
+	    print FH $line;
+	}
+
+
+	$have_creq=0;
+	if( $c->{f2c}=~/creq/ ) {
+	    $have_creq=1;
+	}
+
+	$have_cstat=0;
+	if( $c->{f2c}=~/cstat/ ) {
+	    $have_cstat=1;
+	}
+
+	$have_collective=0;
+	if( $c->{dat}=~/DATA_COLLECTIVE/ ) {
+	    $have_collective=1;
+	}
+
+	$have_ccomm_out=0;
+	if( $c->{f2c}=~/ccomm_out/ ) {
+	    $have_ccomm_out=1;
+	}
+	$have_ccomm_inout=0;
+	if( $c->{f2c}=~/ccomm_inout/ ) {
+	    $have_ccomm_inout=1;
+	}
+	$have_cgroup_out=0;
+	if( $c->{f2c}=~/cgroup_out/ ) {
+	    $have_cgroup_out=1;
+	}
+
+	if( ($c->{fai}=~/request/) || # this also matches requests
+	    ($c->{fai}=~/indices/) ||
+	    ($c->{fai}=~/statuses/) ) {
+	    
+	    print FH "/* NOTE: $c->{ffn} NOT WRAPPED */\n";
+	    print FH "\n";
+	}
+	else {
+	    foreach $_ (@template_f)
+	    {
+		$line = $_;
+		$line=~s/__CFNAME__/$1$c->{cfn}/;
+		$line=~s/__CPARAMS__/$1$c->{cai}/;
+		$line=~s/__FFNAME__/$c->{ffn}/;
+		$line=~s/__FRET__/$c->{frv}/;
+		$line=~s/__FPARAMS__/$c->{fai}/;
+		$line=~s/__FARGS__/$c->{far}/;
+		$line=~s/__F2CARGS__/$c->{f2c}/;
+		$line=~s/HAVE_CREQ/$have_creq/;
+		$line=~s/HAVE_CSTAT/$have_cstat/;
+		$line=~s/HAVE_COLLECTIVE/$have_collective/;
+		$line=~s/HAVE_CCOMM_OUT/$have_ccomm_out/;
+		$line=~s/HAVE_CGROUP_OUT/$have_cgroup_out/;
+		$line=~s/HAVE_CCOMM_INOUT/$have_ccomm_inout/;
+		if ($fnamefort eq "")
+		{
+		    print FH $line;
+		}
+		else {
+		    print FHF $line;
+		}
+	    }
+	}
+    }
+	
+    close(FH);
+    if ($fnamefort ne "")
+    {
+        close(FHF);
+    }
+}
+
+
+
+
+sub write_calltable_h() {
+    my $fname = shift;
+    my $module = shift;
+    
+    open(FH,"> $fname")  || die "Cannot open $fname";
+
+    print "Generating $fname\n";
+    print FH<<"EOF";
+/*
+ * $fname
+ * DO NOT EDIT: automatically generated at build time
+ */
+
+EOF
+;# de-confuse emacs indentation
+    print FH "#ifndef calltable_${module}_H_INCLUDED\n";
+    print FH "#define calltable_${module}_H_INCLUDED\n";
+    print FH "\n";
+    print FH "#include \"ipm_core.h\"\n";
+    print FH "#include \"calltable.h\"\n";
+    print FH "#include \"ipm_modules.h\"\n";
+    print FH "\n";
+    print FH "void copy_${module}_calltable();\n";
+    print FH "\n";
+#    print FH "#define ${modname}_OFFSET $offval\n";
+    print FH "\n";
+    print FH "#define ${modname}_MINID $minid\n";
+    print FH "#define ${modname}_MINID_GLOBAL ($minid+MOD_${modname}_OFFSET)\n";
+    print FH "\n";
+    print FH "#define ${modname}_MAXID $maxid\n";
+    print FH "#define ${modname}_MAXID_GLOBAL ($maxid+MOD_${modname}_OFFSET)\n";
+    print FH "\n";
+    print FH "#if (${modname}_MINID_GLOBAL < MOD_${modname}_OFFSET) || "; 
+    print FH "    (${modname}_MAXID_GLOBAL >= MOD_${modname}_OFFSET+MOD_${modname}_RANGE) \n"; 
+    print FH "#error module '${modname}': IDs out of range\n";
+    print FH "#endif\n";
+    
+
+    print FH "\n";
+    foreach $id (sort numy keys %call) 
+    { 
+	$c = $call{$id};
+	$label = $c->{idl};
+	$value = $c->{idv};
+	printf FH "#define %-25s %-3d\n", $label, $value;
+    }
+    print FH "\n";
+    foreach $id (sort numy keys %call) 
+    { 
+	$c = $call{$id};
+	$label = $c->{idl};
+	$value = $c->{idv};
+	printf FH "#define %-30s (%-3d+MOD_${modname}_OFFSET)\n", "${label}_GLOBAL", $value;
+    }
+
+    print FH "\n";
+    print FH "/* defined in calltable_${module}.c: */\n";
+    print FH "extern char *${module}_call_name[];\n";
+    print FH "extern unsigned long long ${module}_call_attributes[];\n";
+    print FH "\n";
+    print FH "#endif /* calltable_${module}_H_INCLUDED */\n";
+    print FH "\n";
+
+    close(FH);
+}
+
+
+
+sub write_calltable_c() {
+    my $fname = shift;
+    my $module = shift;
+    
+    open(FH,"> $fname")  || die "Cannot open $fname";
+
+    print "Generating $fname\n";
+    print FH<<"EOF";
+/*
+ * $fname
+ * DO NOT EDIT: automatically generated at build time
+ */
+
+#include <string.h>
+#include "calltable.h"
+
+EOF
+;# de-confuse emacs indentation
+    
+    print FH "#include \"GEN.calltable_$module.h\"\n";
+
+    print FH "\n";
+
+    print FH "char *${module}_call_name[] = {\n";
+    for( $i=0; $i<=$maxid; $i++ ) {
+	$c = $call{$i};
+	if( defined($c) ) {
+	    print FH "\t\"$c->{cfn}\",\n";
+	}
+	else {
+	    print FH "\t\"\",\n";
+	}
+    }
+    print FH "};\n\n";
+
+
+    print FH "unsigned long long ${module}_call_attributes[] = {\n";
+    for( $i=0; $i<=$maxid; $i++ ) {
+	$c = $call{$i};
+	    
+	if( defined($c) && defined($c->{rnk}) ) {
+	    print FH "\t0|$c->{dat}|$c->{rnk}|$c->{byt},\n";
+	}
+	else {
+	    print FH "\t0,\n";
+	}
+    }
+    print FH "};\n\n";
+
+
+    print FH "void copy_${module}_calltable() {\n";
+    for( $i=0; $i<=$maxid; $i++ ) {
+	$c = $call{$i};
+	next unless( defined($c) && defined($c->{rnk}) );
+
+	$label = $c->{idl};
+	$glabel = "${label}_GLOBAL";
+	
+	$value = $c->{idv};
+	    
+	print FH "\tipm_calltable[$glabel].name = \n\t\tstrdup(${module}_call_name[$label]);\n";
+	print FH "\tipm_calltable[$glabel].attr = \n\t\t${module}_call_attributes[$label];\n";
+	print FH "\n";
+    }
+
+    print FH "};\n\n";
+
+    
+
+
+    close(FH);
+}
+
+
+sub write_linkertable() {
+    my $fname = shift;
+    my $module = shift;
+
+    open(FH,">> $fname")  || die "Cannot open $fname";
+
+    print FH "-Wl";
+    for( $i=0; $i<=$maxid; $i++ ) {
+	$c = $call{$i};
+	if( defined($c) ) {
+	    print FH ",-wrap,$c->{cfn}";
+	}
+    }
+    print FH " ";
+    close(FH);
+}

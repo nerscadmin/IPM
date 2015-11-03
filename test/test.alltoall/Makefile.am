@@ -8,7 +8,7 @@ ALLTOALL_SOURCES = main.c
 CC = $(MPICC)
 
 alltoall_ipm_SOURCES = $(ALLTOALL_SOURCES) $(top_srcdir)/include/utest.h
-alltoall_ipm_LDADD   = $(top_srcdir)/src/.libs/libipm.a
+alltoall_ipm_LDADD   = $(top_builddir)/src/.libs/libipm.a
 alltoall_ipm_CFLAGS = -DUTEST
 
 alltoall_SOURCES = $(ALLTOALL_SOURCES)

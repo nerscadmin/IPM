@@ -35,6 +35,8 @@
 
 cudaStream_t curr_stream_rt=0;
 
+#define MPI3CONST const
+
 /** HEADER_END **/
 
 

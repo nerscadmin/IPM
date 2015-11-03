@@ -6,7 +6,7 @@ JACOBI_SOURCES = jacobi.c
 CC = $(MPICC)
 
 jacobi_ipm_SOURCES = $(JACOBI_SOURCES)
-jacobi_ipm_LDADD   = $(top_srcdir)/src/.libs/libipm.a
+jacobi_ipm_LDADD   = $(top_builddir)/src/.libs/libipm.a
 
 jacobi_SOURCES = $(JACOBI_SOURCES)
 

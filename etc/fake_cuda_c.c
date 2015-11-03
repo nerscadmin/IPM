@@ -9,6 +9,8 @@
 #include "cuda_runtime_api.h"
 #include "cuda.h"
 
+#define MPI3CONST const
+
 /** HEADER_END **/
 
 

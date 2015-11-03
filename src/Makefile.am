@@ -1,5 +1,5 @@
 
-INCLUDES = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include
 
 ##############################################################################
 
@@ -10,7 +10,7 @@ IPM_KEYFILE_CUDA    = $(top_srcdir)/etc/ipm_key_cuda
 IPM_KEYFILE_CUFFT   = $(top_srcdir)/etc/ipm_key_cufft
 IPM_KEYFILE_CUBLAS  = $(top_srcdir)/etc/ipm_key_cublas
 
-WRAPMAKER      = $(top_srcdir)/bin/make_wrappers
+WRAPMAKER      = $(top_builddir)/bin/make_wrappers
 WRAPMAKER_ARGS = $(IPM_FUNDERSCORE)
 
 ##############################################################################
@@ -27,13 +27,13 @@ REPORT_DEPS =  $(top_srcdir)/include/ipm.h \
 			   $(top_srcdir)/include/report.h \
 			   $(top_srcdir)/include/regstack.h \
 			   $(top_srcdir)/include/calltable.h
-			   
+
 # dependencies of ipm_time.c			   
 IPM_TIME_DEPS = $(top_srcdir)/include/hashtable.h \
 				$(top_srcdir)/include/ipm.h \
 				$(top_srcdir)/include/ipm_time.h \
 				$(top_srcdir)/include/ipm_debug.h
-			   
+
 AM_CFLAGS = -DMPI_STATUS_COUNT=$(IPM_MPISTATUSCOUNT)
 
 IPMFILES_MODULES= 
@@ -90,25 +90,31 @@ MPI_MODULE_DIST = mod_mpi.c $(top_srcdir)/include/mod_mpi.h \
 	machtopo.c
 
 MPI_MODULE_DIST_F = mpi_fortran.c
-	
-MPI_MODULE_NODIST = GEN.wrapper_mpi.c  \
-    GEN.calltable_mpi.c $(top_srcdir)/include/GEN.calltable_mpi.h 
+
+MPI_MODULE_NODIST = \
+	GEN.wrapper_mpi.c  \
+	GEN.calltable_mpi.c \
+	GEN.calltable_mpi.h 
 MPI_MODULE_NODIST_F = GEN.wrapper_mpif.c
 
 MPIIO_MODULE_DIST = mod_mpiio.c $(top_srcdir)/include/mod_mpiio.h
 MPIIO_MODULE_NODIST = GEN.wrapper_mpiio.c \
-					  GEN.calltable_mpiio.c \
-					  $(top_srcdir)/include/GEN.calltable_mpiio.h \
-					  $(top_srcdir)/include/GEN.fproto.mpiio.h
+		      GEN.calltable_mpiio.c \
+		      GEN.calltable_mpiio.h \
+		      GEN.fproto.mpiio.h
 mod_mpiio.c :   $(top_srcdir)/include/mod_mpiio.h \
-				$(top_srcdir)/include/GEN.calltable_mpiio.h \
-				$(top_srcdir)/include/GEN.fproto.mpiio.h
+		GEN.calltable_mpiio.h \
+		GEN.fproto.mpiio.h
 
 
 POSIXIO_MODULE_DIST = mod_posixio.c $(top_srcdir)/include/mod_posixio.h
-POSIXIO_MODULE_NODIST = GEN.wrapper_posixio.c $(top_srcdir)/include/GEN.wrapper_posixio.h \
-	                    GEN.fake_posixio.c $(top_srcdir)/include/GEN.fake_posixio.h \
-						GEN.calltable_posixio.c $(top_srcdir)/include/GEN.calltable_posixio.h
+POSIXIO_MODULE_NODIST = \
+	GEN.wrapper_posixio.c \
+	GEN.wrapper_posixio.h \
+	GEN.fake_posixio.c \
+	GEN.fake_posixio.h \
+	GEN.calltable_posixio.c \
+	GEN.calltable_posixio.h
 
 CALLPATH_MODULE_DIST = mod_callpath.c $(top_srcdir)/include/mod_callpath.h \
 					   mod_callpath_traverse.c \
@@ -136,30 +142,30 @@ OMPTRACEPOINTS_DIST   = mod_omptracepoints.c mod_omptracepoints_wrap.h $(top_src
 OMPTRACEPOINTS_NODIST = 
 
 CUDA_DIST   = mod_cuda.c $(top_srcdir)/include/mod_cuda.h
-CUDA_NODIST = GEN.wrapper_cuda.c    $(top_srcdir)/include/GEN.wrapper_cuda.h \
-	          GEN.fake_cuda.c       $(top_srcdir)/include/GEN.fake_cuda.h \
-	          GEN.calltable_cuda.c  $(top_srcdir)/include/GEN.calltable_cuda.h
+CUDA_NODIST = GEN.wrapper_cuda.c   GEN.wrapper_cuda.h \
+		GEN.fake_cuda.c  GEN.fake_cuda.h \
+		GEN.calltable_cuda.c  GEN.calltable_cuda.h
 
 CUFFT_DIST   = mod_cufft.c $(top_srcdir)/include/mod_cufft.h
-CUFFT_NODIST = GEN.wrapper_cufft.c    $(top_srcdir)/include/GEN.wrapper_cufft.h \
-              GEN.fake_cufft.c       $(top_srcdir)/include/GEN.fake_cufft.h \
-              GEN.calltable_cufft.c  $(top_srcdir)/include/GEN.calltable_cufft.h
+CUFFT_NODIST = GEN.wrapper_cufft.c  GEN.wrapper_cufft.h \
+              GEN.fake_cufft.c      GEN.fake_cufft.h \
+              GEN.calltable_cufft.c GEN.calltable_cufft.h
 
 CUBLAS_DIST   = mod_cublas.c $(top_srcdir)/include/mod_cublas.h
-CUBLAS_NODIST = GEN.wrapper_cublas.c    $(top_srcdir)/include/GEN.wrapper_cublas.h \
-              GEN.fake_cublas.c       $(top_srcdir)/include/GEN.fake_cublas.h \
-              GEN.calltable_cublas.c  $(top_srcdir)/include/GEN.calltable_cublas.h
+CUBLAS_NODIST = GEN.wrapper_cublas.c  GEN.wrapper_cublas.h \
+              GEN.fake_cublas.c       GEN.fake_cublas.h \
+              GEN.calltable_cublas.c  GEN.calltable_cublas.h
 
 
 
 ALL_MODULES_DIST = 	\
 					$(CALLPATH_MODULE_DIST) \
 					$(KEYHIST_MODULE_DIST) \
-                   	$(MEM_MODULE_DIST) \
+					$(MEM_MODULE_DIST) \
 					$(MPI_MODULE_DIST) \
 					$(MPI_MODULE_DIST_F) \
-                   	$(MPIIO_MODULE_DIST) \
-                   	$(PAPI_MODULE_DIST) \
+					$(MPIIO_MODULE_DIST) \
+					$(PAPI_MODULE_DIST) \
 					$(POSIXIO_MODULE_DIST) \
 					$(PROCCTRL_DIST) \
 					$(CLUSTERING_DIST) \
@@ -167,8 +173,8 @@ ALL_MODULES_DIST = 	\
 					$(CUDA_DIST) \
 					$(CUFFT_DIST) \
 					$(CUBLAS_DIST)
-					
-					
+
+
 ###############################################################################
 # take care here
 # tabs before stmts leads to inactive modules
@@ -179,8 +185,8 @@ if ENABLE_MPI
   IPMFILES_MODULES_F += $(MPI_MODULE_DIST_F)
   IPMFILES_MODULES_NODIST += $(MPI_MODULE_NODIST) 
   IPMFILES_MODULES_NODIST_F += $(MPI_MODULE_NODIST_F) 
-  REPORT_DEPS   += GEN.calltable_mpi.c $(top_srcdir)/include/GEN.calltable_mpi.h
-  IPM_TIME_DEPS += GEN.calltable_mpi.c $(top_srcdir)/include/GEN.calltable_mpi.h
+  REPORT_DEPS   += GEN.calltable_mpi.c GEN.calltable_mpi.h
+  IPM_TIME_DEPS += GEN.calltable_mpi.c GEN.calltable_mpi.h
 endif ENABLE_MPI
 
 if ENABLE_SELF_MONITORING
@@ -192,8 +198,8 @@ if ENABLE_MPIIO
   AM_CFLAGS+=-DHAVE_MPIIO
   IPMFILES_MODULES += $(MPIIO_MODULE_DIST)
   IPMFILES_MODULES_NODIST += $(MPIIO_MODULE_NODIST)
-  REPORT_DEPS   += GEN.wrapper_mpiio.c GEN.calltable_mpiio.c  $(top_srcdir)/include/GEN.calltable_mpiio.h $(top_srcdir)/include/GEN.fproto.mpiio.h
-  IPM_TIME_DEPS += GEN.wrapper_mpiio.c GEN.calltable_mpiio.c  $(top_srcdir)/include/GEN.calltable_mpiio.h $(top_srcdir)/include/GEN.fproto.mpiio.h
+  REPORT_DEPS   += GEN.wrapper_mpiio.c GEN.calltable_mpiio.c GEN.calltable_mpiio.h GEN.fproto.mpiio.h
+  IPM_TIME_DEPS += GEN.wrapper_mpiio.c GEN.calltable_mpiio.c GEN.calltable_mpiio.h GEN.fproto.mpiio.h
 endif ENABLE_MPIIO
 
 
@@ -201,8 +207,8 @@ if ENABLE_POSIXIO
   AM_CFLAGS+=-DHAVE_POSIXIO
   IPMFILES_MODULES += $(POSIXIO_MODULE_DIST)
   IPMFILES_MODULES_NODIST += $(POSIXIO_MODULE_NODIST)		
-  REPORT_DEPS += GEN.calltable_posixio.c $(top_srcdir)/include/GEN.calltable_posixio.h 
-  IPM_TIME_DEPS += GEN.calltable_posixio.c $(top_srcdir)/include/GEN.calltable_posixio.h
+  REPORT_DEPS += GEN.calltable_posixio.c GEN.calltable_posixio.h 
+  IPM_TIME_DEPS += GEN.calltable_posixio.c GEN.calltable_posixio.h
 endif
 
 if ENABLE_CALLPATH
@@ -270,76 +276,76 @@ report.c: $(REPORT_DEPS)
 
 ipm_time.c: $(IPM_TIME_DEPS)
 
-GEN.wrapper_mpi.c : $(IPM_KEYFILE_MPI) $(WRAPMAKER) $(top_srcdir)/include/GEN.calltable_mpi.h
+GEN.wrapper_mpi.c : $(IPM_KEYFILE_MPI) $(WRAPMAKER) GEN.calltable_mpi.h
 	$(WRAPMAKER) $(WRAPMAKER_ARGS) $(IPM_KEYFILE_MPI)
 GEN.wrapper_mpif.c : GEN.wrapper_mpi.c
-$(top_srcdir)/include/GEN.calltable_mpi.h: GEN.calltable_mpi.c	
+GEN.calltable_mpi.h: GEN.calltable_mpi.c	
 GEN.calltable_mpi.c : $(IPM_KEYFILE_MPI) $(WRAPMAKER)
 	$(WRAPMAKER) $(WRAPMAKER_ARGS) $(IPM_KEYFILE_MPI)
-	
+
 
 GEN.wrapper_mpiio.c : $(IPM_KEYFILE_MPIIO) $(WRAPMAKER) \
-                      $(top_srcdir)/include/GEN.calltable_mpi.h \
-                      $(top_srcdir)/include/GEN.calltable_mpiio.h
+                      GEN.calltable_mpi.h \
+                      GEN.calltable_mpiio.h
 	$(WRAPMAKER) -nofort  $(WRAPMAKER_ARGS) $(IPM_KEYFILE_MPIIO)
-	
-$(top_srcdir)/include/GEN.calltable_mpiio.h : GEN.calltable_mpiio.c	
+
+GEN.calltable_mpiio.h : GEN.calltable_mpiio.c	
 GEN.calltable_mpiio.c : $(IPM_KEYFILE_MPIIO) $(WRAPMAKER)
 	$(WRAPMAKER) -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_MPIIO)
 
-$(top_srcdir)/include/GEN.wrapper_posixio.h : GEN.wrapper_posixio.c	
+GEN.wrapper_posixio.h : GEN.wrapper_posixio.c	
 GEN.wrapper_posixio.c : $(IPM_KEYFILE_POSIXIO) $(WRAPMAKER)
 	$(WRAPMAKER) -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_POSIXIO)
-$(top_srcdir)/include/GEN.calltable_posixio.h : GEN.calltable_posixio.c	
+GEN.calltable_posixio.h : GEN.calltable_posixio.c	
 GEN.calltable_posixio.c : $(IPM_KEYFILE_POSIXIO) $(WRAPMAKER)
 	$(WRAPMAKER) -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_POSIXIO)
-$(top_srcdir)/include/GEN.fake_posixio.h : GEN.fake_posixio.c	
+GEN.fake_posixio.h : GEN.fake_posixio.c	
 GEN.fake_posixio.c : $(IPM_KEYFILE_POSIXIO) $(WRAPMAKER)
 	$(WRAPMAKER) -dummy -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_POSIXIO)
 
 
 ### cuda dependencies
-mod_cuda.c: $(top_srcdir)/include/GEN.calltable_cuda.h
-	
-$(top_srcdir)/include/GEN.wrapper_cuda.h : GEN.wrapper_cuda.c	
+mod_cuda.c: GEN.calltable_cuda.h
+
+GEN.wrapper_cuda.h : GEN.wrapper_cuda.c	
 GEN.wrapper_cuda.c : $(IPM_KEYFILE_CUDA) $(WRAPMAKER)
 	$(WRAPMAKER) -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_CUDA)
 
-$(top_srcdir)/include/GEN.calltable_cuda.h : GEN.calltable_cuda.c	
+GEN.calltable_cuda.h : GEN.calltable_cuda.c	
 GEN.calltable_cuda.c : $(IPM_KEYFILE_CUDA) $(WRAPMAKER)
 	$(WRAPMAKER) -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_CUDA)
 
-$(top_srcdir)/include/GEN.fake_cuda.h : GEN.fake_cuda.c	
+GEN.fake_cuda.h : GEN.fake_cuda.c	
 GEN.fake_cuda.c : $(IPM_KEYFILE_CUDA) $(WRAPMAKER)
 	$(WRAPMAKER) -dummy -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_CUDA)	
-	
+
 ### cufft dependencies
-mod_cufft.c: $(top_srcdir)/include/GEN.calltable_cufft.h
-    
-$(top_srcdir)/include/GEN.wrapper_cufft.h : GEN.wrapper_cufft.c   
+mod_cufft.c: GEN.calltable_cufft.h
+
+GEN.wrapper_cufft.h : GEN.wrapper_cufft.c   
 GEN.wrapper_cufft.c : $(IPM_KEYFILE_CUFFT) $(WRAPMAKER)
 	$(WRAPMAKER) -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_CUFFT)
 
-$(top_srcdir)/include/GEN.calltable_cufft.h : GEN.calltable_cufft.c   
+GEN.calltable_cufft.h : GEN.calltable_cufft.c   
 GEN.calltable_cufft.c : $(IPM_KEYFILE_CUFFT) $(WRAPMAKER)
 	$(WRAPMAKER) -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_CUFFT)
 
-$(top_srcdir)/include/GEN.fake_cufft.h : GEN.fake_cufft.c 
+GEN.fake_cufft.h : GEN.fake_cufft.c 
 GEN.fake_cufft.c : $(IPM_KEYFILE_CUFFT) $(WRAPMAKER)
 	$(WRAPMAKER) -dummy -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_CUFFT)   
 
 ### cublas dependencies
-mod_cublas.c: $(top_srcdir)/include/GEN.calltable_cublas.h
-    
-$(top_srcdir)/include/GEN.wrapper_cublas.h : GEN.wrapper_cublas.c   
+mod_cublas.c: GEN.calltable_cublas.h
+
+GEN.wrapper_cublas.h : GEN.wrapper_cublas.c   
 GEN.wrapper_cublas.c : $(IPM_KEYFILE_CUBLAS) $(WRAPMAKER)
 	$(WRAPMAKER) -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_CUBLAS)
 
-$(top_srcdir)/include/GEN.calltable_cublas.h : GEN.calltable_cublas.c   
+GEN.calltable_cublas.h : GEN.calltable_cublas.c   
 GEN.calltable_cublas.c : $(IPM_KEYFILE_CUBLAS) $(WRAPMAKER)
 	$(WRAPMAKER) -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_CUBLAS)
 
-$(top_srcdir)/include/GEN.fake_cublas.h : GEN.fake_cublas.c 
+GEN.fake_cublas.h : GEN.fake_cublas.c 
 GEN.fake_cublas.c : $(IPM_KEYFILE_CUBLAS) $(WRAPMAKER)
 	$(WRAPMAKER) -dummy -nofort $(WRAPMAKER_ARGS) $(IPM_KEYFILE_CUBLAS)   
 
@@ -357,10 +363,9 @@ nodist_libipmf_la_SOURCES = $(IPMFILES_MODULES_NODIST_F)
 nodist_EXTRA_libipmf_la_SOURCES = dummy.f90
 
 EXTRA_DIST = $(ALL_MODULES_DIST)
-	
+
 ###############################################################################
-	
+
 clean-local:
 	-rm -f GEN.*
-	-rm -f  $(top_srcdir)/include/GEN.*
-	
+
