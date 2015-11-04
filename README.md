@@ -28,13 +28,13 @@ should be fairly straightforward. Suppose that `$PREFIX` is the installation
 prefix you used when installing IPM. In this case, you can enable profiling by
 appending
 
-    -L$PREFIX -lipm
+    -L$PREFIX/lib -lipm
 
 to your link line (making sure it is the last argument). If you are linking an
 application that uses the Fortran bindings to MPI, then you will also need to
 add `-lipmf`, making sure that it comes before `-lipm`:
 
-    -L$PREFIX -lipmf -lipm
+    -L$PREFIX/lib -lipmf -lipm
 
 As usual, if you are using dynamic linking and `$PREFIX/lib` has not been added
 to your `$LD_LIBRARY_PATH`, then you will likely also want to pass the former
