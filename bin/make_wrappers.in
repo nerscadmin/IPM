@@ -370,7 +370,7 @@ $call{$id}{car} =~ s/int//g;
      s/^rtype$/MPI_Type_f2c(*rtype)/g;
      s/^type$/MPI_Type_f2c(*type)/g;
      s/^op$/MPI_Op_f2c(*op)/g;
-     s/^req$/MPI_Request_f2c(*req)/g;
+     s/^req$/&creq/g;
      s/^request$/MPI_Request_f2c(*request)/g;
      s/^scount$/*scount/g;
      s/^rcount$/*rcount/g;

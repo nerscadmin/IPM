@@ -19,9 +19,16 @@
 
 
 /* ---- wrapping __FFNAME__ ---- */
- 
 /*
+ * strings in the form __IDENTIFIER__ are replaced
+ * by the wrapper script
  *
+ * CFNAME     __CFNAME__
+ * FFNAME     __FFNAME__
+ * CPARAMS    __CPARAMS__
+ * FPARAMS    __FPARAMS__
+ * F2CARGS    __F2CARGS__
+ * FRET       __FRET__
  */
 
 extern void IPM___CFNAME__(__CPARAMS__, double tstart, double tstop);
@@ -66,28 +73,28 @@ __FRET__ __FFNAME__(__FPARAMS__)
   }
   
 #if HAVE_CSTAT   /* HAVE_CSTAT */ 
-  if (*info==MPI_SUCCESS) 
-    MPI_Status_c2f(&cstat, status);
+  if ( *info==MPI_SUCCESS )
+    MPI_Status_f2c(status, &cstat);
 #endif
 
 #if HAVE_CREQ    /* HAVE_CREQ */ 
   if( *info==MPI_SUCCESS )
-    *req=MPI_Request_c2f(creq);
+    creq=MPI_Request_f2c(*req);
 #endif
 
 #if HAVE_CCOMM_OUT /* HAVE _CCOMM_OUT */
   if( *info==MPI_SUCCESS ) 
-    *comm_out=MPI_Comm_c2f(ccomm_out);
+    ccomm_out=MPI_Comm_f2c(*comm_out);
 #endif
 
 #if HAVE_CCOMM_INOUT /* HAVE _CCOMM_INOUT */
   if( *info==MPI_SUCCESS ) 
-    *comm_inout=MPI_Comm_c2f(ccomm_inout);
+    ccomm_inout=MPI_Comm_f2c(*comm_inout);
 #endif
 
 #if HAVE_CGROUP_OUT /* HAVE _CGROUP_OUT */
   if( *info==MPI_SUCCESS )
-    *group_out=MPI_Group_c2f(cgroup_out);
+    cgroup_out=MPI_Group_f2c(*group_out);
 #endif
   IPM___CFNAME__(__F2CARGS__, tstart, tstop);
 
