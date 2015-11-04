@@ -69,9 +69,11 @@ int ipm_get_env()
 
 /* defaults for unset environment variables */
 
-  if(!getenv("IPM_HPM")) {
-   putenv("IPM_HPM=PAPI_FP_OPS");
-  }
+  /* it is not guaranteed that PAPI_FP_OPS will be supported (indeed, it's not
+   * on many recent intel architectures); assume no defaults for IPM_HPM */
+  /* if(!getenv("IPM_HPM")) {
+      putenv("IPM_HPM=PAPI_FP_OPS");
+     } */
   
 /* end defaults */
 
