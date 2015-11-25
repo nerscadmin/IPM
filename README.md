@@ -113,4 +113,5 @@ system architects.
 ## Known issues
 
 The following are known issues affecting the current `master` branch of IPM:
-* `VPATH` builds are not yet supported
+
+(none at this time)
