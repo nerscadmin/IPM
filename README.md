@@ -42,7 +42,7 @@ to the linker as an `-rpath`.
 
 **Note**: The `master` branch of IPM is in general usable, but should be
 considered development software. We strongly recommend that for production use
-you build a tagged release of IPM. The most recent release is `2.0.4`.
+you build a tagged release of IPM. The most recent release is `2.0.5`.
 
 ### Examples
 
