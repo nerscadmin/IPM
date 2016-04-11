@@ -26,24 +26,35 @@ typedef struct mpidata
 extern mpidata_t mpidata[MAXNUM_REGIONS];
 extern MPI_Group ipm_world_group;
 
-#define IPM_MPI_RANK_NONE_C(rank_)    rank_=IPM_MPI_RANK_NORANK;
-#define IPM_MPI_RANK_NONE_F(rank_)    rank_=IPM_MPI_RANK_NORANK;
-#define IPM_MPI_RANK_ALL_C(rank_)     rank_=IPM_MPI_RANK_ALLRANKS;
-#define IPM_MPI_RANK_ALL_F(rank_)     rank_=IPM_MPI_RANK_ALLRANKS;
-#define IPM_MPI_RANK_ROOT_C(rank_)    rank_=root;
-#define IPM_MPI_RANK_ROOT_F(rank_)    rank_=*root;
-#define IPM_MPI_RANK_SRC_C(rank_)     rank_=src;
-#define IPM_MPI_RANK_SRC_F(rank_)     rank_=*src;
-#define IPM_MPI_RANK_DEST_C(rank_)    rank_=dest;
-#define IPM_MPI_RANK_DEST_F(rank_)    rank_=*dest;
+#define IPM_MPI_MAP_RANK(world_rank_, rank_, comm_) \
+  do { \
+    if (comm_ == MPI_COMM_WORLD || rank_ == MPI_ANY_SOURCE) { \
+      world_rank_=rank_; \
+    } else { \
+      int rank_in_[] = { rank_ }; \
+      MPI_Group group_; \
+      MPI_Comm_group(comm_, &group_); \
+      MPI_Group_translate_ranks(group_, 1, rank_in_, ipm_world_group, &world_rank_); \
+    } \
+  } while (0)
+#define IPM_MPI_RANK_NONE_C(rank_) rank_=IPM_MPI_RANK_NORANK;
+#define IPM_MPI_RANK_NONE_F(rank_) rank_=IPM_MPI_RANK_NORANK;
+#define IPM_MPI_RANK_ALL_C(rank_)  rank_=IPM_MPI_RANK_ALLRANKS;
+#define IPM_MPI_RANK_ALL_F(rank_)  rank_=IPM_MPI_RANK_ALLRANKS;
+#define IPM_MPI_RANK_ROOT_C(rank_) IPM_MPI_MAP_RANK(rank_, root, comm_in);
+#define IPM_MPI_RANK_ROOT_F(rank_) IPM_MPI_MAP_RANK(rank_, *root, comm_in);
+#define IPM_MPI_RANK_SRC_C(rank_)  IPM_MPI_MAP_RANK(rank_, src, comm_in);
+#define IPM_MPI_RANK_SRC_F(rank_)  IPM_MPI_MAP_RANK(rank_, *src, comm_in);
+#define IPM_MPI_RANK_DEST_C(rank_) IPM_MPI_MAP_RANK(rank_, dest, comm_in);
+#define IPM_MPI_RANK_DEST_F(rank_) IPM_MPI_MAP_RANK(rank_, *dest, comm_in);
 
 #define IPM_MPI_RANK_STATUS_C(rank_)             \
   if(status && (status)!=MPI_STATUS_IGNORE )     \
-    {rank_ = status->MPI_STATUS_SOURCE;}
+    {IPM_MPI_MAP_RANK(rank_, status->MPI_STATUS_SOURCE, comm_in);}
 
 #define IPM_MPI_RANK_STATUS_F(rank_)             \
   if(status && (status)!=MPI_STATUS_IGNORE )     \
-    {rank_ = status->MPI_STATUS_SOURCE;}
+    {IPM_MPI_MAP_RANK(rank_, status->MPI_STATUS_SOURCE, comm_in);}
 
 
 /* depends on the MPI implementation, one of
