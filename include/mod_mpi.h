@@ -26,15 +26,17 @@ typedef struct mpidata
 extern mpidata_t mpidata[MAXNUM_REGIONS];
 extern MPI_Group ipm_world_group;
 
-#define IPM_MPI_MAP_RANK(world_rank_, rank_, comm_) \
+#define IPM_MPI_MAP_RANK(rank_out_, rank_in_, comm_) \
   do { \
-    if (comm_ == MPI_COMM_WORLD || rank_ == MPI_ANY_SOURCE) { \
-      world_rank_=rank_; \
+    int comm_cmp_; \
+    PMPI_Comm_compare(MPI_COMM_WORLD, comm_, &comm_cmp_); \
+    if (comm_cmp_ == MPI_IDENT || rank_in_ == MPI_ANY_SOURCE) { \
+      rank_out_=rank_in_; \
     } else { \
-      int rank_in_[] = { rank_ }; \
       MPI_Group group_; \
-      MPI_Comm_group(comm_, &group_); \
-      MPI_Group_translate_ranks(group_, 1, rank_in_, ipm_world_group, &world_rank_); \
+      PMPI_Comm_group(comm_, &group_); \
+      PMPI_Group_translate_ranks(group_, 1, &(rank_in_), ipm_world_group, \
+          &(rank_out_)); \
     } \
   } while (0)
 #define IPM_MPI_RANK_NONE_C(rank_) rank_=IPM_MPI_RANK_NORANK;
