@@ -70,6 +70,7 @@ typedef struct
   gstats_t mpi;     /* times and counts for MPI */
   gstats_t mpip;    /* percent MPI */
   gstats_t pio;     /* times and counts for POSIX-IO */
+  gstats_t pio_GiB; /* Data read and written for POSIX-IO */
   gstats_t piop;    /* percent POSIX-IO */
   gstats_t omp;     /* times and counts for OpenMP */
   gstats_t ompp;    /* percent OpenMP */
