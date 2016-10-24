@@ -134,9 +134,13 @@ void ipm_get_exec_md5sum(char *exec_md5sum, char *rpath) {
    sprintf(exec_md5sum,"unknown"); 
   } else {
    fh = fopen(rpath,"rb");
-   md5_stream(fh,sbuf);
-   fclose(fh);
-   for (i = 0; i < 16; ++i) sprintf (exec_md5sum+2*i,"%02x", sbuf[i]);
+   if (fh) {
+     md5_stream(fh,sbuf);
+     fclose(fh);
+     for (i = 0; i < 16; ++i) sprintf (exec_md5sum+2*i,"%02x", sbuf[i]);
+   } else {
+     sprintf(exec_md5sum,"unknown");
+   }
   }
 
 
