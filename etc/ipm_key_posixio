@@ -18,7 +18,7 @@
 3|PIO_FREOPEN_ID|FILE* freopen(const char *path, const char *mode, FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 4|PIO_FCLOSE_ID|int fclose(FILE *fp)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 5|PIO_FFLUSH_ID|int fflush(FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
-6|PIO_FREAD_ID|size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)||CS_LOCAL,BYTES_NMEMB,RANK_NONE,DATA_RX
+6|PIO_FREAD_ID|size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)||CS_LOCAL,BYTES_RETURN_NMEMB,RANK_NONE,DATA_RX
 7|PIO_FWRITE_ID|size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)||CS_LOCAL,BYTES_RETURN_NMEMB,RANK_NONE,DATA_TX
 8|PIO_FSEEK_ID|int fseek(FILE *stream, long offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 9|PIO_FTELL_ID|long ftell(FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
