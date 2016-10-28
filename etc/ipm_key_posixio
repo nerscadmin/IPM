@@ -18,7 +18,7 @@
 3|PIO_FREOPEN_ID|FILE* freopen(const char *path, const char *mode, FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 4|PIO_FCLOSE_ID|int fclose(FILE *fp)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 5|PIO_FFLUSH_ID|int fflush(FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
-6|PIO_FREAD_ID|size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)||CS_LOCAL,BYTES_NMEMB,RANK_NONE,DATA_RX
+6|PIO_FREAD_ID|size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)||CS_LOCAL,BYTES_RETURN_NMEMB,RANK_NONE,DATA_RX
 7|PIO_FWRITE_ID|size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)||CS_LOCAL,BYTES_RETURN_NMEMB,RANK_NONE,DATA_TX
 8|PIO_FSEEK_ID|int fseek(FILE *stream, long offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 9|PIO_FTELL_ID|long ftell(FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
@@ -40,4 +40,18 @@
 27|PIO_FTRUNCATE64_ID|int ftruncate64(int fd, off64_t length)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 28|PIO_LSEEK_ID|off_t lseek(int fd, off_t offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 29|PIO_LSEEK64_ID|off64_t lseek64(int fd, off64_t offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
-
+30|PIO_FSYNC_ID|int fsync(int fd)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+31|PIO_FDATASYNC_ID|int fdatasync(int fd)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+32|PIO_FOPEN64_ID|FILE* fopen64(const char *path, const char *mode)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+33|PIO_FREOPEN64_ID|FILE* freopen64(const char *path, const char *mode, FILE *stream)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+34|PIO___XSTAT_ID|int __xstat(int ver, const char *path, struct stat *buf)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+35|PIO___XSTAT64_ID|int __xstat64(int ver, const char *path, struct stat64 *buf)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+36|PIO___LXSTAT_ID|int __lxstat(int ver, const char *path, struct stat *buf)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+37|PIO___LXSTAT64_ID|int __lxstat64(int ver, const char *path, struct stat64 *buf)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+38|PIO___FXSTAT_ID|int __fxstat(int ver, int fd, struct stat *buf)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+39|PIO___FXSTAT64_ID|int __fxstat64(int ver, int fd, struct stat64 *buf)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+40|PIO_FGETS_ID|char* fgets(char *s, int size, FILE *stream)||CS_LOCAL,BYTES_RETURN_NULL_STR,RANK_NONE,DATA_NONE
+41|PIO_UNLINK_ID|int unlink(const char *pathname)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+42|PIO_UNLINKAT_ID|int unlinkat(int dirfd, const char *pathname, int flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+43|PIO_FSEEKO_ID|int fseeko(FILE *stream, off_t offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+44|PIO_FSEEKO64_ID|int fseeko64(FILE *stream, off64_t offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE

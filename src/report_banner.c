@@ -238,7 +238,9 @@ void ipm_print_region(FILE *f, banner_t *data, regstats_t *reg)
 	    "   %10"IPM_COUNT_TYPEF"   %10" IPM_COUNT_TYPEF "\n",
 	    reg->pio.nsum, reg->pio.nsum/data->ntasks, 
 	    reg->pio.nmin, reg->pio.nmax);
-    
+    fprintf(f, "# I/O [GB]  :    %10.2f   %10.2f   %10.2f   %10.2f \n",
+	    reg->pio_GiB.dsum, reg->pio_GiB.dsum/(double)ntasks,
+	    reg->pio_GiB.dmin, reg->pio_GiB.dmax);
   }
   
   fprintf(f, "# mem [GB]  :    %10.2f   %10.2f   %10.2f   %10.2f \n", 

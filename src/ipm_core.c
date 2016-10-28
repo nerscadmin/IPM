@@ -87,6 +87,23 @@ void ipm_write_profile_log();
 int mod_selfmonitor_output(struct ipm_module* mod, int flags);
 int mod_selfmonitor_init(struct ipm_module* mod, int flags);
 
+#ifdef __GNUC__
+/* The constructor attribute feature causes a function to be called
+automatically before execution enters main. It allows IPM to profile
+serial programs. The feature is provided by GNU C and so we check
+availability using the __GNUC__ macro. The Intel compiler also
+provides this feature and defines the __GNUC__ macro to indicate
+compatibility with GNU C */
+__attribute__((constructor)) void serial_init(void)
+{
+  if( ipm_state==STATE_NOTINIT ) {
+#ifndef HAVE_MPI
+    ipm_init(0);
+#endif
+  }
+}
+#endif
+
 int ipm_init(int flags) 
 {
   int i, state, rv;

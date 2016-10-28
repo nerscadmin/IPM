@@ -1,6 +1,7 @@
 #ifndef MOD_POSIXIO_H_INCLUDED
 #define MOD_POSIXIO_H_INCLUDED
 
+#include <string.h>
 #include "ipm_modules.h"
 
 int mod_posixio_init(ipm_mod_t* mod, int flags);
@@ -32,6 +33,15 @@ typedef struct iodata
 
 #define IPM_POSIXIO_BYTES_CHAR_C( bytes_ ) \
   bytes_=sizeof(char);
+
+/*
+  This macro is for fgets
+  char* fgets(char *s, int size, FILE *stream)
+  fgets() returns s on success, and NULL on error or when end of file
+  occurs while no characters have been read
+ */
+#define IPM_POSIXIO_BYTES_RETURN_NULL_STR_C( bytes_ )	\
+  (rv==NULL)?(bytes_=0):(bytes_=strlen(rv));
 
 
 #define IPM_POSIXIO_KEY(key_,call_,rank_,size_,reg_,csite_) \

@@ -27,7 +27,7 @@
 #define MAXSIZE_MACHINFO         32
 #define MAXSIZE_REGLABEL         32
 #define MAXSIZE_CMDLINE          4096
-#define MAXSIZE_FILENAME         256
+#define MAXSIZE_FILENAME         1024
 #define MAXNUM_REGIONS           256
 #define MAXNUM_REGNESTING         32
 

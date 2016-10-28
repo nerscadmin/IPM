@@ -63,6 +63,7 @@ extern ipm_call_t ipm_calltable[MAXSIZE_CALLTABLE];
 #define BYTES_SCOUNT_ALLV    (0x1ULL<<38)
 #define BYTES_RCOUNT_SC      (0x1ULL<<38)
 
+#define BYTES_RETURN_NULL_STR      (0x1ULL<<39)
 
 #endif /* CALLTABLE_H_INCLUDED */
 

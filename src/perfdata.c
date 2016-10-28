@@ -62,7 +62,7 @@ void taskdata_init(taskdata_t *t)
   /* need copy, because basename may modify arg */
   tmp = strdup(t->exec_realpath); 
   sprintf(t->appname, "%s", basename(tmp));
-  sprintf(t->fname, "%s.%lu", t->user, t->t_start.tv_sec);
+  sprintf(t->fname, "%s.%lu.%lu", t->user, t->t_start.tv_sec, t->t_start.tv_usec);
   free(tmp);
 
   sprintf(t->logdir, ".");

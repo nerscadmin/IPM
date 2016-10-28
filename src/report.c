@@ -136,6 +136,7 @@ void clear_region_stats(regstats_t *stats)
   GSTATS_CLEAR( stats->mpi );
   GSTATS_CLEAR( stats->mpip );
   GSTATS_CLEAR( stats->pio );
+  GSTATS_CLEAR( stats->pio_GiB );
   GSTATS_CLEAR( stats->piop );
   GSTATS_CLEAR( stats->omp );
   GSTATS_CLEAR( stats->ompp );
@@ -250,6 +251,7 @@ void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int 
       GSTATS_SET( stats->gflops, gflops, 1 );
       GSTATS_SET( stats->mpi,   hmpi.hent.t_tot,  hmpi.hent.count );
       GSTATS_SET( stats->pio,   hpio.hent.t_tot,  hpio.hent.count );
+      GSTATS_SET( stats->pio_GiB, hpio.bytesum/(1024.0 * 1024.0 * 1024.0), 1 );
       GSTATS_SET( stats->omp,   homp.hent.t_tot,  homp.hent.count );
       GSTATS_SET( stats->ompi,  hompi.hent.t_tot, hompi.hent.count );
 
@@ -272,6 +274,7 @@ void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int 
       */
       GSTATS_ADD( stats->mpi,   hmpi.hent.t_tot,  hmpi.hent.count );
       GSTATS_ADD( stats->pio,   hpio.hent.t_tot,  hpio.hent.count );
+      GSTATS_ADD( stats->pio_GiB, hpio.bytesum/(1024.0 * 1024.0 * 1024.0), 1 );
       GSTATS_ADD( stats->omp,   homp.hent.t_tot,  homp.hent.count );
       GSTATS_ADD( stats->ompi,  hompi.hent.t_tot, hompi.hent.count );
 
@@ -299,7 +302,7 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
 {
   int i, noreg;
   region_t *tmp;
-  double mpip, piop, ompp, gflops, wallt;
+  double mpip, piop, ompp, gflops, wallt, pio_GiB;
   double cudap, cublasp, cufftp;
   ipm_hent_t hmpi, hpio, homp, hompi;
   ipm_hent_t hcuda, hcublas, hcufft;
@@ -345,6 +348,7 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
   cufftp = 100.0 * (stats->cufft.dsum) / wallt;
   GSTATS_SET( stats->cufftp, cufftp, 1 );
 
+  pio_GiB = stats->pio_GiB.dsum;
 
   hmpi.t_tot = stats->mpi.dsum;
   hmpi.count = stats->mpi.nsum;
@@ -380,6 +384,7 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
   gstats_double( mpip,   &(stats->mpip) );
   gstats_double( piop,   &(stats->piop) );
   gstats_double( ompp,   &(stats->ompp) );
+  gstats_double( pio_GiB, &(stats->pio_GiB) );
 
   gstats_hent( hmpi,  &(stats->mpi) );
   gstats_hent( hpio,  &(stats->pio) );
