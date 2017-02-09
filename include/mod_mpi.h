@@ -218,13 +218,22 @@ extern MPI_Group ipm_world_group;
 
 
 #define IS_COLLECTIVE_CALL_ID(id_)				\
-  (id_==MPI_BCAST_ID)          || (id_==MPI_REDUCE_ID)	   ||	\
-  (id_==MPI_REDUCE_SCATTER_ID) || (id_==MPI_SCAN_ID)	   ||	\
-  (id_==MPI_SCATTER_ID)        || (id_==MPI_SCATTERV_ID)   ||	\
-  (id_==MPI_GATHER_ID)         || (id_==MPI_GATHERV_ID)	   ||	\
+  (id_==MPI_BCAST_ID)          || (id_==MPI_REDUCE_ID)     ||	\
+  (id_==MPI_REDUCE_SCATTER_ID) || (id_==MPI_GATHER_ID) ||	\
+  (id_==MPI_GATHERV_ID)        || (id_==MPI_SCATTER_ID) ||	\
+  (id_==MPI_SCATTERV_ID)       || (id_==MPI_SCAN_ID) ||		\
   (id_==MPI_ALLGATHER_ID)      || (id_==MPI_ALLGATHERV_ID) ||	\
-  (id_==MPI_ALLTOALL_ID)       || (id_==MPI_ALLTOALLV_ID)  ||	\
-  (id_==MPI_ALLREDUCE_ID)
+  (id_==MPI_ALLREDUCE_ID)      || (id_==MPI_ALLTOALL_ID) ||	\
+  (id_==MPI_ALLTOALLV_ID)      || (id_==MPE_IREDUCE_ID) ||	\
+  (id_==MPE_IBCAST_ID)         || (id_==MPE_ISCATTERV_ID) ||	\
+  (id_==MPE_IALLREDUCE_ID)     || (id_==MPE_IALLTOALLV_ID) ||	\
+  (id_==MPI_IBCAST_ID)         || (id_==MPI_IREDUCE_ID) ||	\
+  (id_==MPI_IREDUCE_SCATTER_ID)|| (id_==MPI_IGATHER_ID) ||	\
+  (id_==MPI_IGATHERV_ID)       || (id_==MPI_ISCATTER_ID) ||	\
+  (id_==MPI_ISCATTERV_ID)      || (id_==MPI_ISCAN_ID) ||	\
+  (id_==MPI_IALLGATHER_ID)     || (id_==MPI_IALLGATHERV_ID) ||	\
+  (id_==MPI_IALLREDUCE_ID)     || (id_==MPI_IALLTOALL_ID) ||	\
+  (id_==MPI_IALLTOALLV_ID)
 
 
 #define IS_COLLECTIVE_CALL(id_)				\
