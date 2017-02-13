@@ -114,4 +114,55 @@ system architects.
 
 The following are known issues affecting the current `master` branch of IPM:
 
-(none at this time)
+##### Incorrect MPI message sizes in certain circumstances
+
+1. IPM may report incorrect message sizes for the family of `MPI_Wait`
+and `MPI_Test` functions. This is because IPM indiscriminately
+extracts the message size from the status object of every single
+`MPI_Wait` and `MPI_Test` call. However, there are at least 3
+situations when the status object is either undefined or partially
+defined.
+   *  **The request handle is from a non-blocking send**
+      >"The fields in a status object returned by a call to MPI_WAIT,
+      MPI_TEST, or any of the other derived functions
+      (MPI_{TEST|WAIT}{ALL|SOME|ANY}), where the request corresponds
+      to a send call, are undefined, with two exceptions: The error
+      status field will contain valid information if the wait or test
+      call returned with MPI_ERR_IN_STATUS ; and the returned status
+      can be queried by the call MPI_TEST_CANCELLED." [MPI standard
+      v3.1 page 52]
+
+   *  **The request handle is from a non-blocking collective call**
+      >"Upon returning from a completion call in which a nonblocking
+      collective operation completes, the MPI_ERROR field in the
+      associated status object is set appropriately, see Section
+      3.2.5. The values of the MPI_SOURCE and MPI_TAG fields are
+      undefined." [MPI standard v3.1 page 197]
+
+   *  **The request handle is from an RMA operation**
+      >"Upon returning from a completion call in which an RMA
+      operation completes, the MPI_ERROR field in the associated
+      status object is set appropriately (see Section 3.2.5). All
+      other fields of status and the results of status query functions
+      (e.g., MPI_GET_COUNT) are undefined." [MPI standard v3.1 page
+      430]
+
+   The MPI implementation may still provide the message size for these
+special cases but it is not required by the standard. For example, we
+have found that `openmpi-1.8.1` initializes status data corresponding
+to send requests, while `mpich-2.1.5` and `mpich-3.3a2` do not.
+
+2. IPM will not collect the message size for an MPI function that is
+passed `MPI_STATUS_IGNORE` or `MPI_STATUSES_IGNORE`. This affects
+receive, probe, wait and test functions. The only receive function
+that is not affected by this issue is `MPI_Irecv`.
+
+3. IPM may report incorrect message sizes for `MPI_Irecv` because the
+message size is calculated from the receive count and datatype
+arguments. This may be larger than the eventual message because it is
+legitimate for the sender to send a shorter message.
+
+   Key takeaway: IPM is only expected to collect correct message sizes
+for MPI send and MPI collective functions. The message size data for
+other MPI functions should be ignored unless you know that your
+application is not affected by one of the above issues.
