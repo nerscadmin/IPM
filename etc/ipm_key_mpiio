@@ -27,9 +27,9 @@
 #
 ##module MPIIO
 #
-1|MPI_FILE_OPEN_ID|int MPI_File_open(MPI_Comm comm, char *fname, int amode, MPI_Info info, MPI_File *fh)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+1|MPI_FILE_OPEN_ID|int MPI_File_open(MPI_Comm comm, const char *fname, int amode, MPI_Info info, MPI_File *fh)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 2|MPI_FILE_CLOSE_ID|int MPI_File_close(MPI_File *fh)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
-3|MPI_FILE_DELETE_ID|int MPI_File_delete(char *fname, MPI_Info info)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+3|MPI_FILE_DELETE_ID|int MPI_File_delete(const char *fname, MPI_Info info)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 4|MPI_FILE_SET_SIZE_ID|int MPI_File_set_size(MPI_File fh, MPI_Offset size)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 5|MPI_FILE_PREALLOCATE_ID|int MPI_File_preallocate(MPI_File fh, MPI_Offset size)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 6|MPI_FILE_GET_SIZE_ID|int MPI_File_get_size(MPI_File fh, MPI_Offset *size)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
@@ -37,43 +37,43 @@
 8|MPI_FILE_GET_AMODE_ID|int MPI_File_get_amode(MPI_File fh, int *amode)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 9|MPI_FILE_SET_INFO_ID|int MPI_File_set_info(MPI_File fh, MPI_Info info)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 10|MPI_FILE_GET_INFO_ID|int MPI_File_get_info(MPI_File fh, MPI_Info *pinfo)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
-11|MPI_FILE_SET_VIEW_ID|int MPI_File_set_view(MPI_File fh, MPI_Offset size, MPI_Datatype etype, MPI_Datatype filetype, char *datarep, MPI_Info info)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+11|MPI_FILE_SET_VIEW_ID|int MPI_File_set_view(MPI_File fh, MPI_Offset size, MPI_Datatype etype, MPI_Datatype filetype, const char *datarep, MPI_Info info)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 12|MPI_FILE_GET_VIEW_ID|int MPI_File_get_view(MPI_File fh, MPI_Offset *size, MPI_Datatype *etype, MPI_Datatype *filetype, char *datarep)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 13|MPI_FILE_READ_AT_ID|int MPI_File_read_at(MPI_File fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 14|MPI_FILE_READ_AT_ALL_ID|int MPI_File_read_at_all(MPI_File fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-15|MPI_FILE_WRITE_AT_ID|int MPI_File_write_at(MPI_File fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-16|MPI_FILE_WRITE_AT_ALL_ID|int MPI_File_write_at_all(MPI_File fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+15|MPI_FILE_WRITE_AT_ID|int MPI_File_write_at(MPI_File fh, MPI_Offset offset, const void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+16|MPI_FILE_WRITE_AT_ALL_ID|int MPI_File_write_at_all(MPI_File fh, MPI_Offset offset, const void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 17|MPI_FILE_IREAD_AT_ID|int MPI_File_iread_at(MPI_File fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPIO_Request *request)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-18|MPI_FILE_IWRITE_AT_ID|int MPI_File_iwrite_at(MPI_File fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPIO_Request *request)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+18|MPI_FILE_IWRITE_AT_ID|int MPI_File_iwrite_at(MPI_File fh, MPI_Offset offset, const void *buf, int count, MPI_Datatype datatype, MPIO_Request *request)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 19|MPI_FILE_READ_ID|int MPI_File_read(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 20|MPI_FILE_READ_ALL_ID|int MPI_File_read_all(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-21|MPI_FILE_WRITE_ID|int MPI_File_write(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-22|MPI_FILE_WRITE_ALL_ID|int MPI_File_write_all(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+21|MPI_FILE_WRITE_ID|int MPI_File_write(MPI_File fh, const void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+22|MPI_FILE_WRITE_ALL_ID|int MPI_File_write_all(MPI_File fh, const void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 23|MPI_FILE_IREAD_ID|int MPI_File_iread(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPIO_Request *request)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-24|MPI_FILE_IWRITE_ID|int MPI_File_iwrite(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPIO_Request *request)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+24|MPI_FILE_IWRITE_ID|int MPI_File_iwrite(MPI_File fh, const void *buf, int count, MPI_Datatype datatype, MPIO_Request *request)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 25|MPI_FILE_SEEK_ID|int MPI_File_seek(MPI_File fh, MPI_Offset offset, int whence)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 26|MPI_FILE_GET_POSITION_ID|int MPI_File_get_position(MPI_File fh, MPI_Offset *size)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 27|MPI_FILE_GET_BYTE_OFFSET_ID|int MPI_File_get_byte_offset(MPI_File fh, MPI_Offset offset, MPI_Offset *disp)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 28|MPI_FILE_READ_SHARED_ID|int MPI_File_read_shared(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-29|MPI_FILE_WRITE_SHARED_ID|int MPI_File_write_shared(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+29|MPI_FILE_WRITE_SHARED_ID|int MPI_File_write_shared(MPI_File fh, const void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 30|MPI_FILE_IREAD_SHARED_ID|int MPI_File_iread_shared(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPIO_Request *request)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-31|MPI_FILE_IWRITE_SHARED_ID|int MPI_File_iwrite_shared(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPIO_Request *request)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+31|MPI_FILE_IWRITE_SHARED_ID|int MPI_File_iwrite_shared(MPI_File fh, const void *buf, int count, MPI_Datatype datatype, MPIO_Request *request)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 32|MPI_FILE_READ_ORDERED_ID|int MPI_File_read_ordered(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-33|MPI_FILE_WRITE_ORDERED_ID|int MPI_File_write_ordered(MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+33|MPI_FILE_WRITE_ORDERED_ID|int MPI_File_write_ordered(MPI_File fh, const void *buf, int count, MPI_Datatype datatype, MPI_Status *status)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 34|MPI_FILE_SEEK_SHARED_ID|int MPI_File_seek_shared(MPI_File fh, MPI_Offset offset, int whence)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 35|MPI_FILE_GET_POSITION_SHARED_ID|int MPI_File_get_position_shared(MPI_File fh, MPI_Offset *size)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 36|MPI_FILE_READ_AT_ALL_BEGIN_ID|int MPI_File_read_at_all_begin(MPI_File fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 37|MPI_FILE_READ_AT_ALL_END_ID|int MPI_File_read_at_all_end(MPI_File fh, void *buf, MPI_Status *status)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
-38|MPI_FILE_WRITE_AT_ALL_BEGIN_ID|int MPI_File_write_at_all_begin(MPI_File fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-39|MPI_FILE_WRITE_AT_ALL_END_ID|int MPI_File_write_at_all_end(MPI_File fh, void *buf, MPI_Status *status)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+38|MPI_FILE_WRITE_AT_ALL_BEGIN_ID|int MPI_File_write_at_all_begin(MPI_File fh, MPI_Offset offset, const void *buf, int count, MPI_Datatype datatype)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+39|MPI_FILE_WRITE_AT_ALL_END_ID|int MPI_File_write_at_all_end(MPI_File fh, const void *buf, MPI_Status *status)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 40|MPI_FILE_READ_ALL_BEGIN_ID|int MPI_File_read_all_begin(MPI_File fh, void *buf, int count, MPI_Datatype datatype)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 41|MPI_FILE_READ_ALL_END_ID|int MPI_File_read_all_end(MPI_File fh, void *buf, MPI_Status *status)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
-42|MPI_FILE_WRITE_ALL_BEGIN_ID|int MPI_File_write_all_begin(MPI_File fh, void *buf, int count, MPI_Datatype datatype)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-43|MPI_FILE_WRITE_ALL_END_ID|int MPI_File_write_all_end(MPI_File fh, void *buf, MPI_Status *status)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+42|MPI_FILE_WRITE_ALL_BEGIN_ID|int MPI_File_write_all_begin(MPI_File fh, const void *buf, int count, MPI_Datatype datatype)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+43|MPI_FILE_WRITE_ALL_END_ID|int MPI_File_write_all_end(MPI_File fh, const void *buf, MPI_Status *status)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 44|MPI_FILE_READ_ORDERED_BEGIN_ID|int MPI_File_read_ordered_begin(MPI_File fh, void *buf, int count, MPI_Datatype datatype)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
 45|MPI_FILE_READ_ORDERED_END_ID|int MPI_File_read_ordered_end(MPI_File fh, void *buf, MPI_Status *status)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
-46|MPI_FILE_WRITE_ORDERED_BEGIN_ID|int MPI_File_write_ordered_begin(MPI_File fh, void *buf, int count, MPI_Datatype datatype)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
-47|MPI_FILE_WRITE_ORDERED_END_ID|int MPI_File_write_ordered_end(MPI_File fh, void *buf, MPI_Status *status)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
+46|MPI_FILE_WRITE_ORDERED_BEGIN_ID|int MPI_File_write_ordered_begin(MPI_File fh, const void *buf, int count, MPI_Datatype datatype)||CS_REMOTE,BYTES_COUNT_DATATYPE,RANK_NONE,DATA_NONE,COMM_NONE
+47|MPI_FILE_WRITE_ORDERED_END_ID|int MPI_File_write_ordered_end(MPI_File fh, const void *buf, MPI_Status *status)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 48|MPI_FILE_SET_ATOMICITY_ID|int MPI_File_set_atomicity(MPI_File fh, int flag)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 49|MPI_FILE_GET_ATOMICITY_ID|int MPI_File_get_atomicity(MPI_File fh, int *flag)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
 50|MPI_FILE_SYNC_ID|int MPI_File_sync(MPI_File fh)||CS_REMOTE,BYTES_NONE,RANK_NONE,DATA_NONE,COMM_NONE
