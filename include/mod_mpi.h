@@ -240,6 +240,20 @@ extern MPI_Group ipm_world_group;
   (id_==MPI_Gather)      
 
 
+#define IS_MPI3_CALL_ID(id_)                                    \
+  (id_==MPI_IBCAST_ID)         || (id_==MPI_IREDUCE_ID) ||      \
+  (id_==MPI_IREDUCE_SCATTER_ID)|| (id_==MPI_IGATHER_ID) ||      \
+  (id_==MPI_IGATHERV_ID)       || (id_==MPI_ISCATTER_ID) ||     \
+  (id_==MPI_ISCATTERV_ID)      || (id_==MPI_ISCAN_ID) ||        \
+  (id_==MPI_IALLGATHER_ID)     || (id_==MPI_IALLGATHERV_ID) ||  \
+  (id_==MPI_IALLREDUCE_ID)     || (id_==MPI_IALLTOALL_ID) ||    \
+  (id_==MPI_IALLTOALLV_ID)
+
+
+#define IS_NOT_MPI3_CALL_ID(id_)                                \
+  ((IS_MPI3_CALL_ID(id_)) == 0)
+
+
 #ifdef NEED_C2F_MACROS 
 
 #define MPI_Status_c2f(c_,f_) *((MPI_Status *)f_)=*((MPI_Status *)c_)

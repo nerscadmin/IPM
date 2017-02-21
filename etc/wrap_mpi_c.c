@@ -32,6 +32,9 @@
 /** HEADER_END **/
 
 
+/* Ensure IPM is backwards compatible with MPI-1 and MPI-2 implementations */
+#if MPI_VERSION >= 3 || IS_NOT_MPI3_CALL_ID(__CFID__)
+
 /* ---- wrapping __CFNAME__ ---- */
 /*
  * strings in the form __IDENTIFIER__ are replaced 
@@ -171,5 +174,6 @@ __CRET__ __CFNAME__(__CPARAMS__)
 }
 
 
-
-
+/* End:
+Ensure IPM is backwards compatible with MPI-1 and MPI-2 implementations */
+#endif
