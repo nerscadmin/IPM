@@ -52,4 +52,5 @@ int main( int argc, char* argv[] )
   fprintf(stdout, "DONE (rank %d)!\n", myrank);
   
   MPI_Finalize();
+  return 0;
 }

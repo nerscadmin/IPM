@@ -97,5 +97,6 @@ if (taskid > MASTER) {
 
   }  /* end of worker */
   MPI_Finalize();
+  return 0;
 } 
 

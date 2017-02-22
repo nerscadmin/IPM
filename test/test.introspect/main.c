@@ -75,4 +75,5 @@ int main( int argc, char* argv[] )
   fprintf(stderr, "%s happened %d times\n", act, adata.ncalls);
   
   MPI_Finalize();
+  return 0;
 }

@@ -8,5 +8,6 @@ int main()
   f = fopen("test.dat", "w");
   fprintf(f, "Hello world\n");
   fclose(f);
+  return 0;
 }
 

@@ -21,4 +21,5 @@ int main( int argc, char* argv[], char** envp )
     }
 
   MPI_Finalize();
+  return 0;
 }

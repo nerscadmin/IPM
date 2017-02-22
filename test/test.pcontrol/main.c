@@ -81,4 +81,5 @@ int main( int argc, char* argv[] )
   MPI_Pcontrol(-1, "main");
 
   MPI_Finalize();
+  return 0;
 }

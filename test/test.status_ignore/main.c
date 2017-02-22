@@ -104,4 +104,5 @@ int main( int argc, char* argv[] )
   fprintf(stderr, "%5d: DONE\n", myrank);
 
   MPI_Finalize();
+  return 0;
 }

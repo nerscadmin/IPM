@@ -66,4 +66,5 @@ int main(int argc, char* argv[])
   // Cleanup
   free(a_h); cudaFree(a_d);
   free(b_h); cudaFree(b_d);
+  return 0;
 }

@@ -14,5 +14,6 @@ int main()
   fgetc( f );
 
   fclose(f);
+  return 0;
 }
 

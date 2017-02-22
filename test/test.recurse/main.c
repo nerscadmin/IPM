@@ -31,6 +31,7 @@ int main( int argc, char* argv[] )
   fibreceiver(myrank, 5);
   
   MPI_Finalize();
+  return 0;
 }
 
 

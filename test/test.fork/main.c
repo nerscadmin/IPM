@@ -42,5 +42,6 @@ int main()
       perror("fork"); /* display error message */
       exit(0); 
     }
+  return 0;
 }
 

@@ -15,4 +15,5 @@ int main(int argc, char *argv[])
 	  myrank, nprocs );
 
   MPI_Finalize();
+  return 0;
 }

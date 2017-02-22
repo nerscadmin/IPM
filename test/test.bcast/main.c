@@ -57,4 +57,5 @@ int main( int argc, char* argv[] )
   MPI_Finalize();
 
   fopen("/dev/null", "r");  
+  return 0;
 }
