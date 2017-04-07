@@ -354,6 +354,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $$key = $value;
     }
     print "# $line"; $do_print = 1; next;
@@ -385,6 +386,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $$key = $value;
     }
    }
@@ -426,6 +428,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $$key = $value;
     }
     if($flags{debug} == 1) {
@@ -438,6 +441,7 @@ while(!$done) {
 
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      if($key !~ "cookie" && $key !~ "mpi_rank") {
       if(defined($jobs{$cookie}{task}{$mpi_rank}{$key})) {
        print "IPM parse: ERROR corrupted input (duplicate task entry?) $cookie:$mpi_rank:$key \n";
@@ -461,6 +465,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $jobs{$cookie}{$key} = $value;
     }
     $jobs{$cookie}{filename} = $fname;
@@ -473,6 +478,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $T->{$key} = $value;
     }
    }
@@ -482,6 +488,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $T->{$key} = $value;
     }
     if($T->{wtime} <= 0.0) {
@@ -496,6 +503,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $T->{$key} = $value;
     }
 # FIXME - deal with plurals in a consistent way : debug hash typo can be hard
@@ -514,6 +522,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $T->{$key} = $value;
     }
     $T->{cmdline} = $2;
@@ -585,6 +594,7 @@ while(!$done) {
     @vp = split("\" ",$rest);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $R->{$key} = $value;
     }
     if(!defined($R->{wtime})) {
@@ -604,6 +614,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $T->{hash_diag}{$key} = $value;
     }
    }
@@ -892,6 +903,7 @@ while(!$done) {
     @vp = split("\" ",$1);
     foreach $kv (@vp) {
      ($key, $value) = split("=\"",$kv);
+     $value =~ s/\"//;
      $T->{$key} = $value;
     }
    }
@@ -1995,7 +2007,7 @@ print TFH<<EOF;
                                                                                 
 EOF
                                                                                 
- printf TFH "#proc getdata\ndata: ";
+ printf TFH "#proc getdata\ndata:\n";
                                                                                 
  foreach $irank (sort numy keys %{$J->{task}} ) {
   $T = \%{$J->{task}{$irank}};
@@ -2060,7 +2072,7 @@ print TFH<<EOF;
                                                                                 
 EOF
                                                                                 
- printf TFH "#proc getdata\ndata: ";
+ printf TFH "#proc getdata\ndata:\n";
                                                                                 
  foreach $irank (sort numy keys %{$J->{task}} ) {
   $T = \%{$J->{task}{$irank}};
@@ -2227,7 +2239,7 @@ $TINT1 = time();
 #proc getdata
 EOF
                                                                                 
- print FH " data: ";
+ print FH " data:\n";
  
  $i = 0;
  foreach $ifunc (reverse(sort jfuncbyttot keys %{$JR->{func}})) {
@@ -2576,7 +2588,7 @@ $TINT1 = time();
 #proc getdata
 EOF
  $i= 0;
- print FH "data: ";
+ print FH "data:\n";
  foreach $irank (reverse(sort taskbymtime keys %{$J->{task}} )) {
    if($report_all == 1) {
     $TR = \%{$J->{task}{$irank}};
@@ -2666,7 +2678,7 @@ $TINT1 = time();
                                                                                 
 #proc getdata
 EOF
- print FH "data: ";
+ print FH "data:\n";
  foreach $irank (reverse(sort taskbymtime keys %{$J->{task}} )) {
    if($report_all == 1) {
     $TR = \%{$J->{task}{$irank}};
@@ -2819,7 +2831,7 @@ $TINT1 = time();
    if($min_call > 1) { $min_call -= 1; }
   }
 
-printf FH "#proc getdata:\ndata: ";
+printf FH "#proc getdata:\ndata:\n";
  
  
  foreach $ikey (reverse(sort jcallsizebyttot keys %{$JR->{mpi}{call_size}})) {
@@ -2950,7 +2962,7 @@ system("$PLOTICUS $PLPRE/mpi_buff_call_abs$tag -$gfmt -o $IMPRE/mpi_buff_call_ab
 #proc getdata
 EOF
  $i = 0;
- print FH "data: ";
+ print FH "data:\n";
  foreach $ihost(reverse(sort hostbyswitch keys %{$J->{host}} )) {
   print FH "$i $ihost $J->{host}{$ihost}{gbyte_tx} $J->{host}{$ihost}{gbyte_rx}\n";
   $i ++;
@@ -3033,7 +3045,7 @@ EOF
 #proc getdata
 EOF
  $i = 0;
- print FH "data: ";
+ print FH "data:\n";
  foreach $ihost(reverse(sort hostbymem keys %{$J->{host}} )) {
   print FH "$i $ihost $J->{host}{$ihost}{gbyte}\n";
   $i ++;
@@ -3818,4 +3830,3 @@ EOF
  close(FH);
  return;
 }
-
