@@ -1945,7 +1945,8 @@ open(FH,">$html_dir/dev.html") or die("Can't open file\n");
 <img src="img/ipm_report_delta.$gfmt">
 </td>
 </tr>
-                                                                                
+
+<!--                                                                                
 <tr> <th align=left bgcolor=lightblue> Hash table coverage (MPI) </th>
 </th> </tr>
 <tr>
@@ -1953,6 +1954,7 @@ open(FH,">$html_dir/dev.html") or die("Can't open file\n");
 <img src="ipm_hash_pmpi.$gfmt">
 </td>
 </tr>
+-->
 
 <tr> <th align=left bgcolor=lightblue> Hash table density </th>
 </th> </tr>
