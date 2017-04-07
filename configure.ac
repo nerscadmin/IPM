@@ -221,6 +221,17 @@ AC_ARG_WITH(libunwind,
     ]
 )  
 
+AC_ARG_WITH(mxmlpath,
+    [ --with-mxmlpath=<path> to libmxml installation.],
+    [
+    if test -d "$withval"; then
+            CXXFLAGS="$CXXFLAGS -I$withval/include"
+    fi
+    ],
+    [
+    ]
+)
+
 AM_CONDITIONAL([ENABLE_MPI], [test "$enable_mod_mpi" = yes])
 AM_CONDITIONAL([ENABLE_SELF_MONITORING], [test "$enable_mod_self_monitor" = yes])
 AM_CONDITIONAL([ENABLE_MPIIO], [test "$enable_mod_mpiio" = yes])
