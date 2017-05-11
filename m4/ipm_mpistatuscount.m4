@@ -18,7 +18,7 @@ for tag in val1 count _count size _ucount count_lo st_count; do
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
-int main(int argc, char *argv[]) {
+int main(int argc, char **argv) {
  MPI_Status s;
  s.$tag = 0;
  return 0;
