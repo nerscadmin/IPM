@@ -23,9 +23,16 @@ static void ipm_pmon_nullify(){
 
 static void parse_pm_counter(const char* file, double* val)
 {
-  FILE *F = fopen(file,"r");
-  fscanf(F, "%lf", val);
-  fclose(F);
+    FILE *F = fopen(file,"r");
+    if (F)
+    {
+        fscanf(F, "%lf", val);
+        fclose(F);
+    }
+    else
+    {
+        *val = 0.0;
+    }
 }
 static double ipm_pmon_sample_energy_mem(){
   double energy;
@@ -72,10 +79,10 @@ static void ipm_pmon_pause(struct region* reg){
 int mod_pmon_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
 {
     int res = 0;
-    double hz;
-    double version;
+    double hz = 0;
+    double version = 0;
     // timestamp of last startup
-    double startup;
+    double startup = 0;
     parse_pm_counter("/sys/cray/pm_counters/raw_scan_hz", &hz);
     parse_pm_counter("/sys/cray/pm_counters/version", &version);
     parse_pm_counter("/sys/cray/pm_counters/startup", &startup);
@@ -120,12 +127,16 @@ int mod_pmon_init(ipm_mod_t* mod, int flags)
   mod->output   = 0;//mod_pmon_output;
   mod->xml      = mod_pmon_xml;
   mod->regfunc  = mod_pmon_region;
-  mod->finalize = 0;//mod_pmon_finalize; //mod_pmon_finalize;
+  mod->finalize = 0; //mod_pmon_finalize;
   mod->name     = "PMON";
 
   for( i=0; i<MAXNUM_REGIONS; i++ ) {
         pmondata[i].node_initial_energy = 0;
         pmondata[i].node_final_energy = 0;
+        pmondata[i].cpu_initial_energy = 0;
+        pmondata[i].cpu_final_energy = 0;
+        pmondata[i].mem_initial_energy = 0;
+        pmondata[i].mem_final_energy = 0;
   }
 
   ipm_pmon_nullify();

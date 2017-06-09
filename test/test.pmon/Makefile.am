@@ -1,13 +1,13 @@
 
-bin_PROGRAMS = pmon-dgemm pmon-dgemm.ipm
+bin_PROGRAMS = pmon pmon.ipm
 
-PMON_SOURCES = pmon-dgemm.c
+PMON_SOURCES = pmon.c
 
 CC = $(MPICC)
-CFLAGS+=-O3 -fopenmp -Wall -Wextra -g
+CFLAGS+=  -Wall -Wextra
 pmon_ipm_SOURCES = $(PMON_SOURCES)
 
-pmon_dgemm_ipm_LDADD   = -L$(top_builddir)/src/.libs/ -lipm
+pmon_ipm_LDADD   = -L$(top_builddir)/src/.libs/ -lipm
 
 pmon_SOURCES = $(PMON_SOURCES)
 

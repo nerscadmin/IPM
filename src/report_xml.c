@@ -905,7 +905,17 @@ int report_xml_local(unsigned long flags)
 }
 
 
-
+/*
+ * This function is the primary function of the serial xml dump path. In this
+ * path, all nodes report their regions, etc, to the leader. Most module
+ * data is not a part of this. However, for each task_data (process), the
+ * output and xml functions are called. This means that in the serial path,
+ * all functions are called <on the leader>. No process-specific data that 
+ * has not been transferred to the leader before this point will be printed.
+ * MPI is potentially dead by this point, so MPI calls may not be used in these
+ * module functions.
+ * tallen 06/09/2017
+ */
 #ifdef HAVE_MPI
 int report_xml_atroot(unsigned long flags)
 {

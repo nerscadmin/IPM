@@ -255,17 +255,17 @@ void ipm_print_region(FILE *f, banner_t *data, regstats_t *reg)
     fprintf(f, "#    -cpu   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n", cpu_joules, cpu_joules/ntasks, reg->cpu_energy.dmin, reg->cpu_energy.dmax);
     fprintf(f, "#    -mem   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n", mem_joules, mem_joules/ntasks, reg->mem_energy.dmin, reg->mem_energy.dmax);
     fprintf(f, "#    -other :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n", other_joules, other_joules/ntasks, reg->other_energy.dmin, reg->other_energy.dmax);
-    fprintf(f, "\n");
+    fprintf(f, "#\n");
     fprintf(f, "# power (w) :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
             (joules/reg->wallt.dsum) * (task.nhosts), joules/reg->wallt.dsum,
             reg->energy.dmin/(reg->wallt.dsum/(double)task.ntasks), reg->energy.dmax/(reg->wallt.dsum/(double)task.ntasks));
-    fprintf(f, "     -cpu   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
+    fprintf(f, "#    -cpu   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
             (cpu_joules/reg->wallt.dsum) * (task.nhosts), cpu_joules/reg->wallt.dsum,
             reg->cpu_energy.dmin/(reg->wallt.dsum/(double)task.ntasks), reg->cpu_energy.dmax/(reg->wallt.dsum/(double)task.ntasks));
-    fprintf(f, "     -mem   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
+    fprintf(f, "#    -mem   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
             (mem_joules/reg->wallt.dsum) * (task.nhosts), mem_joules/reg->wallt.dsum,
             reg->mem_energy.dmin/(reg->wallt.dsum/(double)task.ntasks), reg->mem_energy.dmax/(reg->wallt.dsum/(double)task.ntasks));
-    fprintf(f, "     -other :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
+    fprintf(f, "#    -other :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
             (other_joules/reg->wallt.dsum) * (task.nhosts), other_joules/reg->wallt.dsum,
             reg->other_energy.dmin/(reg->wallt.dsum/(double)task.ntasks), reg->other_energy.dmax/(reg->wallt.dsum/(double)task.ntasks));
 
