@@ -86,6 +86,9 @@ typedef struct
   gstats_t cufftp;    
 
   gstats_t energy;
+  gstats_t cpu_energy;
+  gstats_t mem_energy;
+  gstats_t other_energy;
   
   /* --- everything below is only 
      touched if (flags&BANNER_FULL) --- */

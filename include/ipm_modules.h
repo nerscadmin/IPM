@@ -19,6 +19,7 @@
 #define IPM_MODULE_KEYHIST          10
 #define IPM_MODULE_PROCCTRL         11
 #define IPM_MODULE_CLUSTERING       12
+#define IPM_MODULE_PMON             13
 
 #define MOD_MPI_OFFSET                  0
 #define MOD_MPIIO_OFFSET                80 

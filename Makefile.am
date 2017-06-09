@@ -3,7 +3,7 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = src bin etc utils
 
 tests : all
-	cd test && $(MAKE) || exit 1	
+	cd test && $(MAKE) || exit 1
 
 .PHONY: tests
 

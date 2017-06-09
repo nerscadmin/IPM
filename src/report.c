@@ -42,34 +42,37 @@
 #include "mod_cufft.h"
 #include "GEN.calltable_cufft.h"
 #endif
+#ifdef HAVE_PMON
+#include "mod_pmon.h"
+#endif
 
 
 
-/* 
+/*
  * compute global statistics for hashtable statistics
- * - min of min 
+ * - min of min
  * - max of max
  * - sum of sum
  */
-void gstats_hent(ipm_hent_t hent, gstats_t *global) 
+void gstats_hent(ipm_hent_t hent, gstats_t *global)
 {
 #ifdef HAVE_MPI
-  IPM_REDUCE( &hent.t_tot, &(global->dmin), 1, 
+  IPM_REDUCE( &hent.t_tot, &(global->dmin), 1,
 	      MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
-  
-  IPM_REDUCE( &hent.t_tot, &(global->dmax), 1, 
+
+  IPM_REDUCE( &hent.t_tot, &(global->dmax), 1,
 	      MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-  
-  IPM_REDUCE( &hent.t_tot, &(global->dsum), 1, 
+
+  IPM_REDUCE( &hent.t_tot, &(global->dsum), 1,
 	      MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
-  IPM_REDUCE( &hent.count, &(global->nmin), 1, 
+  IPM_REDUCE( &hent.count, &(global->nmin), 1,
 	      IPM_COUNT_MPITYPE, MPI_MIN, 0, MPI_COMM_WORLD);
 
-  IPM_REDUCE( &hent.count, &(global->nmax), 1, 
+  IPM_REDUCE( &hent.count, &(global->nmax), 1,
 	      IPM_COUNT_MPITYPE, MPI_MAX, 0, MPI_COMM_WORLD);
 
-  IPM_REDUCE( &hent.count, &(global->nsum), 1, 
+  IPM_REDUCE( &hent.count, &(global->nsum), 1,
 	      IPM_COUNT_MPITYPE, MPI_SUM, 0, MPI_COMM_WORLD);
 /* on the cray with IPM_REPORT =full this causes a message
    flood and a crash - to prevent this put in a barrier
@@ -86,7 +89,7 @@ void gstats_hent(ipm_hent_t hent, gstats_t *global)
 }
 
 /* global statistics for a single double value */
-void gstats_double(double val, gstats_t *global) 
+void gstats_double(double val, gstats_t *global)
 {
 #ifdef HAVE_MPI
   IPM_REDUCE( &val, &(global->dmin), 1,
@@ -107,7 +110,7 @@ void gstats_double(double val, gstats_t *global)
 }
 
 /* global statistics for a single count */
-void gstats_count(IPM_COUNT_TYPE count, gstats_t *global) 
+void gstats_count(IPM_COUNT_TYPE count, gstats_t *global)
 {
 #ifdef HAVE_MPI
   IPM_REDUCE( &count, &(global->nmin), 1,
@@ -127,7 +130,7 @@ void gstats_count(IPM_COUNT_TYPE count, gstats_t *global)
 }
 
 
-void clear_region_stats(regstats_t *stats) 
+void clear_region_stats(regstats_t *stats)
 {
   int i;
 
@@ -147,6 +150,10 @@ void clear_region_stats(regstats_t *stats)
   GSTATS_CLEAR( stats->cublasp );
   GSTATS_CLEAR( stats->cufft );
   GSTATS_CLEAR( stats->cufftp );
+  GSTATS_CLEAR( stats->energy );
+  GSTATS_CLEAR( stats->cpu_energy );
+  GSTATS_CLEAR( stats->mem_energy );
+  GSTATS_CLEAR( stats->other_energy );
 
   for(i=0; i<MAXSIZE_CALLTABLE; i++ ) {
     GSTATS_CLEAR(stats->fullstats[i]);
@@ -155,16 +162,17 @@ void clear_region_stats(regstats_t *stats)
 
 
 
-void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int first) 
+void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int first)
 {
   int i, noreg;
   region_t * tmp;
   scanspec_t spec;
   double wallt, gflops;
+  double energy, cpu_energy, mem_energy, other_energy;
   scanstats_t hmpi, hpio, homp, hompi;
   scanstats_t hcuda, hcublas, hcufft;
   ipm_hent_t hall[MAXSIZE_CALLTABLE];
-  
+
   HENT_CLEAR(hmpi.hent);
   HENT_CLEAR(hpio.hent);
   HENT_CLEAR(homp.hent);
@@ -174,11 +182,12 @@ void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int 
   HENT_CLEAR(hcublas.hent);
   HENT_CLEAR(hcufft.hent);
 
+
   /* is this for ipm_noregion? */
   noreg=0;
   if( reg==ipm_rstack->child && !incl )
     noreg=1;
-  
+
   for( i=0; i<MAXSIZE_CALLTABLE; i++ ) {
     stats->fullstats[i].activity=i;
     HENT_CLEAR(hall[i]);
@@ -193,59 +202,66 @@ void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int 
   wallt = reg->wtime;
 
 #ifdef HAVE_PAPI
-  gflops = ipm_papi_gflops(reg->ctr, wallt);
+  //gflops = ipm_papi_gflops(reg->ctr, wallt);
 #else
   gflops = 0.0;
 #endif
 
-#ifdef HAVE_MPI  
-  scanspec_restrict_activity( &spec, 
+#ifdef HAVE_MPI
+  scanspec_restrict_activity( &spec,
 			      MPI_MINID_GLOBAL, MPI_MAXID_GLOBAL);
   htable_scan( ipm_htable, &hmpi, spec );
-#endif 
+#endif
 
 #ifdef HAVE_POSIXIO
-  scanspec_restrict_activity( &spec, 
+  scanspec_restrict_activity( &spec,
 			      POSIXIO_MINID_GLOBAL, POSIXIO_MAXID_GLOBAL);
   htable_scan( ipm_htable, &hpio, spec );
 #endif
 
 #ifdef HAVE_OMPTRACEPOINTS
-  scanspec_restrict_activity( &spec, 
+  scanspec_restrict_activity( &spec,
 			      OMP_PARALLEL_ID_GLOBAL, OMP_PARALLEL_ID_GLOBAL );
   htable_scan( ipm_htable, &homp, spec );
-  
-  scanspec_restrict_activity( &spec, 
+
+  scanspec_restrict_activity( &spec,
 			      OMP_IDLE_ID_GLOBAL, OMP_IDLE_ID_GLOBAL );
   htable_scan( ipm_htable, &hompi, spec );
-#endif 
+#endif
 
 #ifdef HAVE_CUDA
-  scanspec_restrict_activity( &spec, 
+  scanspec_restrict_activity( &spec,
 			      CUDA_MINID_GLOBAL, CUDA_MAXID_GLOBAL);
   htable_scan( ipm_htable, &hcuda, spec );
 #endif
 
 #ifdef HAVE_CUBLAS
-  scanspec_restrict_activity( &spec, 
+  scanspec_restrict_activity( &spec,
 			      CUBLAS_MINID_GLOBAL, CUBLAS_MAXID_GLOBAL);
   htable_scan( ipm_htable, &hcublas, spec );
 #endif
 
 #ifdef HAVE_CUFFT
-  scanspec_restrict_activity( &spec, 
+  scanspec_restrict_activity( &spec,
 			      CUFFT_MINID_GLOBAL, CUFFT_MAXID_GLOBAL);
   htable_scan( ipm_htable, &hcufft, spec );
 #endif
 
-  /* -- compute per-call local stats for full banner -- */ 
+#ifdef HAVE_PMON
+    energy = reg->energy;
+    cpu_energy = reg->cpu_energy;
+    mem_energy = reg->mem_energy;
+    other_energy = reg->other_energy;
+#endif
+
+  /* -- compute per-call local stats for full banner -- */
   if( task.flags&FLAG_REPORT_FULL )
     {
       scanspec_unrestrict_activity( &spec );
       htable_scan_full(ipm_htable, hall, spec);
-    }  
+    }
 
-  if( first ) 
+  if( first )
     {
       GSTATS_SET( stats->wallt, wallt, 1 );
       GSTATS_SET( stats->gflops, gflops, 1 );
@@ -258,26 +274,32 @@ void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int 
       GSTATS_SET( stats->cuda,   hcuda.hent.t_tot,   hcuda.hent.count );
       GSTATS_SET( stats->cublas, hcublas.hent.t_tot, hcublas.hent.count );
       GSTATS_SET( stats->cufft,  hcufft.hent.t_tot,  hcufft.hent.count );
-
+      #ifdef HAVE_PMON
+      GSTATS_SET( stats->energy,  energy, 1 );
+      GSTATS_SET( stats->cpu_energy,  cpu_energy, 1 );
+      GSTATS_SET( stats->mem_energy,  mem_energy, 1 );
+      GSTATS_SET( stats->other_energy,  other_energy, 1 );
+      #endif
       if( task.flags&FLAG_REPORT_FULL ) {
 	for( i=0; i<MAXSIZE_CALLTABLE; i++ ) {
 	  GSTATS_SET( stats->fullstats[i], hall[i].t_tot, hall[i].count );
-	}  
+	}
       }
     }
-  else 
+  else
     {
       /* wallt is already inclusive, so nothing to do here */
       /*  Appro
       *
       *   Since wallt is inclusive, gflops is inclusive
+      *
+      *   energy too
       */
       GSTATS_ADD( stats->mpi,   hmpi.hent.t_tot,  hmpi.hent.count );
       GSTATS_ADD( stats->pio,   hpio.hent.t_tot,  hpio.hent.count );
       GSTATS_ADD( stats->pio_GiB, hpio.bytesum/(1024.0 * 1024.0 * 1024.0), 1 );
       GSTATS_ADD( stats->omp,   homp.hent.t_tot,  homp.hent.count );
       GSTATS_ADD( stats->ompi,  hompi.hent.t_tot, hompi.hent.count );
-
       GSTATS_ADD( stats->cuda,   hcuda.hent.t_tot,   hcuda.hent.count );
       GSTATS_ADD( stats->cublas, hcublas.hent.t_tot, hcublas.hent.count );
       GSTATS_ADD( stats->cufft,  hcufft.hent.t_tot,  hcufft.hent.count );
@@ -285,25 +307,26 @@ void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int 
       if( task.flags&FLAG_REPORT_FULL ) {
 	for( i=0; i<MAXSIZE_CALLTABLE; i++ ) {
 	  GSTATS_ADD( stats->fullstats[i], hall[i].t_tot, hall[i].count );
-	}  
+	}
       }
     }
-    
+
   if( incl && reg!=ipm_rstack->child ) {
     tmp=reg->child;
     while(tmp) {
       compute_local_region_stats(tmp, stats, incl, 0);
       tmp=tmp->next;
     }
-  }  
+  }
 }
 
-void compute_region_stats(region_t *reg, regstats_t *stats, int incl) 
+void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
 {
   int i, noreg;
   region_t *tmp;
   double mpip, piop, ompp, gflops, wallt, pio_GiB;
   double cudap, cublasp, cufftp;
+  double energy, cpu_energy, mem_energy, other_energy;
   ipm_hent_t hmpi, hpio, homp, hompi;
   ipm_hent_t hcuda, hcublas, hcufft;
   ipm_hent_t hall[MAXSIZE_CALLTABLE];
@@ -316,15 +339,25 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
   /* -- compute local stats -- */
   compute_local_region_stats(reg, stats, incl, 1);
 
+  energy = stats->energy.dsum;
+  cpu_energy = stats->cpu_energy.dsum;
+  mem_energy = stats->mem_energy.dsum;
+  other_energy = stats->other_energy.dsum;
+
   wallt  = stats->wallt.dsum;
   gflops = stats->gflops.dsum;
 
-  /* handle special case of walltime for 
+  /* handle special case of walltime for
      ipm_noregion */
   if( noreg ) {
     tmp=reg->child;
     while(tmp) {
       wallt-=tmp->wtime;
+      energy-=tmp->energy;
+      cpu_energy -= tmp->cpu_energy;
+      mem_energy -= tmp->mem_energy;
+      other_energy -= tmp->other_energy;
+
       tmp=tmp->next;
     }
   }
@@ -352,7 +385,7 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
 
   hmpi.t_tot = stats->mpi.dsum;
   hmpi.count = stats->mpi.nsum;
-  
+
   hpio.t_tot = stats->pio.dsum;
   hpio.count = stats->pio.nsum;
 
@@ -375,7 +408,7 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
     for( i=0; i<MAXSIZE_CALLTABLE; i++ ) {
       hall[i].t_tot = stats->fullstats[i].dsum;
       hall[i].count = stats->fullstats[i].nsum;
-    }  
+    }
   }
 
   /* -- compute global stats -- */
@@ -386,6 +419,13 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
   gstats_double( ompp,   &(stats->ompp) );
   gstats_double( pio_GiB, &(stats->pio_GiB) );
 
+#ifdef HAVE_PMON
+  gstats_double( energy, &(stats->energy) );
+  gstats_double( cpu_energy, &(stats->cpu_energy) );
+  gstats_double( mem_energy, &(stats->mem_energy) );
+  gstats_double( other_energy, &(stats->other_energy) );
+#endif
+
   gstats_hent( hmpi,  &(stats->mpi) );
   gstats_hent( hpio,  &(stats->pio) );
   gstats_hent( homp,  &(stats->omp) );
@@ -395,10 +435,11 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
   gstats_hent( hcublas, &(stats->cublas) );
   gstats_hent( hcufft,  &(stats->cufft) );
 
+
   if( task.flags&FLAG_REPORT_FULL ) {
     for( i=0; i<MAXSIZE_CALLTABLE; i++ ) {
       gstats_hent(hall[i], &(stats->fullstats[i]));
-    }  
+    }
   }
 }
 
@@ -411,7 +452,7 @@ void ipm_banner(FILE *f)
   ipm_hent_t stats_omp;
   ipm_hent_t stats_ompi;
   double wallt, gflops, mpip, piop, ompp;
-  ipm_hent_t stats_all[MAXSIZE_CALLTABLE];  
+  ipm_hent_t stats_all[MAXSIZE_CALLTABLE];
   int i, j;
 
   for( i=0; i<MAXNUM_REGIONS; i++ )  {
@@ -422,7 +463,7 @@ void ipm_banner(FILE *f)
       }
   }
 
-  
+
   banner.flags=0;
 #ifdef HAVE_MPI
   banner.flags|=BANNER_HAVE_MPI;
@@ -442,8 +483,11 @@ void ipm_banner(FILE *f)
 #ifdef HAVE_CUFFT
   banner.flags|=BANNER_HAVE_CUFFT;
 #endif
-  
-  if( task.flags&FLAG_REPORT_FULL ) 
+#ifdef HAVE_PMON
+  banner.flags|=BANNER_HAVE_ENERGY;
+#endif
+
+  if( task.flags&FLAG_REPORT_FULL )
     {
       banner.flags|=BANNER_FULL;
       for( i=0; i<MAXSIZE_CALLTABLE; i++ ) {
@@ -452,46 +496,45 @@ void ipm_banner(FILE *f)
     }
 
   gstats_double( task.procmem, &(banner.procmem) );
-  
+
   /* --- compute statistics for whole app --- */
   clear_region_stats( &(banner.app) );
   compute_region_stats(ipm_rstack->child, &(banner.app), 1);
-
   for( j=2; j<MAXNUM_REGIONS; j++ ) {
     region_t *reg=0;
     region_t *tmp=0;
-    
+
     reg = rstack_find_region_by_id(ipm_rstack, j);
     if( reg ) {
-      if( !((task.flags)&FLAG_NESTED_REGIONS) && 
+      if( !((task.flags)&FLAG_NESTED_REGIONS) &&
 	  reg->parent!=ipm_rstack->child ) {
 	continue;
       }
-      
+
       banner.regions[j].valid=1;
       strncpy(banner.regions[j].name, reg->name, MAXSIZE_REGLABEL);
-	
+
       /* record the nesting */
       tmp=reg;
       for( i=0; i<MAXNUM_REGNESTING; i++ ) {
-	if(!tmp || tmp==task.rstack) 
+	if(!tmp || tmp==task.rstack)
 	  break;
 	strncpy(banner.regions[j].nesting[i], tmp->name, MAXSIZE_REGLABEL);
 	tmp=tmp->parent;
       }
-      
+
       clear_region_stats( &(banner.regions[j]) );
-      compute_region_stats(reg, &(banner.regions[j]), 1);	
+      compute_region_stats(reg, &(banner.regions[j]), 1);
     }
-  } 
+  }
 
   /* --- compute statistics for ipm_noregion --- */
   clear_region_stats( &(banner.regions[1]) );
   compute_region_stats(ipm_rstack->child, &(banner.regions[1]), 0);
   sprintf(banner.regions[1].name, "ipm_noregion");
-  banner.regions[1].valid=1;  
-  
-  
+  banner.regions[1].valid=1;
+
+
 #ifdef HAVE_MPI
   PMPI_Barrier(MPI_COMM_WORLD);
 #endif
@@ -499,7 +542,7 @@ void ipm_banner(FILE *f)
   if( task.taskid==0 ) {
 
     banner.app.valid=1;
-    banner.app.name[0]='\0';    
+    banner.app.name[0]='\0';
 
     /* --- prepare banner with data from task 0 --- */
 
@@ -515,7 +558,6 @@ void ipm_banner(FILE *f)
 
     strcpy(banner.cmdline, (const char*)task.exec_cmdline);
     strcpy(banner.hostname, task.hostname);
-
     /* --- print it --- */
     ipm_print_banner(f, &banner);
   }
