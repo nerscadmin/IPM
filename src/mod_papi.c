@@ -11,6 +11,7 @@
 #include "ipm_debug.h"
 #include "ipm_modules.h"
 #include "mod_papi.h"
+#include "report.h"
 
 /* 
    uncomment the following #define to enable multiplexing, 

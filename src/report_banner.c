@@ -241,7 +241,6 @@ void ipm_print_region(FILE *f, banner_t *data, regstats_t *reg)
 	  data->procmem.dsum, data->procmem.dsum/(double)ntasks,
 	  data->procmem.dmin, data->procmem.dmax);
 
-<<<<<<< HEAD
   if( data->flags&BANNER_HAVE_ENERGY ) {
     double joules =  reg->energy.dsum;
     double cpu_joules =  reg->cpu_energy.dsum;
