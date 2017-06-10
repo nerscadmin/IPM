@@ -42,37 +42,34 @@
 #include "mod_cufft.h"
 #include "GEN.calltable_cufft.h"
 #endif
-#ifdef HAVE_PMON
-#include "mod_pmon.h"
-#endif
 
 
 
-/*
+/* 
  * compute global statistics for hashtable statistics
- * - min of min
+ * - min of min 
  * - max of max
  * - sum of sum
  */
-void gstats_hent(ipm_hent_t hent, gstats_t *global)
+void gstats_hent(ipm_hent_t hent, gstats_t *global) 
 {
 #ifdef HAVE_MPI
-  IPM_REDUCE( &hent.t_tot, &(global->dmin), 1,
+  IPM_REDUCE( &hent.t_tot, &(global->dmin), 1, 
 	      MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
-
-  IPM_REDUCE( &hent.t_tot, &(global->dmax), 1,
+  
+  IPM_REDUCE( &hent.t_tot, &(global->dmax), 1, 
 	      MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-
-  IPM_REDUCE( &hent.t_tot, &(global->dsum), 1,
+  
+  IPM_REDUCE( &hent.t_tot, &(global->dsum), 1, 
 	      MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
-  IPM_REDUCE( &hent.count, &(global->nmin), 1,
+  IPM_REDUCE( &hent.count, &(global->nmin), 1, 
 	      IPM_COUNT_MPITYPE, MPI_MIN, 0, MPI_COMM_WORLD);
 
-  IPM_REDUCE( &hent.count, &(global->nmax), 1,
+  IPM_REDUCE( &hent.count, &(global->nmax), 1, 
 	      IPM_COUNT_MPITYPE, MPI_MAX, 0, MPI_COMM_WORLD);
 
-  IPM_REDUCE( &hent.count, &(global->nsum), 1,
+  IPM_REDUCE( &hent.count, &(global->nsum), 1, 
 	      IPM_COUNT_MPITYPE, MPI_SUM, 0, MPI_COMM_WORLD);
 /* on the cray with IPM_REPORT =full this causes a message
    flood and a crash - to prevent this put in a barrier
@@ -89,7 +86,7 @@ void gstats_hent(ipm_hent_t hent, gstats_t *global)
 }
 
 /* global statistics for a single double value */
-void gstats_double(double val, gstats_t *global)
+void gstats_double(double val, gstats_t *global) 
 {
 #ifdef HAVE_MPI
   IPM_REDUCE( &val, &(global->dmin), 1,
@@ -110,7 +107,7 @@ void gstats_double(double val, gstats_t *global)
 }
 
 /* global statistics for a single count */
-void gstats_count(IPM_COUNT_TYPE count, gstats_t *global)
+void gstats_count(IPM_COUNT_TYPE count, gstats_t *global) 
 {
 #ifdef HAVE_MPI
   IPM_REDUCE( &count, &(global->nmin), 1,
@@ -130,7 +127,7 @@ void gstats_count(IPM_COUNT_TYPE count, gstats_t *global)
 }
 
 
-void clear_region_stats(regstats_t *stats)
+void clear_region_stats(regstats_t *stats) 
 {
   int i;
 
@@ -182,12 +179,11 @@ void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int 
   HENT_CLEAR(hcublas.hent);
   HENT_CLEAR(hcufft.hent);
 
-
   /* is this for ipm_noregion? */
   noreg=0;
   if( reg==ipm_rstack->child && !incl )
     noreg=1;
-
+  
   for( i=0; i<MAXSIZE_CALLTABLE; i++ ) {
     stats->fullstats[i].activity=i;
     HENT_CLEAR(hall[i]);
@@ -385,7 +381,7 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
 
   hmpi.t_tot = stats->mpi.dsum;
   hmpi.count = stats->mpi.nsum;
-
+  
   hpio.t_tot = stats->pio.dsum;
   hpio.count = stats->pio.nsum;
 
@@ -408,7 +404,7 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
     for( i=0; i<MAXSIZE_CALLTABLE; i++ ) {
       hall[i].t_tot = stats->fullstats[i].dsum;
       hall[i].count = stats->fullstats[i].nsum;
-    }
+    }  
   }
 
   /* -- compute global stats -- */
@@ -435,11 +431,10 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
   gstats_hent( hcublas, &(stats->cublas) );
   gstats_hent( hcufft,  &(stats->cufft) );
 
-
   if( task.flags&FLAG_REPORT_FULL ) {
     for( i=0; i<MAXSIZE_CALLTABLE; i++ ) {
       gstats_hent(hall[i], &(stats->fullstats[i]));
-    }
+    }  
   }
 }
 
@@ -452,7 +447,7 @@ void ipm_banner(FILE *f)
   ipm_hent_t stats_omp;
   ipm_hent_t stats_ompi;
   double wallt, gflops, mpip, piop, ompp;
-  ipm_hent_t stats_all[MAXSIZE_CALLTABLE];
+  ipm_hent_t stats_all[MAXSIZE_CALLTABLE];  
   int i, j;
 
   for( i=0; i<MAXNUM_REGIONS; i++ )  {
@@ -463,7 +458,7 @@ void ipm_banner(FILE *f)
       }
   }
 
-
+  
   banner.flags=0;
 #ifdef HAVE_MPI
   banner.flags|=BANNER_HAVE_MPI;
@@ -496,45 +491,46 @@ void ipm_banner(FILE *f)
     }
 
   gstats_double( task.procmem, &(banner.procmem) );
-
+  
   /* --- compute statistics for whole app --- */
   clear_region_stats( &(banner.app) );
   compute_region_stats(ipm_rstack->child, &(banner.app), 1);
+
   for( j=2; j<MAXNUM_REGIONS; j++ ) {
     region_t *reg=0;
     region_t *tmp=0;
-
+    
     reg = rstack_find_region_by_id(ipm_rstack, j);
     if( reg ) {
-      if( !((task.flags)&FLAG_NESTED_REGIONS) &&
+      if( !((task.flags)&FLAG_NESTED_REGIONS) && 
 	  reg->parent!=ipm_rstack->child ) {
 	continue;
       }
-
+      
       banner.regions[j].valid=1;
       strncpy(banner.regions[j].name, reg->name, MAXSIZE_REGLABEL);
-
+	
       /* record the nesting */
       tmp=reg;
       for( i=0; i<MAXNUM_REGNESTING; i++ ) {
-	if(!tmp || tmp==task.rstack)
+	if(!tmp || tmp==task.rstack) 
 	  break;
 	strncpy(banner.regions[j].nesting[i], tmp->name, MAXSIZE_REGLABEL);
 	tmp=tmp->parent;
       }
-
+      
       clear_region_stats( &(banner.regions[j]) );
-      compute_region_stats(reg, &(banner.regions[j]), 1);
+      compute_region_stats(reg, &(banner.regions[j]), 1);	
     }
-  }
+  } 
 
   /* --- compute statistics for ipm_noregion --- */
   clear_region_stats( &(banner.regions[1]) );
   compute_region_stats(ipm_rstack->child, &(banner.regions[1]), 0);
   sprintf(banner.regions[1].name, "ipm_noregion");
-  banner.regions[1].valid=1;
-
-
+  banner.regions[1].valid=1;  
+  
+  
 #ifdef HAVE_MPI
   PMPI_Barrier(MPI_COMM_WORLD);
 #endif
@@ -542,7 +538,7 @@ void ipm_banner(FILE *f)
   if( task.taskid==0 ) {
 
     banner.app.valid=1;
-    banner.app.name[0]='\0';
+    banner.app.name[0]='\0';    
 
     /* --- prepare banner with data from task 0 --- */
 
@@ -558,6 +554,7 @@ void ipm_banner(FILE *f)
 
     strcpy(banner.cmdline, (const char*)task.exec_cmdline);
     strcpy(banner.hostname, task.hostname);
+
     /* --- print it --- */
     ipm_print_banner(f, &banner);
   }

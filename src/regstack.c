@@ -12,7 +12,7 @@
 
 #ifdef HAVE_PAPI
 #include "mod_papi.h"
-#endif
+#endif 
 
 #define VISIT_FIRST      1
 #define VISIT_BACKTRACK  2
@@ -30,21 +30,21 @@ int rstack_init(int flags) {
 
   rstack_clear_region(&ipm_app);
   sprintf(ipm_app.name, "whole application");
-
+  
   return 0;
 }
 
-void rstack_init_region(struct region *r,
-			  char *str)
+void rstack_init_region(struct region *r, 
+			  char *str) 
 {
   int i;
 
   /* region IDs are numbered consecutively starting with 0 */
   /* the implicit root of the region stack (root) will have ID 0 */
-  static int nextid=0;
+  static int nextid=0; 
 
   rstack_clear_region(r);
-
+  
   r->id=nextid++;
   strncpy(r->name, str, MAXSIZE_REGLABEL);
   r->name[MAXSIZE_REGLABEL]=0;
@@ -59,20 +59,18 @@ void rstack_clear_region(struct region *r)
   r->child=0;
   r->name[0]=0;
   r->flags=0;
-
+  
   r->nexecs=0;
-
+  
   r->wtime=0.0;    r->wtime_e=0.0;
   r->utime=0.0;    r->utime_e=0.0;
   r->stime=0.0;    r->stime_e=0.0;
   r->mtime=0.0;    r->mtime_e=0.0;
-
-/*
+  
   for( i=0; i<MAXNUM_MODULES; i++ ) {
     r->moddata[i]=0;
   }
-*/
-
+  
 #ifdef HAVE_PAPI
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     r->ctr[i]=0;
@@ -91,10 +89,10 @@ void ipm_region_begin(struct region *reg)
   //long long ctr1[MAXNUM_PAPI_EVENTS];
   long long ctr2[MAXNUM_PAPI_EVENTS];
 #endif
-
+  
 #ifdef HAVE_PAPI
   //ipm_papi_read(ctr1);
-#endif
+#endif 
 
   /* fprintf(stderr, "region_begin for reg=%x '%s'\n", reg, reg->name);
    */
@@ -110,7 +108,7 @@ void ipm_region_begin(struct region *reg)
       modules[i].regfunc(&(modules[i]), 1, reg);
     }
   }
-
+  
 #ifdef HAVE_PAPI
   ipm_papi_read(ctr2);
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
@@ -129,19 +127,19 @@ void ipm_region_end(struct region *reg)
   //  long long ctr2[MAXNUM_PAPI_EVENTS];
 #endif
 
-  /* fprintf(stderr, "region_end for reg=%x name='%s'\n", reg, reg->name);
+  /* fprintf(stderr, "region_end for reg=%x name='%s'\n", reg, reg->name);  
    */
 
 #ifdef HAVE_PAPI
   ipm_papi_read(ctr1);
 #endif
-
+  
   /* update data for region 'reg' */
   reg->wtime   += (ipm_wtime())  - (reg->wtime_e);
   reg->utime   += (ipm_utime())  - (reg->utime_e);
   reg->stime   += (ipm_stime())  - (reg->stime_e);
   reg->mtime   += (ipm_mtime())  - (reg->mtime_e);
-
+  
   for( i=0; i<MAXNUM_MODULES; i++ ) {
     if( modules[i].regfunc ) {
       modules[i].regfunc(&(modules[i]), -1, reg);
@@ -155,30 +153,31 @@ void ipm_region_end(struct region *reg)
     reg->ctr[i] += (ctr1[i]-reg->ctr_e[i]);
   }
 #endif
+
 }
 
 
 
-void ipm_region(int op, char *tag)
+void ipm_region(int op, char *tag) 
 {
   int i;
   struct region *reg;
-
-  switch( op )
+  
+  switch( op ) 
     {
     case -1: /* exit */
-
+      
       ipm_region_end(ipm_rstackptr);
       ipm_rstackptr->nexecs++;
 
       if( ipm_rstackptr->parent ) {
 	ipm_rstackptr=ipm_rstackptr->parent;
       }
-
+      
       break;
-
+      
     case 1: /* enter */
-
+      
       /* find region among child regions of current ipm_rstackptr */
       reg = ipm_rstackptr->child;
       while(reg) {
@@ -193,7 +192,7 @@ void ipm_region(int op, char *tag)
 	reg=(region_t*)IPM_MALLOC(sizeof(region_t));
 	rstack_init_region(reg, tag);
 	reg->parent=ipm_rstackptr;
-
+	
 	if( !(ipm_rstackptr->child) ) {
 	  ipm_rstackptr->child=reg;
 	}
@@ -207,12 +206,12 @@ void ipm_region(int op, char *tag)
 	ipm_rstackptr=reg;
       }
       ipm_region_begin(ipm_rstackptr);
-
+      
       break;
     }
 }
 
-void traverse_rstack(region_t *stack, region_t *stop,
+void traverse_rstack(region_t *stack, region_t *stop, 
 		     rsfunc_t func, void *ptr)
 {
   int levl;
@@ -221,7 +220,7 @@ void traverse_rstack(region_t *stack, region_t *stop,
   node=stack; levl=0;
 
   while(node) {
-
+ 
     /* ----------------------------------- */
     ptr=func(node, levl, VISIT_FIRST, ptr);
     /* ----------------------------------- */
@@ -242,26 +241,26 @@ void traverse_rstack(region_t *stack, region_t *stop,
 	levl--;
 
 	/* this will also terminate the outer loop */
-	if( !node || node==stop )
+	if( !node || node==stop ) 
 	  break;
 
-	/* ------------------------------------------- */
+	/* ------------------------------------------- */	
 	ptr=func(node, levl, VISIT_BACKTRACK, ptr);
-	/* ------------------------------------------- */
-
+	/* ------------------------------------------- */	
+	
 	if( node->next ) {
 	  /* levl unchanged! */
 	  node=node->next;
 	  break;
 	}
-      }
+      }  
       if( node==stop )
 	break;
     }
   }
-}
+}  
 
-void* rsfunc_print_region(region_t *reg, unsigned level, int flags, void *ptr)
+void* rsfunc_print_region(region_t *reg, unsigned level, int flags, void *ptr) 
 {
   int i;
   FILE *f = (FILE*)ptr;
@@ -271,8 +270,8 @@ void* rsfunc_print_region(region_t *reg, unsigned level, int flags, void *ptr)
 
   for( i=0; i<level; i++ )
     fprintf(f, "    ");
-
-  fprintf(f, "ID=%u (name='%s') nexec=%u (%.5f %.5f %.5f)\n",
+  
+  fprintf(f, "ID=%u (name='%s') nexec=%u (%.5f %.5f %.5f)\n", 
 	  reg->id, reg->name, reg->nexecs,
 	  reg->wtime, reg->stime, reg->utime);
 
@@ -280,7 +279,7 @@ void* rsfunc_print_region(region_t *reg, unsigned level, int flags, void *ptr)
 }
 
 
-void* rsfunc_cleanup(region_t *reg, unsigned level, int flags, void *ptr)
+void* rsfunc_cleanup(region_t *reg, unsigned level, int flags, void *ptr) 
 {
   if( flags==VISIT_FIRST )
     return ptr;
@@ -290,7 +289,7 @@ void* rsfunc_cleanup(region_t *reg, unsigned level, int flags, void *ptr)
   return ptr;
 }
 
-void* rsfunc_enum_all_regions(region_t *reg, unsigned level, int flags, void *ptr)
+void* rsfunc_enum_all_regions(region_t *reg, unsigned level, int flags, void *ptr) 
 {
   int *num=(int*)ptr;
 
@@ -302,21 +301,21 @@ void* rsfunc_enum_all_regions(region_t *reg, unsigned level, int flags, void *pt
   return ptr;
 }
 
-void* rsfunc_enum_l1_regions(region_t *reg, unsigned level, int flags, void *ptr)
+void* rsfunc_enum_l1_regions(region_t *reg, unsigned level, int flags, void *ptr) 
 {
   int *num=(int*)ptr;
 
   if( flags==VISIT_BACKTRACK )
     return ptr;
 
-  if( (reg->parent) && (reg->parent->parent) &&
+  if( (reg->parent) && (reg->parent->parent) && 
       (reg->parent->parent->parent==0) )
     (*num)++;
 
   return ptr;
 }
 
-void* rsfunc_adjust_ctrs(region_t *reg, unsigned level, int flags, void *ptr)
+void* rsfunc_adjust_ctrs(region_t *reg, unsigned level, int flags, void *ptr) 
 {
   int i;
   region_t *tmp;
@@ -326,49 +325,49 @@ void* rsfunc_adjust_ctrs(region_t *reg, unsigned level, int flags, void *ptr)
 
 #ifdef HAVE_PAPI
   /* we are at a child or backtracking */
-  tmp = reg->child;
+  tmp = reg->child; 
   while(tmp) {
     for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
       reg->ctr_ipm[i] += tmp->ctr_ipm[i];
     }
     tmp=tmp->next;
   }
-
+  
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     reg->ctr[i] -= reg->ctr_ipm[i];
   }
 #endif /* HAVE_PAPI */
-
+  
   return ptr;
 }
 
 
-void* rsfunc_find_by_id(region_t *reg, unsigned level, int flags, void *ptr)
+void* rsfunc_find_by_id(region_t *reg, unsigned level, int flags, void *ptr) 
 {
   regid_t *regid;
 
   regid = (regid_t*)ptr;
-
+  
   if( flags==VISIT_BACKTRACK )
     return ptr;
 
-  if( regid->id == reg->id )
+  if( regid->id == reg->id ) 
     regid->reg=reg;
 
   return ptr;
 }
 
 
-void* rsfunc_find_by_name(region_t *reg, unsigned level, int flags, void *ptr)
+void* rsfunc_find_by_name(region_t *reg, unsigned level, int flags, void *ptr) 
 {
   regid_t *regid;
 
   regid = (regid_t*)ptr;
-
+  
   if( flags==VISIT_BACKTRACK )
     return ptr;
 
-  if( !(regid->reg) &&
+  if( !(regid->reg) && 
       !strcmp(regid->name, reg->name) ) {
     regid->reg=reg;
   }
@@ -378,7 +377,7 @@ void* rsfunc_find_by_name(region_t *reg, unsigned level, int flags, void *ptr)
 
 
 
-void rstack_print(region_t *rstack, FILE *f)
+void rstack_print(region_t *rstack, FILE *f) 
 {
   traverse_rstack(rstack, 0,
 		  rsfunc_print_region, f);
@@ -386,14 +385,14 @@ void rstack_print(region_t *rstack, FILE *f)
 
 }
 
-int rstack_count_all_regions(region_t *rstack)
+int rstack_count_all_regions(region_t *rstack) 
 {
   int count=0;
   traverse_rstack(rstack, 0, rsfunc_enum_all_regions, &count);
   return count;
 }
 
-int rstack_count_l1_regions(region_t *rstack)
+int rstack_count_l1_regions(region_t *rstack) 
 {
   int count=0;
   traverse_rstack(rstack, 0, rsfunc_enum_l1_regions, &count);
@@ -401,7 +400,7 @@ int rstack_count_l1_regions(region_t *rstack)
 }
 
 
-int rstack_cleanup(region_t *rstack)
+int rstack_cleanup(region_t *rstack) 
 {
   traverse_rstack(rstack, 0, rsfunc_cleanup, 0);
 
@@ -411,11 +410,11 @@ int rstack_cleanup(region_t *rstack)
 int rstack_adjust_ctrs()
 {
   //traverse_rstack(ipm_rstack, 0, rsfunc_adjust_ctrs, 0);
-
+  
   return IPM_OK;
 }
 
-void* rsfunc_store_region(region_t *reg, unsigned level, int flags, void *ptr)
+void* rsfunc_store_region(region_t *reg, unsigned level, int flags, void *ptr) 
 {
   if( flags==VISIT_FIRST ) {
     /* store region with id X at index X in the array pointed to by ptr */
@@ -424,18 +423,18 @@ void* rsfunc_store_region(region_t *reg, unsigned level, int flags, void *ptr)
     /* needed for packing */
     ((region_t*)ptr)[reg->id].self=reg;
   }
-
+  
   return ptr;
 }
 
-/* pack region stack into list, assumes list is
+/* pack region stack into list, assumes list is 
    malloc'd at least sizeof(region_t)*nreg */
-void rstack_pack(region_t *stack, int nreg, region_t *list)
+void rstack_pack(region_t *stack, int nreg, region_t *list) 
 {
   traverse_rstack(stack, 0, rsfunc_store_region, list);
 }
 
-region_t* rstack_unpack(int nreg, region_t *list)
+region_t* rstack_unpack(int nreg, region_t *list) 
 {
   region_t **newregs;
   region_t *newstack;
@@ -446,18 +445,18 @@ region_t* rstack_unpack(int nreg, region_t *list)
 
   newregs=(region_t**)IPM_MALLOC(sizeof(region_t*)*nreg);
   for( i=0; i<nreg; i++ ) {
-    if( list[i].self==0 )
+    if( list[i].self==0 ) 
       continue;
 
     newregs[i] = (region_t*)IPM_MALLOC(sizeof(region_t));
     memcpy(newregs[i], &(list[i]), sizeof(region_t));
   }
 
-  /* here we have all regions in memory again, but the pointers
+  /* here we have all regions in memory again, but the pointers 
      (next, parent, child) are garbage -- fixed below*/
-
+  
   for( i=0; i<nreg; i++ ) {
-    if( list[i].self==0 )
+    if( list[i].self==0 ) 
       continue;
 
     /* child */
@@ -490,7 +489,7 @@ region_t* rstack_unpack(int nreg, region_t *list)
 }
 
 
-region_t* rstack_find_region_by_id(region_t *rstack, int id)
+region_t* rstack_find_region_by_id(region_t *rstack, int id) 
 {
   regid_t regid;
 
@@ -499,11 +498,11 @@ region_t* rstack_find_region_by_id(region_t *rstack, int id)
   regid.name = 0;
 
   traverse_rstack(rstack, 0, rsfunc_find_by_id, &regid);
-
+  
   return regid.reg;
 }
 
-region_t* rstack_find_region_by_name(region_t *rstack, char *name)
+region_t* rstack_find_region_by_name(region_t *rstack, char *name) 
 {
   regid_t regid;
 
@@ -511,7 +510,7 @@ region_t* rstack_find_region_by_name(region_t *rstack, char *name)
   regid.name=name;
 
   traverse_rstack(rstack, 0, rsfunc_find_by_name, &regid);
-
+  
   return regid.reg;
 }
 
@@ -563,7 +562,7 @@ int main(int argc, char* argv[])
   rlist = (region_t*) malloc(sizeof(region_t)*nreg);
 
   fprintf(stderr, "Counted %d regions in stack\n\n", nreg);
-
+  
   /* pack the stack in list */
   rstack_pack(ipm_rstack, nreg, rlist);
 
@@ -581,7 +580,7 @@ int main(int argc, char* argv[])
   fprintf(stderr, "Counted %d regions in new stack\n",
 	  rstack_count_all_regions(newstack));
 
-  traverse_rstack(newstack, 0, rsfunc_cleanup, 0);
+  traverse_rstack(newstack, 0, rsfunc_cleanup, 0);  
 
   return 0;
 }

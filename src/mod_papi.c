@@ -11,14 +11,13 @@
 #include "ipm_debug.h"
 #include "ipm_modules.h"
 #include "mod_papi.h"
-#include "report.h"
 
-/*
-   uncomment the following #define to enable multiplexing,
-   also check the number of supported counters per PAPI component
-   (MAXNUM_PAPI_COUNTERS) and the overall number of events supported
-   (MAXNUM_PAPI_EVENTS) - you might want to have both of these larger
-   when multiplexing is enabled.
+/* 
+   uncomment the following #define to enable multiplexing, 
+   also check the number of supported counters per PAPI component 
+   (MAXNUM_PAPI_COUNTERS) and the overall number of events supported 
+   (MAXNUM_PAPI_EVENTS) - you might want to have both of these larger 
+   when multiplexing is enabled. 
 */
 /* #define USE_PAPI_MULTIPLEXING */
 
@@ -101,15 +100,15 @@ int ipm_papi_init()
   } else if( rv<0 ) {
     IPMERR("PAPI initialization error (%d)\n", rv);
     return IPM_EOTHER;
-  }
+  }      
 
   if( PAPI_VERSION>=PAPI_VERSION_NUMBER(3,9,0,0) ) {
-    IPMDBG("Detected component PAPI (PAPI-C). Max %d components supported by IPM\n",
+    IPMDBG("Detected component PAPI (PAPI-C). Max %d components supported by IPM\n", 
 	   MAXNUM_PAPI_COMPONENTS);
   } else {
     IPMDBG("Detected classic PAPI. One default (CPU) component supported\n");
   }
-
+  
 #ifdef USE_PAPI_MULTIPLEXING
   rv=PAPI_multiplex_init();
   if( rv!=PAPI_OK ) {
@@ -121,7 +120,7 @@ int ipm_papi_init()
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     if( papi_events[i].name[0] ) {
       PAPI_event_name_to_code(papi_events[i].name, &(papi_events[i].code));
-
+        
       if( PAPI_query_event(papi_events[i].code)!=PAPI_OK )
 	{
 	  IPMERR("PAPI: Event name-to-code error: %s, ignoring\n",
@@ -134,12 +133,12 @@ int ipm_papi_init()
 	  if( !strcmp(papi_events[i].name, "PAPI_FP_OPS") ) {
 	    flops_weight[i]=1.0;
 	  }
-	  IPMDBG("PAPI: Successfully registered event: %s\n",
+	  IPMDBG("PAPI: Successfully registered event: %s\n", 
 		 papi_events[i].name);
 	}
     }
   }
-
+  
   return IPM_OK;
 }
 
@@ -148,7 +147,7 @@ int ipm_papi_start()
 {
   int i, comp, rv;
 
-  for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ )
+  for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ ) 
     {
       papi_evtset[comp].evtset=PAPI_NULL;
       rv = PAPI_create_eventset(&(papi_evtset[comp].evtset));
@@ -165,35 +164,35 @@ int ipm_papi_start()
       }
 #endif
     }
-
+  
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     if( !(papi_events[i].name[0]) )
       continue;
 
     comp = PAPI_COMPONENT_INDEX(papi_events[i].code);
 
-    rv = PAPI_add_event(papi_evtset[comp].evtset,
+    rv = PAPI_add_event(papi_evtset[comp].evtset, 
 			papi_events[i].code);
-
+    
     if( rv!= PAPI_OK ) {
       IPMERR("PAPI: [comp %d] Error adding event to eventset: %s, skipping\n",
 	     comp, papi_events[i].name);
-
+      
     } else {
       IPMDBG("PAPI: [comp %d] Successfully added event: %s\n",
 	     comp, papi_events[i].name);
-
+      
       papi_evtset[comp].ctr2evt[papi_evtset[comp].nevts]=i;
-
+      
       papi_evtset[comp].nevts++;
     }
   }
-
-  for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ )
+  
+  for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ ) 
     {
       if( papi_evtset[comp].nevts>0 ) {
 	rv = PAPI_start(papi_evtset[comp].evtset);
-
+	
 	if( rv!=PAPI_OK ) {
 	  IPMERR("PAPI: [comp %d] Error starting eventset (%d events)\n",
 		 comp, papi_evtset[comp].nevts);
@@ -208,12 +207,12 @@ int ipm_papi_start()
   return IPM_OK;
 }
 
-int ipm_papi_stop()
+int ipm_papi_stop() 
 {
   int comp, rv;
   long long ctr[MAXNUM_PAPI_EVENTS];
 
-  for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ )
+  for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ ) 
     {
       if( papi_evtset[comp].nevts>0 ) {
 	rv =  PAPI_stop(papi_evtset[comp].evtset, ctr);
@@ -223,7 +222,7 @@ int ipm_papi_stop()
 	} else {
 	  IPMDBG("PAPI: [comp %d] Successfully stopped eventset\n", comp);
 	}
-
+	
 	rv =  PAPI_cleanup_eventset(papi_evtset[comp].evtset);
 	if( rv!=PAPI_OK ) {
 	  IPMERR("PAPI: [comp %d] Error cleaning eventset up\n", comp);
@@ -231,7 +230,7 @@ int ipm_papi_stop()
 	} else {
 	  IPMDBG("PAPI: [comp %d] Successfully cleaned eventset up\n", comp);
 	}
-
+	
 	rv =  PAPI_destroy_eventset(&(papi_evtset[comp].evtset));
 	if( rv!=PAPI_OK ) {
 	  IPMERR("PAPI: [comp %d] Error destroying eventset\n", comp);
@@ -249,14 +248,14 @@ int ipm_papi_read(long long *val)
   int i, comp, rv;
   long long ctr[MAXNUM_PAPI_COUNTERS];
 
-  for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ )
+  for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ ) 
     {
       if( papi_evtset[comp].nevts>0 ) {
 	rv =  PAPI_read(papi_evtset[comp].evtset, ctr);
 	if( rv!=PAPI_OK ) {
 	  IPMERR("PAPI: [comp %d] Error reading eventset\n", comp);
 	  return IPM_EOTHER;
-	} else
+	} else 
 	  {
 	    for( i=0; i<papi_evtset[comp].nevts; i++ ) {
 	      val[ papi_evtset[comp].ctr2evt[i] ] = ctr[i];
@@ -279,7 +278,7 @@ double ipm_papi_gflops(long long *ctr, double time)
     gflops += ((double)ctr[i]) * flops_weight[i];
     sum += flops_weight[i];
   }
-
+  
   gflops /= 1.0e9;
 
   if( sum>0.0 ) {
@@ -287,7 +286,7 @@ double ipm_papi_gflops(long long *ctr, double time)
   } else {
     return 0.0;
   }
-
+  
 }
 
 
