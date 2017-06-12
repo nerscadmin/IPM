@@ -2,3 +2,233 @@ short test demonstrating power management over sleeps. Sleeps are 5, 10, 15
 seconds. the most deeply-nested regions should have energy scaled to the length
 of the sleep. Outer regions should be the sum of the inner regions. Power consumption
 is low because of the sleeps.
+
+
+Below is a full sample output. 3 main regions:  sleep_5, sleep_10, sleep_15.
+There are 5, 10, 15 seconds long respectively. sleep_10 consumes ~2x power as
+sleep 5, sleep 15 consumes ~3x power as sleep 5, etc.
+first_2_sleeps is the union of sleep_5 and sleep_10. It should be roughly
+equivelant to sleep_15. all_sleep_calls is the union of sleep_5, sleep_10, and
+sleep_15, and should only be slightly greater than the full process. Note that 
+ipm_no_region is very short - it will be zero for anything lower than the 
+the sample rate (default 10 hz). It can have undefined output for areas shorter than 
+a second due to the sample rate. 
+
+##IPMv2.0.6########################################################
+#
+# command   : /global/u1/t/tallen/dev/IPM/test/test.pmon/./pmon.ipm 
+# start     : Mon Jun 12 16:49:52 2017   host      : nid03264        
+# stop      : Mon Jun 12 16:50:22 2017   wallclock : 30.04
+# mpi_tasks : 1 on 1 nodes               %comm     : 0.00
+# mem [GB]  : 0.01                       gflop/sec : 0.00
+#
+#           :       [total]        <avg>          min          max
+# wallclock :         30.04        30.04        30.04        30.04 
+# MPI       :          0.00         0.00         0.00         0.00 
+# %wall     :
+#   MPI     :                       0.00         0.00         0.00 
+# #calls    :
+#   MPI     :             2            2            2            2
+# mem [GB]  :          0.01         0.01         0.01         0.01 
+#
+# Per Node Energy Data:
+# energy (j):       1460.00      1460.00     1460.00      1460.00 
+#    -cpu   :        789.00       789.00      789.00       789.00 
+#    -mem   :         67.00        67.00       67.00        67.00 
+#    -other :        604.00       604.00      604.00       604.00 
+#
+# power (w) :         48.60        48.60       48.60        48.60 
+#    -cpu   :         26.26        26.26       26.26        26.26 
+#    -mem   :          2.23         2.23        2.23         2.23 
+#    -other :         20.10        20.10       20.10        20.10 
+# kWh       :      0.000406     0.000406    0.000406     0.000406 
+#    -cpu   :      0.000219     0.000219    0.000219     0.000219 
+#    -mem   :      0.000019     0.000019    0.000019     0.000019 
+#    -other :      0.000168     0.000168    0.000168     0.000168 
+#
+#                             [time]        [count]        <%wall>
+# MPI_Init                      0.00              1           0.00
+# MPI_Finalize                  0.00              1           0.00
+#
+###################################################################
+###################################################################
+# region    :'ipm_noregion'
+#           :       [total]        <avg>          min          max
+# wallclock :          0.02         0.02         0.02         0.02 
+# MPI       :          0.00         0.00         0.00         0.00 
+# %wall     :
+#   MPI     :                       0.00         0.00         0.00 
+# #calls    :
+#   MPI     :             2            2            2            2
+# mem [GB]  :          0.01         0.01         0.01         0.01 
+#
+# Per Node Energy Data:
+# energy (j):          0.00         0.00        0.00         0.00 
+#    -cpu   :          0.00         0.00        0.00         0.00 
+#    -mem   :          0.00         0.00        0.00         0.00 
+#    -other :          0.00         0.00        0.00         0.00 
+#
+# power (w) :          0.00         0.00        0.00         0.00 
+#    -cpu   :          0.00         0.00        0.00         0.00 
+#    -mem   :          0.00         0.00        0.00         0.00 
+#    -other :          0.00         0.00        0.00         0.00 
+# kWh       :      0.000000     0.000000    0.000000     0.000000 
+#    -cpu   :      0.000000     0.000000    0.000000     0.000000 
+#    -mem   :      0.000000     0.000000    0.000000     0.000000 
+#    -other :      0.000000     0.000000    0.000000     0.000000 
+#
+#                             [time]        [count]        <%wall>
+# MPI_Init                      0.00              1           0.00
+# MPI_Finalize                  0.00              1           0.00
+#
+###################################################################
+###################################################################
+# region    :'all_sleep_calls'
+# nesting   :'ipm_main' -> 'all_sleep_calls'  
+#           :       [total]        <avg>          min          max
+# wallclock :         30.03        30.03        30.03        30.03 
+# MPI       :          0.00         0.00         0.00         0.00 
+# %wall     :
+#   MPI     :                       0.00         0.00         0.00 
+# #calls    :
+#   MPI     :             0            0            0            0
+# mem [GB]  :          0.01         0.01         0.01         0.01 
+#
+# Per Node Energy Data:
+# energy (j):       1460.00      1460.00     1460.00      1460.00 
+#    -cpu   :        789.00       789.00      789.00       789.00 
+#    -mem   :         67.00        67.00       67.00        67.00 
+#    -other :        604.00       604.00      604.00       604.00 
+#
+# power (w) :         48.62        48.62       48.62        48.62 
+#    -cpu   :         26.28        26.28       26.28        26.28 
+#    -mem   :          2.23         2.23        2.23         2.23 
+#    -other :         20.12        20.12       20.12        20.12 
+# kWh       :      0.000406     0.000406    0.000406     0.000406 
+#    -cpu   :      0.000219     0.000219    0.000219     0.000219 
+#    -mem   :      0.000019     0.000019    0.000019     0.000019 
+#    -other :      0.000168     0.000168    0.000168     0.000168 
+#
+#                             [time]        [count]        <%wall>
+#
+###################################################################
+###################################################################
+# region    :'first_2_sleeps'
+# nesting   :'ipm_main' -> 'all_sleep_calls' -> 'first_2_sleeps'  
+#           :       [total]        <avg>          min          max
+# wallclock :         15.01        15.01        15.01        15.01 
+# MPI       :          0.00         0.00         0.00         0.00 
+# %wall     :
+#   MPI     :                       0.00         0.00         0.00 
+# #calls    :
+#   MPI     :             0            0            0            0
+# mem [GB]  :          0.01         0.01         0.01         0.01 
+#
+# Per Node Energy Data:
+# energy (j):        761.00       761.00      761.00       761.00 
+#    -cpu   :        386.00       386.00      386.00       386.00 
+#    -mem   :         32.00        32.00       32.00        32.00 
+#    -other :        343.00       343.00      343.00       343.00 
+#
+# power (w) :         50.68        50.68       50.68        50.68 
+#    -cpu   :         25.71        25.71       25.71        25.71 
+#    -mem   :          2.13         2.13        2.13         2.13 
+#    -other :         22.84        22.84       22.84        22.84 
+# kWh       :      0.000211     0.000211    0.000211     0.000211 
+#    -cpu   :      0.000107     0.000107    0.000107     0.000107 
+#    -mem   :      0.000009     0.000009    0.000009     0.000009 
+#    -other :      0.000095     0.000095    0.000095     0.000095 
+#
+#                             [time]        [count]        <%wall>
+#
+###################################################################
+###################################################################
+# region    :'sleep_5'
+# nesting   :'ipm_main' -> 'all_sleep_calls' -> 'first_2_sleeps' -> 'sleep_5'  
+#           :       [total]        <avg>          min          max
+# wallclock :          5.00         5.00         5.00         5.00 
+# MPI       :          0.00         0.00         0.00         0.00 
+# %wall     :
+#   MPI     :                       0.00         0.00         0.00 
+# #calls    :
+#   MPI     :             0            0            0            0
+# mem [GB]  :          0.01         0.01         0.01         0.01 
+#
+# Per Node Energy Data:
+# energy (j):        265.00       265.00      265.00       265.00 
+#    -cpu   :        135.00       135.00      135.00       135.00 
+#    -mem   :         11.00        11.00       11.00        11.00 
+#    -other :        119.00       119.00      119.00       119.00 
+#
+# power (w) :         52.97        52.97       52.97        52.97 
+#    -cpu   :         26.98        26.98       26.98        26.98 
+#    -mem   :          2.20         2.20        2.20         2.20 
+#    -other :         23.79        23.79       23.79        23.79 
+# kWh       :      0.000074     0.000074    0.000074     0.000074 
+#    -cpu   :      0.000037     0.000037    0.000037     0.000037 
+#    -mem   :      0.000003     0.000003    0.000003     0.000003 
+#    -other :      0.000033     0.000033    0.000033     0.000033 
+#
+#                             [time]        [count]        <%wall>
+#
+###################################################################
+###################################################################
+# region    :'sleep_10'
+# nesting   :'ipm_main' -> 'all_sleep_calls' -> 'first_2_sleeps' -> 'sleep_10'  
+#           :       [total]        <avg>          min          max
+# wallclock :         10.00        10.00        10.00        10.00 
+# MPI       :          0.00         0.00         0.00         0.00 
+# %wall     :
+#   MPI     :                       0.00         0.00         0.00 
+# #calls    :
+#   MPI     :             0            0            0            0
+# mem [GB]  :          0.01         0.01         0.01         0.01 
+#
+# Per Node Energy Data:
+# energy (j):        496.00       496.00      496.00       496.00 
+#    -cpu   :        251.00       251.00      251.00       251.00 
+#    -mem   :         21.00        21.00       21.00        21.00 
+#    -other :        224.00       224.00      224.00       224.00 
+#
+# power (w) :         49.59        49.59       49.59        49.59 
+#    -cpu   :         25.09        25.09       25.09        25.09 
+#    -mem   :          2.10         2.10        2.10         2.10 
+#    -other :         22.39        22.39       22.39        22.39 
+# kWh       :      0.000138     0.000138    0.000138     0.000138 
+#    -cpu   :      0.000070     0.000070    0.000070     0.000070 
+#    -mem   :      0.000006     0.000006    0.000006     0.000006 
+#    -other :      0.000062     0.000062    0.000062     0.000062 
+#
+#                             [time]        [count]        <%wall>
+#
+###################################################################
+###################################################################
+# region    :'sleep_15'
+# nesting   :'ipm_main' -> 'all_sleep_calls' -> 'sleep_15'  
+#           :       [total]        <avg>          min          max
+# wallclock :         15.00        15.00        15.00        15.00 
+# MPI       :          0.00         0.00         0.00         0.00 
+# %wall     :
+#   MPI     :                       0.00         0.00         0.00 
+# #calls    :
+#   MPI     :             0            0            0            0
+# mem [GB]  :          0.01         0.01         0.01         0.01 
+#
+# Per Node Energy Data:
+# energy (j):        699.00       699.00      699.00       699.00 
+#    -cpu   :        403.00       403.00      403.00       403.00 
+#    -mem   :         35.00        35.00       35.00        35.00 
+#    -other :        261.00       261.00      261.00       261.00 
+#
+# power (w) :         46.59        46.59       46.59        46.59 
+#    -cpu   :         26.86        26.86       26.86        26.86 
+#    -mem   :          2.33         2.33        2.33         2.33 
+#    -other :         17.40        17.40       17.40        17.40 
+# kWh       :      0.000194     0.000194    0.000194     0.000194 
+#    -cpu   :      0.000112     0.000112    0.000112     0.000112 
+#    -mem   :      0.000010     0.000010    0.000010     0.000010 
+#    -other :      0.000073     0.000073    0.000073     0.000073 
+#
+#                             [time]        [count]        <%wall>
+#
+###################################################################

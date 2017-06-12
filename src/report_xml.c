@@ -18,7 +18,6 @@
 #include "report.h"
 #include "regstack.h"
 #include "mod_pmon.h"
-#include "unistd.h"
 
 #ifdef HAVE_MPI
 #include <mpi.h>
@@ -259,8 +258,8 @@ int xml_perf(void *ptr, taskdata_t *t) {
 
   procmem = task.procmem;
 #ifdef HAVE_PAPI
-  gflops=0.0;
-  //gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
+  // this is potentially broken on serial IO path - all calls from rank 0
+  gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
 #else
   gflops = 0.0;
 #endif
@@ -412,7 +411,7 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   }
 
   // tyler: this only reports for rank == 0 regardless of task
-  //gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
+  gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
 
   res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\">\n",
 		    nc, gflops);

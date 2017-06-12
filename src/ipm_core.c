@@ -79,8 +79,6 @@
 #include "mod_pmon.h"
 #endif
 
-#include "unistd.h"
-
 int ipm_state=STATE_NOTINIT;
 
 #ifdef HAVE_MPI
