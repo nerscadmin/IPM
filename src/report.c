@@ -349,11 +349,12 @@ void compute_region_stats(region_t *reg, regstats_t *stats, int incl)
     tmp=reg->child;
     while(tmp) {
       wallt-=tmp->wtime;
+      #ifdef HAVE_PMON
       energy-=tmp->energy;
       cpu_energy -= tmp->cpu_energy;
       mem_energy -= tmp->mem_energy;
       other_energy -= tmp->other_energy;
-
+      #endif
       tmp=tmp->next;
     }
   }
