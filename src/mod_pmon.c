@@ -26,7 +26,10 @@ static void parse_pm_counter(const char* file, double* val)
     FILE *F = fopen(file,"r");
     if (F)
     {
-        fscanf(F, "%lf", val);
+        if(fscanf(F, "%lf", val) != 1)
+        {
+            *val = 0.0;
+        }
         fclose(F);
     }
     else
