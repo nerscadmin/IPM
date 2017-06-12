@@ -259,6 +259,7 @@ int xml_perf(void *ptr, taskdata_t *t) {
 
   procmem = task.procmem;
 #ifdef HAVE_PAPI
+  gflops=0.0;
   //gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
 #else
   gflops = 0.0;
@@ -413,8 +414,8 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   // tyler: this only reports for rank == 0 regardless of task
   //gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
 
-  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\"\n", //gflop=\"%.5e\">\n",
-		    nc);//, gflops);
+  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\">\n",
+		    nc, gflops);
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     if( !(papi_events[i].name[0]) )
       continue;

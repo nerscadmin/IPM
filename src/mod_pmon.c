@@ -11,21 +11,17 @@
 #include "report.h"
 
 
-int    pmon_running = 0;
-
-
+// 1 pmon data per region
+// used for begin/end reg and in report
 ipm_pmon_t pmondata[MAXNUM_REGIONS];
-
-static void ipm_pmon_nullify(){
-  pmon_running = 0;
-  return;
-}
 
 static void parse_pm_counter(const char* file, double* val)
 {
     FILE *F = fopen(file,"r");
+    // file exists
     if (F)
     {
+        //file gets one arg
         if(fscanf(F, "%lf", val) != 1)
         {
             *val = 0.0;
@@ -37,36 +33,38 @@ static void parse_pm_counter(const char* file, double* val)
         *val = 0.0;
     }
 }
-static double ipm_pmon_sample_energy_mem(){
-  double energy;
-  parse_pm_counter("/sys/cray/pm_counters/memory_energy", &energy);
-  return energy;
+
+static double ipm_pmon_sample_energy_mem(void)
+{
+    double energy;
+    parse_pm_counter("/sys/cray/pm_counters/memory_energy", &energy);
+    return energy;
 }//PMON_sample_energy_node
 
-static double ipm_pmon_sample_energy_cpu(){
-  double energy;
-  parse_pm_counter("/sys/cray/pm_counters/cpu_energy", &energy);
-  return energy;
+static double ipm_pmon_sample_energy_cpu(void)
+{
+    double energy;
+    parse_pm_counter("/sys/cray/pm_counters/cpu_energy", &energy);
+    return energy;
 }//PMON_sample_energy_node
 
-static double ipm_pmon_sample_energy_node(){
-  double energy;
-  parse_pm_counter("/sys/cray/pm_counters/energy", &energy);
-  return energy;
+static double ipm_pmon_sample_energy_node(void)
+{
+    double energy;
+    parse_pm_counter("/sys/cray/pm_counters/energy", &energy);
+    return energy;
 }//PMON_sample_energy_node
 
-static void ipm_pmon_resume(struct region* reg){
-    pmon_running = 1;
+static void ipm_pmon_start_reg(struct region* reg)
+{
     pmondata[reg->id].node_initial_energy = ipm_pmon_sample_energy_node();
     pmondata[reg->id].cpu_initial_energy = ipm_pmon_sample_energy_cpu();
     pmondata[reg->id].mem_initial_energy = ipm_pmon_sample_energy_mem();
     return;
 }//PMON_Resume
 
-static void ipm_pmon_pause(struct region* reg){
-
-    pmon_running = 0;
-
+static void ipm_pmon_end_reg(struct region* reg)
+{
     pmondata[reg->id].node_final_energy =  ipm_pmon_sample_energy_node();
     reg->energy = pmondata[reg->id].node_final_energy - pmondata[reg->id].node_initial_energy;
 
@@ -96,13 +94,6 @@ int mod_pmon_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
     return res;
 }
 
-
-int mod_pmon_finalize(ipm_mod_t* mod, int flags)
-{
-  // for future use
-  return 0;
-}//PMON_finalize
-
 int mod_pmon_region(ipm_mod_t* mod, int op, struct region* reg)
 {
     if (reg)
@@ -110,11 +101,11 @@ int mod_pmon_region(ipm_mod_t* mod, int op, struct region* reg)
         switch(op)
         {
             case -1:
-                ipm_pmon_pause(reg);
+                ipm_pmon_end_reg(reg);
                 break;
 
             case 1:
-                ipm_pmon_resume(reg);
+                ipm_pmon_start_reg(reg);
                 break;
         }
     }
@@ -123,7 +114,7 @@ int mod_pmon_region(ipm_mod_t* mod, int op, struct region* reg)
 
 int mod_pmon_init(ipm_mod_t* mod, int flags)
 {
-  int i, comp, rv;
+  int i;
 
   mod->state    = STATE_IN_INIT;
   mod->init     = mod_pmon_init;
@@ -142,7 +133,6 @@ int mod_pmon_init(ipm_mod_t* mod, int flags)
         pmondata[i].mem_final_energy = 0;
   }
 
-  ipm_pmon_nullify();
   mod->state    = STATE_ACTIVE;
   return IPM_OK;
 }
