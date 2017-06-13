@@ -38,6 +38,7 @@
 
 /* report nested regions? */
 #define FLAG_NESTED_REGIONS       (0x0000000000000001ULL <<  12)
+#define FLAG_PMON                 (0x0000000000000001ULL <<  13)
 
 
 /* clear all REPORT bits */

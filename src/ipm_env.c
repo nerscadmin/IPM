@@ -25,6 +25,9 @@ extern char **environ;
 #define ENV_SNAP           8
 #endif
 #define ENV_NESTED_REGIONS 9
+#ifdef HAVE_PMON
+#define ENV_PMON 10
+#endif
 
 
 #define MAXSIZE_ENVKEY  120
@@ -125,6 +128,12 @@ int ipm_get_env()
 #ifdef HAVE_SNAP
     else if(!strcmp("IPM_SNAP", key)) {
       ipm_check_env(ENV_SNAP, val);
+    }
+#endif
+
+#ifdef HAVE_PMON
+    else if(!strcmp("IPM_PMON", key)) {
+        ipm_check_env(ENV_PMON, val);
     }
 #endif
 
@@ -262,6 +271,12 @@ int ipm_check_env(int env, char *val)
     case ENV_SNAP: 
       task.snap_period = atof(val);
      break;
+#endif
+    
+#ifdef HAVE_PMON
+    case ENV_PMON:
+        task.flags |= FLAG_PMON;
+    break;
 #endif
 
     case ENV_NESTED_REGIONS:

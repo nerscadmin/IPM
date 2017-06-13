@@ -2,7 +2,7 @@
 
 if ENABLE_PARSER
 
-INCLUDES = -I../include -I./cubew/lib
+AM_CPPFLAGS = -I../include -I./cubew/lib
 
 bin_PROGRAMS = ipm_parse
 
