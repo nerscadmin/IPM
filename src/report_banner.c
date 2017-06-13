@@ -241,6 +241,7 @@ void ipm_print_region(FILE *f, banner_t *data, regstats_t *reg)
 	  data->procmem.dsum, data->procmem.dsum/(double)ntasks,
 	  data->procmem.dmin, data->procmem.dmax);
 
+  #ifdef HAVE_PMON
   if( data->flags&BANNER_HAVE_ENERGY ) {
     double joules =  reg->energy.dsum;
     double cpu_joules =  reg->cpu_energy.dsum;
@@ -274,6 +275,7 @@ void ipm_print_region(FILE *f, banner_t *data, regstats_t *reg)
     fprintf(f, "#    -mem   :    %10lf   %10lf  %10lf   %10lf \n", mem_kwh, mem_kwh/ntasks, reg->mem_energy.dmin/3600000.0, reg->mem_energy.dmax/3600000.0);
     fprintf(f, "#    -other :    %10lf   %10lf  %10lf   %10lf \n", other_kwh, other_kwh/ntasks, reg->other_energy.dmin/3600000.0, reg->other_energy.dmax/3600000.0);
   }
+#endif
 
   if( data->flags&BANNER_FULL ) 
     {

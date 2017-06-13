@@ -480,7 +480,10 @@ void ipm_banner(FILE *f)
   banner.flags|=BANNER_HAVE_CUFFT;
 #endif
 #ifdef HAVE_PMON
-  banner.flags|=BANNER_HAVE_ENERGY;
+  if (task.flags & FLAG_PMON)
+  {
+    banner.flags|=BANNER_HAVE_ENERGY;
+  }
 #endif
 
   if( task.flags&FLAG_REPORT_FULL )

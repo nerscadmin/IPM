@@ -1,3 +1,5 @@
+Set IPM_PMON=1 for pmon to work at runtime.
+
 short test demonstrating power management over sleeps. Sleeps are 5, 10, 15 
 seconds. the most deeply-nested regions should have energy scaled to the length
 of the sleep. Outer regions should be the sum of the inner regions. Power consumption

@@ -208,7 +208,8 @@ int ipm_init(int flags)
 #endif
 
 #ifdef HAVE_PMON
-  modules[IPM_MODULE_PMON].init=mod_pmon_init;
+  if (task.flags & FLAG_PMON)
+    modules[IPM_MODULE_PMON].init=mod_pmon_init;
 #endif
 
 

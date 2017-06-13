@@ -425,6 +425,8 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   res += ipm_printf(ptr, "</hpm>\n");
 #endif /* HAVE_PAPI */
 #ifdef HAVE_PMON
+    if (task.flags & FLAG_PMON)
+    {
     res += ipm_printf(ptr,
 "<pmon\n\
 <device name=\"node\" avg_power=\"%lf\" energy=\"%lf\">\n\
@@ -436,6 +438,7 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
           reg->cpu_energy/reg->wtime, reg->cpu_energy,
           reg->mem_energy/reg->wtime, reg->mem_energy,
           reg->other_energy/reg->wtime, reg->other_energy);
+    }
 #endif
   return res;
 }

@@ -196,6 +196,17 @@ AC_ARG_WITH(papi,
     ]
 )
 
+AC_ARG_ENABLE(pmon,
+  AC_HELP_STRING([--enable-pmon], [Enables power monitoring module (default=no)]),
+    [
+	    enable_mod_pmon=yes
+    ],
+    [
+		enable_mod_pmon=no
+    ]
+)
+
+
 
 report_libunwind=no
 AC_ARG_WITH(libunwind,
