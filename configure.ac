@@ -64,7 +64,7 @@ AC_PROG_LIBTOOL
 
 # defining the enabled modules
 enable_mod_mpi=yes
-enable_mod_pmon=yes
+enable_mod_pmon=no
 enable_mod_posixio=no
 enable_mod_mpiio=no
 enable_mod_self_monitor=no
@@ -178,7 +178,7 @@ AC_ARG_WITH(papi,
     [
    	if test -d "$withval"; then
 	   		CFLAGS="$CFLAGS -I$withval/include"
-			LDFLAGS="$LDFLAGS -L$withval/lib" # -Wl,-rpath=$withval/lib"
+			LDFLAGS="$LDFLAGS -L$withval/lib" "-Wl,-rpath=$withval/lib"
 			LIBS="$LIBS -lpapi"
 			echo "papi: $withval"
 			enable_mod_papi=yes
