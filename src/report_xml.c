@@ -17,6 +17,7 @@
 #include "ipm_time.h"
 #include "report.h"
 #include "regstack.h"
+#include "mod_pmon.h"
 
 #ifdef HAVE_MPI
 #include <mpi.h>
@@ -248,20 +249,21 @@ int xml_perf(void *ptr, taskdata_t *t) {
   region_t *reg;
 
   /*
-  assert(t); 
+  assert(t);
   assert(t->rstack);
   assert(t->rstack->child);
   reg = t->rstack->child;  */ /* this is ipm_main */
 
   reg = &ipm_app;
-  
+
   procmem = task.procmem;
 #ifdef HAVE_PAPI
+  // this is potentially broken on serial IO path - all calls from rank 0
   gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
 #else
   gflops = 0.0;
-#endif 
-  
+#endif
+
   res=0;
 
   /* OLD IPM2 version:
@@ -398,30 +400,43 @@ int xml_internal(void *ptr, taskdata_t *t) {
 int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   int i, nc;
   int res=0;
-  double gflops=0.0;
-  
 #ifdef HAVE_PAPI
-  
+  double gflops=0.0;
+
+
   nc=0;
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     if( (papi_events[i].name[0]) )
       nc++;
   }
-  
+
+  // tyler: this only reports for rank == 0 regardless of task
   gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
-  
-  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\">\n", 
+
+  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\">\n",
 		    nc, gflops);
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     if( !(papi_events[i].name[0]) )
       continue;
-    
+
     res += ipm_printf(ptr, "<counter name=\"%s\" > %lld </counter>\n",
 		      papi_events[i].name, reg->ctr[i]);
   }
   res += ipm_printf(ptr, "</hpm>\n");
 #endif /* HAVE_PAPI */
-
+#ifdef HAVE_PMON
+    res += ipm_printf(ptr,
+"<pmon\n\
+<device name=\"node\" avg_power=\"%lf\" energy=\"%lf\">\n\
+<device name=\"cpu\"  avg_power=\"%lf\" energy=\"%lf\">\n\
+<device name=\"memory\" avg_power=\"%lf\" energy=\"%lf\">\n\
+<device name=\"misc\" avg_power=\"%lf\" energy=\"%lf\">\n\
+</pmon>\n",
+          reg->energy/reg->wtime, reg->energy,
+          reg->cpu_energy/reg->wtime, reg->cpu_energy,
+          reg->mem_energy/reg->wtime, reg->mem_energy,
+          reg->other_energy/reg->wtime, reg->other_energy);
+#endif
   return res;
 }
 
@@ -476,38 +491,50 @@ int xml_noregion(void *ptr, taskdata_t *t, region_t *reg, ipm_hent_t *htab) {
   double wtime, utime, stime, mtime;
   region_t noregion, *tmp;
   int i, res=0;
-  
+
   rstack_clear_region(&noregion);
   noregion.id=1;
   noregion.nexecs=reg->nexecs;
   sprintf(noregion.name, "ipm_noregion");
-  noregion.flags |= FLAG_PRINT_EXCLUSIVE; 
+  noregion.flags |= FLAG_PRINT_EXCLUSIVE;
   noregion.child = reg->child;
 
   wtime = reg->wtime;
   utime = reg->utime;
   stime = reg->stime;
-  mtime = reg->mtime;  
-
+  mtime = reg->mtime;
 #ifdef HAVE_PAPI
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     noregion.ctr[i]=reg->ctr[i];
   }
 #endif
-  
+#ifdef HAVE_PMON
+    noregion.energy=reg->energy;
+    noregion.cpu_energy=reg->cpu_energy;
+    noregion.mem_energy=reg->mem_energy;
+    noregion.other_energy=reg->other_energy;
+#endif
+
   tmp = reg->child;
   while(tmp) {
     wtime -= tmp->wtime;
     utime -= tmp->utime;
     stime -= tmp->stime;
     mtime -= tmp->mtime;
-    
+
 #ifdef HAVE_PAPI
     for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
       noregion.ctr[i] -= tmp->ctr[i];
     }
 #endif
-  
+#ifdef HAVE_PMON
+
+    noregion.energy -= tmp->energy;
+    noregion.cpu_energy -= tmp->cpu_energy;
+    noregion.mem_energy -= tmp->mem_energy;
+    noregion.other_energy -= tmp->other_energy;
+#endif
+
     tmp = tmp->next;
   }
 
@@ -884,9 +911,19 @@ int report_xml_local(unsigned long flags)
 }
 
 
-
-#ifdef HAVE_MPI 
-int report_xml_atroot(unsigned long flags) 
+/*
+ * This function is the primary function of the serial xml dump path. In this
+ * path, all nodes report their regions, etc, to the leader. Most module
+ * data is not a part of this. However, for each task_data (process), the
+ * output and xml functions are called. This means that in the serial path,
+ * all functions are called <on the leader>. No process-specific data that 
+ * has not been transferred to the leader before this point will be printed.
+ * MPI is potentially dead by this point, so MPI calls may not be used in these
+ * module functions.
+ * tallen 06/09/2017
+ */
+#ifdef HAVE_MPI
+int report_xml_atroot(unsigned long flags)
 {
   FILE *f;
   char buf[80];

@@ -32,7 +32,8 @@ typedef struct region
   char name[MAXSIZE_REGLABEL+1];
 
   /* a module can store data with a region */
-  void *moddata[MAXNUM_MODULES];
+  // tyler: this is never used and doesn't really work with mpi
+  //void *moddata[MAXNUM_MODULES];
 
 #ifdef HAVE_PAPI
   /* accumulated values for this region */
@@ -44,6 +45,12 @@ typedef struct region
   /* counter values accumulated while in IPM code */
   long long ctr_ipm[MAXNUM_PAPI_EVENTS]; 
 #endif 
+#ifdef HAVE_PMON
+  double energy;
+  double cpu_energy;
+  double mem_energy;
+  double other_energy;
+#endif
 } region_t;
 
 

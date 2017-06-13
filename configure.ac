@@ -64,6 +64,7 @@ AC_PROG_LIBTOOL
 
 # defining the enabled modules
 enable_mod_mpi=yes
+enable_mod_pmon=yes
 enable_mod_posixio=no
 enable_mod_mpiio=no
 enable_mod_self_monitor=no
@@ -177,7 +178,7 @@ AC_ARG_WITH(papi,
     [
    	if test -d "$withval"; then
 	   		CFLAGS="$CFLAGS -I$withval/include"
-			LDFLAGS="$LDFLAGS -L$withval/lib -Wl,-rpath=$withval/lib"
+			LDFLAGS="$LDFLAGS -L$withval/lib" # -Wl,-rpath=$withval/lib"
 			LIBS="$LIBS -lpapi"
 			echo "papi: $withval"
 			enable_mod_papi=yes
@@ -246,6 +247,7 @@ AM_CONDITIONAL([ENABLE_CLUSTERING], [test "$enable_mod_clustering" = yes])
 AM_CONDITIONAL([ENABLE_CUDA], [test "$enable_mod_cuda" = yes])
 AM_CONDITIONAL([ENABLE_CUBLAS], [test "$enable_mod_cublas" = yes])
 AM_CONDITIONAL([ENABLE_CUFFT], [test "$enable_mod_cufft" = yes])
+AM_CONDITIONAL([ENABLE_PMON], [test "$enable_mod_pmon" = yes])
 
 if test "x$target_os" == "xlinux-gnu"; then
 	CFLAGS+=" -DOS_LINUX"
@@ -311,6 +313,7 @@ test/test.jacobi/Makefile
 test/test.keyhist/Makefile
 test/test.omp/Makefile 
 test/test.pcontrol/Makefile 
+test/test.pmon/Makefile
 test/test.posixio-helloworld/Makefile
 test/test.posixio-read/Makefile
 test/test.simple_mpi/Makefile

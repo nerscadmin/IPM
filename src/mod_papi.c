@@ -11,6 +11,7 @@
 #include "ipm_debug.h"
 #include "ipm_modules.h"
 #include "mod_papi.h"
+#include "report.h"
 
 /* 
    uncomment the following #define to enable multiplexing, 
@@ -26,10 +27,21 @@ ipm_papi_event_t papi_events[MAXNUM_PAPI_EVENTS];
 
 ipm_papi_evtset_t papi_evtset[MAXNUM_PAPI_COMPONENTS];
 
-static PAPI_hw_info_t *hwinfo = NULL;
 
 int ipm_papi_start();
 int ipm_papi_init();
+
+int mod_papi_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
+{
+    int res = 0;
+    const PAPI_hw_info_t *hwinfo = PAPI_get_hardware_info();
+    res += ipm_printf(ptr, "<module name=\"PAPI\" ncpu=\"%d\" nnodes=\"%d\" totalcpus=\"%d\"\
+ vendor=\"%d\" vendor_string=\"%s\" model=\"%d\" model_string=\"%s\" revision=\"%f\" mhz=\"%f\">\n",
+                       hwinfo->ncpu, hwinfo->nnodes, hwinfo->totalcpus, hwinfo->vendor, hwinfo->vendor_string,
+                       hwinfo->model, hwinfo->model_string, hwinfo->revision, hwinfo->mhz);
+
+    return res;
+}
 
 int mod_papi_init(ipm_mod_t* mod, int flags)
 {
@@ -37,8 +49,9 @@ int mod_papi_init(ipm_mod_t* mod, int flags)
 
   mod->state    = STATE_IN_INIT;
   mod->init     = mod_papi_init;
+  mod->xml      = mod_papi_xml;
   mod->output   = 0;
-  mod->finalize = 0; 
+  mod->finalize = 0;
   mod->name     = "PAPI";
 
   for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ ) {
@@ -55,22 +68,15 @@ int mod_papi_init(ipm_mod_t* mod, int flags)
      sprintf(papi_events[0].name, "PAPI_FP_OPS");
      sprintf(papi_events[1].name, "PAPI_L2_TCM");
      sprintf(papi_events[1].name, "ETH0_RX_PACKETS");
-     sprintf(papi_events[MAXNUM_PAPI_EVENTS-1].name, "PAPI_TOT_INS"); 
+     sprintf(papi_events[MAXNUM_PAPI_EVENTS-1].name, "PAPI_TOT_INS");
   */
 
 
   rv = ipm_papi_init();
-  if(rv!=IPM_OK) { 
+  if(rv!=IPM_OK) {
     mod->state = STATE_ERROR;
     return IPM_EOTHER;
   }
-
-  /* 
-    if ((hwinfo = PAPI_get_hardware_info()) != NULL) {
-      printf("%d CPU's at %f Mhz.\en",hwinfo->totalcpus,hwinfo->mhz);
-    
-  }
-  */
 
   rv = ipm_papi_start();
   if(rv!=IPM_OK) {

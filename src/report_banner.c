@@ -81,16 +81,10 @@ void ipm_print_banner(FILE *f, banner_t *data)
 	  tmpstr, 100.0*data->app.pio.dsum/data->app.wallt.dsum);
   }
 
-  fprintf(f, "# mem [GB]  : %-26.2f gflop/sec : %.2f\n", 
+  fprintf(f, "# mem [GB]  : %-26.2f gflop/sec : %.2f\n",
 	  data->procmem.dsum, data->app.gflops.dsum);
 
-  if( data->flags&BANNER_HAVE_ENERGY ) {
-    double joules =  data->energy.dsum;
-    double kwh = joules / (double)(3600000.0);
-    fprintf(f, "# Energy    : %.4f kWh (%.4f MJ)\n", 
-	    kwh, joules*1.0e-6);
-  }
-  
+
   fprintf(f, "#\n");
 
 
@@ -246,6 +240,40 @@ void ipm_print_region(FILE *f, banner_t *data, regstats_t *reg)
   fprintf(f, "# mem [GB]  :    %10.2f   %10.2f   %10.2f   %10.2f \n", 
 	  data->procmem.dsum, data->procmem.dsum/(double)ntasks,
 	  data->procmem.dmin, data->procmem.dmax);
+
+  if( data->flags&BANNER_HAVE_ENERGY ) {
+    double joules =  reg->energy.dsum;
+    double cpu_joules =  reg->cpu_energy.dsum;
+    double mem_joules =  reg->mem_energy.dsum;
+    double other_joules =  reg->other_energy.dsum;
+    double kwh = joules / (double)(3600000.0);
+    double cpu_kwh = cpu_joules / (double)(3600000.0);
+    double mem_kwh = mem_joules / (double)(3600000.0);
+    double other_kwh = other_joules / (double)(3600000.0);
+    fprintf(f,"#\n# Per Node Energy Data:\n");
+    fprintf(f, "# energy (j):    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n", joules, joules/ntasks, reg->energy.dmin, reg->energy.dmax);
+    fprintf(f, "#    -cpu   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n", cpu_joules, cpu_joules/ntasks, reg->cpu_energy.dmin, reg->cpu_energy.dmax);
+    fprintf(f, "#    -mem   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n", mem_joules, mem_joules/ntasks, reg->mem_energy.dmin, reg->mem_energy.dmax);
+    fprintf(f, "#    -other :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n", other_joules, other_joules/ntasks, reg->other_energy.dmin, reg->other_energy.dmax);
+    fprintf(f, "#\n");
+    fprintf(f, "# power (w) :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
+            (joules/reg->wallt.dsum) * (task.nhosts), joules/reg->wallt.dsum,
+            reg->energy.dmin/(reg->wallt.dsum/(double)task.ntasks), reg->energy.dmax/(reg->wallt.dsum/(double)task.ntasks));
+    fprintf(f, "#    -cpu   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
+            (cpu_joules/reg->wallt.dsum) * (task.nhosts), cpu_joules/reg->wallt.dsum,
+            reg->cpu_energy.dmin/(reg->wallt.dsum/(double)task.ntasks), reg->cpu_energy.dmax/(reg->wallt.dsum/(double)task.ntasks));
+    fprintf(f, "#    -mem   :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
+            (mem_joules/reg->wallt.dsum) * (task.nhosts), mem_joules/reg->wallt.dsum,
+            reg->mem_energy.dmin/(reg->wallt.dsum/(double)task.ntasks), reg->mem_energy.dmax/(reg->wallt.dsum/(double)task.ntasks));
+    fprintf(f, "#    -other :    %10.2lf   %10.2lf  %10.2lf   %10.2lf \n",
+            (other_joules/reg->wallt.dsum) * (task.nhosts), other_joules/reg->wallt.dsum,
+            reg->other_energy.dmin/(reg->wallt.dsum/(double)task.ntasks), reg->other_energy.dmax/(reg->wallt.dsum/(double)task.ntasks));
+
+    fprintf(f, "# kWh       :    %10lf   %10lf  %10lf   %10lf \n", kwh, kwh/ntasks, reg->energy.dmin/3600000.0, reg->energy.dmax/3600000.0);
+    fprintf(f, "#    -cpu   :    %10lf   %10lf  %10lf   %10lf \n", cpu_kwh, cpu_kwh/ntasks, reg->cpu_energy.dmin/3600000.0, reg->cpu_energy.dmax/3600000.0);
+    fprintf(f, "#    -mem   :    %10lf   %10lf  %10lf   %10lf \n", mem_kwh, mem_kwh/ntasks, reg->mem_energy.dmin/3600000.0, reg->mem_energy.dmax/3600000.0);
+    fprintf(f, "#    -other :    %10lf   %10lf  %10lf   %10lf \n", other_kwh, other_kwh/ntasks, reg->other_energy.dmin/3600000.0, reg->other_energy.dmax/3600000.0);
+  }
 
   if( data->flags&BANNER_FULL ) 
     {

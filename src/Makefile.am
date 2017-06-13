@@ -139,7 +139,10 @@ CLUSTERING_DIST = mod_clustering.c $(top_srcdir)/include/mod_clustering.h
 CLUSTERING_NODIST =
 
 OMPTRACEPOINTS_DIST   = mod_omptracepoints.c mod_omptracepoints_wrap.h $(top_srcdir)/include/mod_omptracepoints.h
-OMPTRACEPOINTS_NODIST = 
+OMPTRACEPOINTS_NODIST =
+
+PMON_DIST   = mod_pmon.h mod_pmon.c
+PMON_NODIST = mod_pmon.h mod_pmon.c
 
 CUDA_DIST   = mod_cuda.c $(top_srcdir)/include/mod_cuda.h
 CUDA_NODIST = GEN.wrapper_cuda.c   GEN.wrapper_cuda.h \
@@ -172,7 +175,8 @@ ALL_MODULES_DIST = 	\
 					$(OMPTRACEPOINTS_DIST) \
 					$(CUDA_DIST) \
 					$(CUFFT_DIST) \
-					$(CUBLAS_DIST)
+					$(CUBLAS_DIST) \
+					$(PMON_DIST)
 
 
 ###############################################################################
@@ -268,6 +272,12 @@ if ENABLE_CUBLAS
   IPMFILES_MODULES_NODIST += $(CUBLAS_NODIST)
   REPORT_DEPS   += GEN.wrapper_cublas.c GEN.calltable_cublas.c GEN.fake_cublas.c
   IPM_TIME_DEPS += GEN.wrapper_cublas.c GEN.calltable_cublas.c GEN.fake_cublas.c
+endif
+
+if ENABLE_PMON
+  AM_CFLAGS+=-DHAVE_PMON
+  IPMFILES_MODULES += $(PMON_DIST)
+  IPMFILES_MODULES_NODIST += $(PMON_NODIST)
 endif
 
 ###############################################################################

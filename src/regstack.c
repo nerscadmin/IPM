@@ -67,10 +67,6 @@ void rstack_clear_region(struct region *r)
   r->stime=0.0;    r->stime_e=0.0;
   r->mtime=0.0;    r->mtime_e=0.0;
   
-  for( i=0; i<MAXNUM_MODULES; i++ ) {
-    r->moddata[i]=0;
-  }
-  
 #ifdef HAVE_PAPI
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     r->ctr[i]=0;

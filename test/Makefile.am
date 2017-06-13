@@ -14,6 +14,7 @@ SUBDIRS = test.allgather \
 		  test.hello \
 		  test.jacobi \
 		  test.keyhist \
+		  test.pmon \
 		  test.pcontrol \
 		  test.posixio-helloworld \
 		  test.posixio-read \

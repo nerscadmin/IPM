@@ -74,6 +74,11 @@
 #include "mod_cublas.h"
 #endif
 
+
+#ifdef HAVE_PMON
+#include "mod_pmon.h"
+#endif
+
 int ipm_state=STATE_NOTINIT;
 
 #ifdef HAVE_MPI
@@ -192,25 +197,29 @@ int ipm_init(int flags)
 
 #ifdef HAVE_CUDA
   modules[IPM_MODULE_CUDA].init=mod_cuda_init;
-#endif   
+#endif
 
 #ifdef HAVE_CUFFT
   modules[IPM_MODULE_CUFFT].init=mod_cufft_init;
-#endif   
+#endif
 
 #ifdef HAVE_CUBLAS
   modules[IPM_MODULE_CUBLAS].init=mod_cublas_init;
-#endif   
+#endif
+
+#ifdef HAVE_PMON
+  modules[IPM_MODULE_PMON].init=mod_pmon_init;
+#endif
 
 
-  /* TODO: handle errors in module initialization, set 
+  /* TODO: handle errors in module initialization, set
      ipm_state to STATE_ERROR */
-  
+
   for( i=0; i<MAXNUM_MODULES; i++ ) {
     if( modules[i].init ) { /* call init function if it is set */
-      rv=modules[i].init(&(modules[i]), flags); 
+      rv=modules[i].init(&(modules[i]), flags);
       if(rv!=IPM_OK) {
-	IPMERR("Error initializing module %d (%s), error %d\n", 
+	IPMERR("Error initializing module %d (%s), error %d\n",
 	       i, modules[i].name?modules[i].name:"", rv);
       }
 
