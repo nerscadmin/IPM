@@ -1,4 +1,5 @@
 
+CC = $(MPICC)
 
 
 bin_PROGRAMS = posixio-helloworld posixio-helloworld.ipm

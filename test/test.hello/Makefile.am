@@ -1,4 +1,6 @@
 
+AM_CPPFLAGS = -I$(top_srcdir)/include
+
 bin_PROGRAMS = hello hello.ipm
 
 HELLO_SOURCES = main.c
