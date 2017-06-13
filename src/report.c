@@ -198,7 +198,7 @@ void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int 
   wallt = reg->wtime;
 
 #ifdef HAVE_PAPI
-  gflops=0.0;//gflops = ipm_papi_gflops(reg->ctr, wallt);
+  gflops = ipm_papi_gflops(reg->ctr, wallt);
 #else
   gflops = 0.0;
 #endif
