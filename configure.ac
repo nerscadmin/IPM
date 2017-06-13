@@ -178,7 +178,7 @@ AC_ARG_WITH(papi,
     [
    	if test -d "$withval"; then
 	   		CFLAGS="$CFLAGS -I$withval/include"
-			LDFLAGS="$LDFLAGS -L$withval/lib" "-Wl,-rpath=$withval/lib"
+			LDFLAGS="$LDFLAGS -L$withval/lib -Wl,-rpath=$withval/lib"
 			LIBS="$LIBS -lpapi"
 			echo "papi: $withval"
 			enable_mod_papi=yes
