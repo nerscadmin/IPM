@@ -306,6 +306,10 @@ bin/Makefile
 etc/Makefile
 src/Makefile
 utils/Makefile
+])
+
+LDFLAGS=""
+AC_CONFIG_FILES([
 test/Makefile
 test/test.allgather/Makefile
 test/test.allgatherv/Makefile

@@ -21,7 +21,5 @@ SUBDIRS = test.allgather \
 		  test.simple_mpi \
 		  test.status_ignore
 
-LDFLAGS=
-
 dnl	  test.pomp-standalone  (sahu: disabled for now)
 
