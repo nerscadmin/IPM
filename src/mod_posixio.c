@@ -5,6 +5,7 @@
 #include "mod_posixio.h"
 #include "ipm_modules.h"
 #include "hashtable.h"
+#include "report.h"
 #include "GEN.calltable_posixio.h"
 
 //iodata_t iodata[MAXNUM_REGIONS];
