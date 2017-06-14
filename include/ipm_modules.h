@@ -2,6 +2,10 @@
 #ifndef IPM_MODULES_H_INCLUDED
 #define IPM_MODULES_H_INCLUDED
 
+
+typedef struct ipm_module ipm_mod_t;
+struct ipm_module;
+
 #include "ipm_sizes.h"
 #include "regstack.h"
 
@@ -60,7 +64,7 @@ typedef int(*xmlfunc_t)(struct ipm_module* mod, void *ptr, struct region *reg);
 /* Called upon region enter/exit */
 typedef int(*regfunc_t)(struct ipm_module* mod, int op, struct region *reg);
 
-typedef struct ipm_module
+struct ipm_module
 {
   char           *name;
   initfunc_t      init;
@@ -71,7 +75,7 @@ typedef struct ipm_module
   int             state;
   int             ct_offs;    /* range and offset in the */
   int             ct_range;   /* call table */
-} ipm_mod_t;
+};
 
 void ipm_module_init(struct ipm_module *mod);
 
