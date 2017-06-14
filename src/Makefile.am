@@ -141,8 +141,8 @@ CLUSTERING_NODIST =
 OMPTRACEPOINTS_DIST   = mod_omptracepoints.c mod_omptracepoints_wrap.h $(top_srcdir)/include/mod_omptracepoints.h
 OMPTRACEPOINTS_NODIST =
 
-PMON_DIST   = mod_pmon.h mod_pmon.c
-PMON_NODIST = mod_pmon.h mod_pmon.c
+PMON_DIST   = mod_pmon.c $(top_srcdir)/include/mod_pmon.h
+PMON_NODIST =
 
 CUDA_DIST   = mod_cuda.c $(top_srcdir)/include/mod_cuda.h
 CUDA_NODIST = GEN.wrapper_cuda.c   GEN.wrapper_cuda.h \
