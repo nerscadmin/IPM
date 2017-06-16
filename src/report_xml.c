@@ -427,12 +427,13 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
 #ifdef HAVE_PMON
     if (task.flags & FLAG_PMON)
     {
-    res += ipm_printf(ptr,
-"<pmon\n\
-<device name=\"node\" avg_power=\"%lf\" energy=\"%lf\">\n\
-<device name=\"cpu\"  avg_power=\"%lf\" energy=\"%lf\">\n\
-<device name=\"memory\" avg_power=\"%lf\" energy=\"%lf\">\n\
-<device name=\"misc\" avg_power=\"%lf\" energy=\"%lf\">\n\
+        //ensure even internal tags have closing tags...
+        res += ipm_printf(ptr,
+"<pmon>\n\
+<device name=\"node\" avg_power=\"%lf\" energy=\"%lf\"></device>\n\
+<device name=\"cpu\"  avg_power=\"%lf\" energy=\"%lf\"></device>\n\
+<device name=\"memory\" avg_power=\"%lf\" energy=\"%lf\"></device>\n\
+<device name=\"misc\" avg_power=\"%lf\" energy=\"%lf\"></device>\n\
 </pmon>\n",
           reg->energy/reg->wtime, reg->energy,
           reg->cpu_energy/reg->wtime, reg->cpu_energy,

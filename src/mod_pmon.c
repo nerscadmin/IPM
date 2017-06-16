@@ -53,6 +53,7 @@ static double ipm_pmon_sample_energy_node(void)
 
 static void ipm_pmon_start_reg(struct region* reg)
 {
+    pmondata[reg->id].mtime = ipm_mtime();
     pmondata[reg->id].node_initial_energy = ipm_pmon_sample_energy_node();
     pmondata[reg->id].cpu_initial_energy = ipm_pmon_sample_energy_cpu();
     pmondata[reg->id].mem_initial_energy = ipm_pmon_sample_energy_mem();
@@ -61,6 +62,8 @@ static void ipm_pmon_start_reg(struct region* reg)
 
 static void ipm_pmon_end_reg(struct region* reg)
 {
+    double mtime = ipm_mtime();
+
     pmondata[reg->id].node_final_energy =  ipm_pmon_sample_energy_node();
     reg->energy = pmondata[reg->id].node_final_energy - pmondata[reg->id].node_initial_energy;
 
@@ -71,6 +74,8 @@ static void ipm_pmon_end_reg(struct region* reg)
     reg->mem_energy = pmondata[reg->id].mem_final_energy - pmondata[reg->id].mem_initial_energy;
 
     reg->other_energy = reg->energy - reg->cpu_energy - reg->mem_energy;
+    // end time - start time
+    pmondata[reg->id].mtime = (mtime - (pmondata[reg->id].mtime));
 }//PMON_Pause
 
 int mod_pmon_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
@@ -80,12 +85,17 @@ int mod_pmon_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
     double version = 0;
     // timestamp of last startup
     double startup = 0;
+    double time = 0;
+    if (reg)
+        time = pmondata[reg->id].mtime;
     parse_pm_counter("/sys/cray/pm_counters/raw_scan_hz", &hz);
     parse_pm_counter("/sys/cray/pm_counters/version", &version);
     parse_pm_counter("/sys/cray/pm_counters/startup", &startup);
 
-    res+=ipm_printf(ptr, "<module name=\"%s\" scan_hz=\"%lf\" version=\"%lf\"\
- startup=\"%lf\">\n", "PMON", hz, version, startup);
+    // modules must have time for compatibility... time is time spent in 
+    // this region
+    res+=ipm_printf(ptr, "<module name=\"%s\" time=\"%lf\" scan_hz=\"%lf\" version=\"%lf\"\
+ startup=\"%lf\"></module>\n", "PMON", time, hz, version, startup);
 
     return res;
 }

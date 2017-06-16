@@ -13,6 +13,8 @@ typedef struct ipm_pmon
 
     double mem_initial_energy;
     double mem_final_energy;
+
+    double mtime;
 } ipm_pmon_t;
 
 int mod_pmi_xml(ipm_mod_t* mod, void* ptr, struct region* reg);
