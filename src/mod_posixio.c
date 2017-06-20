@@ -92,8 +92,6 @@ int mod_posixio_xml(ipm_mod_t* mod, void *ptr, struct region *reg)
 int mod_posixio_region(ipm_mod_t *mod, int op, struct region *reg)
 {
   double time;
-  char host[256];
-  gethostname(host, 256);
   if( !reg ) return 0;
 
   time = ipm_iotime();
