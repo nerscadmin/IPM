@@ -30,7 +30,7 @@ extern char **environ;
 #endif
 
 
-#define MAXSIZE_ENVKEY  120
+#define MAXSIZE_ENVKEY  1024
 
 int ipm_check_env(int env, char*val);
 

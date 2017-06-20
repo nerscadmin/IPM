@@ -402,7 +402,8 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   int res=0;
 #ifdef HAVE_PAPI
   double gflops=0.0;
-
+  //regions shorter than one second for now
+  char* time = ipm_stime() < 1 ? "false" : "true";
 
   nc=0;
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
@@ -413,8 +414,8 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   // tyler: this only reports for rank == 0 regardless of task
   gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
 
-  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\">\n",
-		    nc, gflops);
+  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\" valid_region=\"%s\">\n",
+		    nc, gflops, time);
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     if( !(papi_events[i].name[0]) )
       continue;
@@ -567,10 +568,11 @@ int xml_region(void *ptr, taskdata_t *t, region_t *reg, ipm_hent_t *htab) {
 		    reg->wtime, reg->utime, reg->stime, 
 		    reg->mtime, reg->iotime, reg->omptime, reg->ompidletime);
   */
-
+  
+  
   res += ipm_printf(ptr, "<region label=\"%s\" nexits=\"%u\" "
 		    "wtime=\"%.5e\" utime=\"%.5e\" stime=\"%.5e\" "
-		    "mtime=\"%.5e\" id=\"%d\" >\n",
+		    "mtime=\"%.5e\" id=\"%d\">\n",
 		    reg->name, reg->nexecs, reg->wtime, 
 		    reg->utime, reg->stime, reg->mtime,
 		    internal2xml[reg->id]);
