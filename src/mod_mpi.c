@@ -11,8 +11,6 @@
 char* ipm_mpi_op[MAXNUM_MPI_OPS];
 char* ipm_mpi_type[MAXNUM_MPI_TYPES];
 
-mpidata_t mpidata[MAXNUM_REGIONS];
-
 MPI_Group ipm_world_group;
 
 int mod_mpi_xml(ipm_mod_t* mod, void *ptr, struct region *reg);
@@ -36,8 +34,8 @@ int mod_mpi_init(ipm_mod_t* mod, int flags)
   copy_mpi_calltable();
 
   for( i=0; i<MAXNUM_REGIONS; i++ ) {
-    mpidata[i].mtime=0.0;
-    mpidata[i].mtime_e=0.0;
+    task.mpidata[i].mtime=0.0;
+    task.mpidata[i].mtime_e=0.0;
   }
 
   for( i=0; i<MAXNUM_MPI_OPS; i++ ) {
@@ -150,12 +148,12 @@ int mod_mpi_xml(ipm_mod_t* mod, void *ptr, struct region *reg)
     time = ipm_mtime();
   }
   else {
-    time = mpidata[reg->id].mtime;
+    time = task.mpidata[reg->id].mtime;
 
     if( (reg->flags)&FLAG_PRINT_EXCLUSIVE ) {
       tmp = reg->child;
       while(tmp) {
-	time -= mpidata[tmp->id].mtime;
+	time -= task.mpidata[tmp->id].mtime;
 	tmp = tmp->next;
       }
     }
@@ -179,11 +177,11 @@ int mod_mpi_region(ipm_mod_t *mod, int op, struct region *reg)
   switch(op) 
     {
     case -1: /* exit */
-      mpidata[reg->id].mtime += (mtime - (mpidata[reg->id].mtime_e));
+      task.mpidata[reg->id].mtime += (mtime - (task.mpidata[reg->id].mtime_e));
       break;
       
     case 1: /* enter */
-      mpidata[reg->id].mtime_e=mtime;
+      task.mpidata[reg->id].mtime_e=mtime;
       break;
   }
 

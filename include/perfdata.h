@@ -12,6 +12,10 @@
 #include "ipm_types.h"
 #include "regstack.h"
 
+#ifdef HAVE_MPI
+#include "mod_mpi.h"
+#endif
+
 #ifdef HAVE_POSIXIO
 #include "mod_posixio.h"
 #endif
@@ -30,6 +34,10 @@
 
 #ifdef HAVE_OMPTRACEPOINTS
 #include "mod_omptracepoints.h"
+#endif
+
+#ifdef HAVE_PMON
+#include "mod_pmon.h"
 #endif
 
 typedef struct jobdata 
@@ -92,6 +100,10 @@ typedef struct taskdata
 
   struct region *rstack;
 
+#ifdef HAVE_MPI
+mpidata_t mpidata[MAXNUM_REGIONS];
+#endif
+
 #ifdef HAVE_POSIXIO
   iodata_t iodata[MAXNUM_REGIONS];
 #endif
@@ -110,6 +122,10 @@ typedef struct taskdata
 
 #ifdef HAVE_OMPTRACEPOINTS
   ompdata_t ompdata[MAXNUM_REGIONS];
+#endif
+
+#ifdef HAVE_PMON
+ipm_pmon_t pmondata[MAXNUM_REGIONS];
 #endif
 
 } taskdata_t;

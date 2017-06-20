@@ -2,14 +2,8 @@
 #include <string.h>
 
 #include "ipm_modules.h"
-#include "ipm_time.h"
 #include "mod_pmon.h"
 #include "report.h"
-
-
-// 1 pmon data per region
-// used for begin/end reg and in report
-ipm_pmon_t pmondata[MAXNUM_REGIONS];
 
 static void parse_pm_counter(const char* file, double* val)
 {
@@ -53,29 +47,24 @@ static double ipm_pmon_sample_energy_node(void)
 
 static void ipm_pmon_start_reg(struct region* reg)
 {
-    pmondata[reg->id].mtime = ipm_mtime();
-    pmondata[reg->id].node_initial_energy = ipm_pmon_sample_energy_node();
-    pmondata[reg->id].cpu_initial_energy = ipm_pmon_sample_energy_cpu();
-    pmondata[reg->id].mem_initial_energy = ipm_pmon_sample_energy_mem();
+    task.pmondata[reg->id].node_initial_energy = ipm_pmon_sample_energy_node();
+    task.pmondata[reg->id].cpu_initial_energy = ipm_pmon_sample_energy_cpu();
+    task.pmondata[reg->id].mem_initial_energy = ipm_pmon_sample_energy_mem();
     return;
 }//PMON_Resume
 
 static void ipm_pmon_end_reg(struct region* reg)
 {
-    double mtime = ipm_mtime();
+    task.pmondata[reg->id].node_final_energy =  ipm_pmon_sample_energy_node();
+    reg->energy = task.pmondata[reg->id].node_final_energy - task.pmondata[reg->id].node_initial_energy;
 
-    pmondata[reg->id].node_final_energy =  ipm_pmon_sample_energy_node();
-    reg->energy = pmondata[reg->id].node_final_energy - pmondata[reg->id].node_initial_energy;
+    task.pmondata[reg->id].cpu_final_energy =  ipm_pmon_sample_energy_cpu();
+    reg->cpu_energy = task.pmondata[reg->id].cpu_final_energy - task.pmondata[reg->id].cpu_initial_energy;
 
-    pmondata[reg->id].cpu_final_energy =  ipm_pmon_sample_energy_cpu();
-    reg->cpu_energy = pmondata[reg->id].cpu_final_energy - pmondata[reg->id].cpu_initial_energy;
-
-    pmondata[reg->id].mem_final_energy =  ipm_pmon_sample_energy_mem();
-    reg->mem_energy = pmondata[reg->id].mem_final_energy - pmondata[reg->id].mem_initial_energy;
+    task.pmondata[reg->id].mem_final_energy =  ipm_pmon_sample_energy_mem();
+    reg->mem_energy = task.pmondata[reg->id].mem_final_energy - task.pmondata[reg->id].mem_initial_energy;
 
     reg->other_energy = reg->energy - reg->cpu_energy - reg->mem_energy;
-    // end time - start time
-    pmondata[reg->id].mtime = (mtime - (pmondata[reg->id].mtime));
 }//PMON_Pause
 
 int mod_pmon_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
@@ -85,17 +74,15 @@ int mod_pmon_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
     double version = 0;
     // timestamp of last startup
     double startup = 0;
-    double time = 0;
-    if (reg)
-        time = pmondata[reg->id].mtime;
+
     parse_pm_counter("/sys/cray/pm_counters/raw_scan_hz", &hz);
     parse_pm_counter("/sys/cray/pm_counters/version", &version);
     parse_pm_counter("/sys/cray/pm_counters/startup", &startup);
 
     // modules must have time for compatibility... time is time spent in 
     // this region
-    res+=ipm_printf(ptr, "<module name=\"%s\" time=\"%lf\" scan_hz=\"%lf\" version=\"%lf\"\
- startup=\"%lf\"></module>\n", "PMON", time, hz, version, startup);
+    res+=ipm_printf(ptr, "<module name=\"%s\" time=\"0.0\" scan_hz=\"%lf\" version=\"%lf\"\
+ startup=\"%lf\"></module>\n", "PMON", hz, version, startup);
 
     return res;
 }
@@ -131,12 +118,12 @@ int mod_pmon_init(ipm_mod_t* mod, int flags)
   mod->name     = "PMON";
 
   for( i=0; i<MAXNUM_REGIONS; i++ ) {
-        pmondata[i].node_initial_energy = 0;
-        pmondata[i].node_final_energy = 0;
-        pmondata[i].cpu_initial_energy = 0;
-        pmondata[i].cpu_final_energy = 0;
-        pmondata[i].mem_initial_energy = 0;
-        pmondata[i].mem_final_energy = 0;
+        task.pmondata[i].node_initial_energy = 0;
+        task.pmondata[i].node_final_energy = 0;
+        task.pmondata[i].cpu_initial_energy = 0;
+        task.pmondata[i].cpu_final_energy = 0;
+        task.pmondata[i].mem_initial_energy = 0;
+        task.pmondata[i].mem_final_energy = 0;
   }
 
   mod->state    = STATE_ACTIVE;
