@@ -403,7 +403,7 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
 #ifdef HAVE_PAPI
   double gflops=0.0;
   //regions shorter than one second for now
-  char* time = ipm_stime() < 1 ? "false" : "true";
+  char* time = reg->stime < 1.0 ? "false" : "true";
 
   nc=0;
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
