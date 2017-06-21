@@ -24,7 +24,7 @@
 
 int ipm_control(const int ctl, char *cmd, void *data) 
 {
-  char *reg;
+  char *reg = NULL;
   
   switch( ctl ) 
     {

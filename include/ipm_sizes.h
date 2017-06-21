@@ -50,8 +50,8 @@
 
 // Consider updating MAXSIZE_ENVKEY if you change these values...
 /* module papi */
-#define MAXNUM_PAPI_EVENTS      32
-#define MAXNUM_PAPI_COUNTERS    16
+#define MAXNUM_PAPI_EVENTS      128
+#define MAXNUM_PAPI_COUNTERS    128
 #define MAXNUM_PAPI_COMPONENTS  1
 #define MAXSIZE_PAPI_EVTNAME    32
 
