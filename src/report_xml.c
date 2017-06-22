@@ -405,7 +405,7 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   //estimate time needed for good reading. papi_evtset[0] is always cpu core events
   // minimum samples to get a decent read * number of counters * counter swap
   // interval in seconds
-  char* time = reg->stime < SAMPLES * t->papi_evtset[0].nevts * (t->papi_mpx_interval.multiplex.ns / (1000000000.0)) ? "false" : "true";
+  char* time = reg->stime + reg->mtime < SAMPLES * t->papi_evtset[0].nevts * (t->papi_mpx_interval.multiplex.ns / (1000000000.0)) ? "false" : "true";
   nc=0;
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     if( (t->papi_events[i].name[0]) )
