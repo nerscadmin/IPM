@@ -119,7 +119,7 @@ void ipm_region_end(struct region *reg)
   int i;
 
 #ifdef HAVE_PAPI
-  long long ctr1[MAXNUM_PAPI_EVENTS];
+//  long long ctr1[MAXNUM_PAPI_EVENTS];
   //  long long ctr2[MAXNUM_PAPI_EVENTS];
 #endif
 
@@ -127,7 +127,7 @@ void ipm_region_end(struct region *reg)
    */
 
 #ifdef HAVE_PAPI
-  ipm_papi_read(ctr1);
+ // ipm_papi_read(ctr1);
 #endif
   
   /* update data for region 'reg' */
@@ -144,10 +144,12 @@ void ipm_region_end(struct region *reg)
 
 #ifdef HAVE_PAPI
   // ipm_papi_read(ctr2);
+  /*
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     //reg->ctr_ipm[i] += (ctr2[i]-ctr1[i]);
     reg->ctr[i] += (ctr1[i]-reg->ctr_e[i]);
   }
+    */
 #endif
 
 }
@@ -311,6 +313,7 @@ void* rsfunc_enum_l1_regions(region_t *reg, unsigned level, int flags, void *ptr
   return ptr;
 }
 
+/* tallen: never used
 void* rsfunc_adjust_ctrs(region_t *reg, unsigned level, int flags, void *ptr) 
 {
   int i;
@@ -320,7 +323,7 @@ void* rsfunc_adjust_ctrs(region_t *reg, unsigned level, int flags, void *ptr)
     return ptr;
 
 #ifdef HAVE_PAPI
-  /* we are at a child or backtracking */
+  // we are at a child or backtracking 
   tmp = reg->child; 
   while(tmp) {
     for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
@@ -332,11 +335,11 @@ void* rsfunc_adjust_ctrs(region_t *reg, unsigned level, int flags, void *ptr)
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     reg->ctr[i] -= reg->ctr_ipm[i];
   }
-#endif /* HAVE_PAPI */
+#endif  HAVE_PAPI 
   
   return ptr;
 }
-
+*/
 
 void* rsfunc_find_by_id(region_t *reg, unsigned level, int flags, void *ptr) 
 {

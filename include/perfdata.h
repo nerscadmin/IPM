@@ -36,6 +36,10 @@
 #include "mod_omptracepoints.h"
 #endif
 
+#ifdef HAVE_PAPI
+#include "mod_papi.h"
+#endif
+
 #ifdef HAVE_PMON
 #include "mod_pmon.h"
 #endif
@@ -122,6 +126,13 @@ mpidata_t mpidata[MAXNUM_REGIONS];
 
 #ifdef HAVE_OMPTRACEPOINTS
   ompdata_t ompdata[MAXNUM_REGIONS];
+#endif
+
+#ifdef HAVE_PAPI
+ipm_papi_event_t papi_events[MAXNUM_PAPI_EVENTS];
+ipm_papi_evtset_t papi_evtset[MAXNUM_PAPI_COMPONENTS];
+const PAPI_component_info_t* cmpinfo;
+PAPI_option_t papi_mpx_interval;
 #endif
 
 #ifdef HAVE_PMON

@@ -30,13 +30,28 @@
 //#define USE_PAPI_MULTIPLEXING
 
 double flops_weight[MAXNUM_PAPI_EVENTS];
-ipm_papi_event_t papi_events[MAXNUM_PAPI_EVENTS];
-
-ipm_papi_evtset_t papi_evtset[MAXNUM_PAPI_COMPONENTS];
-
 
 int ipm_papi_start();
 int ipm_papi_init();
+
+
+int mod_papi_region(ipm_mod_t* mod, int op, struct region* reg)
+{
+    if (reg)
+    {
+        switch (op)
+        {
+            //end
+            case -1:
+                ipm_papi_read(reg->ctr);
+            break;
+            // start
+            case 1:
+                ipm_papi_read(reg->ctr_e);
+            break;
+        }
+    }
+}
 
 int mod_papi_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
 {
@@ -58,19 +73,20 @@ int mod_papi_init(ipm_mod_t* mod, int flags)
   mod->state    = STATE_IN_INIT;
   mod->init     = mod_papi_init;
   mod->xml      = mod_papi_xml;
+  mod->regfunc  = mod_papi_region;
   mod->output   = 0;
   mod->finalize = 0;
   mod->name     = "PAPI";
 
   // intialize components
   for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ ) {
-    papi_evtset[comp].nevts=0;
-    papi_evtset[comp].evtset=PAPI_NULL;
+    task.papi_evtset[comp].nevts=0;
+    task.papi_evtset[comp].evtset=PAPI_NULL;
   }
 
   // clear events
   for(i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
-    papi_events[i].code=0;
+    task.papi_events[i].code=0;
     flops_weight[i]=0.0;
   }
 
@@ -121,23 +137,23 @@ int ipm_papi_init()
 
     /* translate PAPI event names to codes and check validity */
     for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
-        if( papi_events[i].name[0] ) {
-            PAPI_event_name_to_code(papi_events[i].name, &(papi_events[i].code));
+        if( task.papi_events[i].name[0] ) {
+            PAPI_event_name_to_code(task.papi_events[i].name, &(task.papi_events[i].code));
 
-            if( PAPI_query_event(papi_events[i].code)!=PAPI_OK )
+            if( PAPI_query_event(task.papi_events[i].code)!=PAPI_OK )
             {
                 IPMERR("PAPI: Event name-to-code error: %s, ignoring\n",
-                papi_events[i].name);
-                papi_events[i].name[0]=0;
-                papi_events[i].code=0;
+                task.papi_events[i].name);
+                task.papi_events[i].name[0]=0;
+                task.papi_events[i].code=0;
             }
             else
             {
-                if( !strcmp(papi_events[i].name, "PAPI_FP_OPS") ) {
+                if( !strcmp(task.papi_events[i].name, "PAPI_FP_OPS") ) {
                     flops_weight[i]=1.0;
                 }
                 IPMDBG("PAPI: Successfully registered event: %s\n", 
-                papi_events[i].name);
+                task.papi_events[i].name);
             }
         }
     }
@@ -149,18 +165,17 @@ int ipm_papi_init()
 int ipm_papi_start()
 {
     int i, rv;
-    const PAPI_component_info_t* cmpinfo = NULL;
-
     // count events during all contexts (user, kernel, etc)
     rv = PAPI_set_domain(PAPI_DOM_ALL);
-    cmpinfo = PAPI_get_component_info( 0 );
-    if ( cmpinfo == NULL )
+    task.cmpinfo = PAPI_get_component_info( 0 );
+    PAPI_get_opt(PAPI_DEF_MPX_NS, &task.papi_mpx_interval);
+    if ( task.cmpinfo == NULL )
         IPMDBG("BUG: No core component found by PAPI\n");
-    papi_evtset[0].evtset=PAPI_NULL;
-    rv = PAPI_create_eventset(&(papi_evtset[0].evtset));
+    task.papi_evtset[0].evtset=PAPI_NULL;
+    rv = PAPI_create_eventset(&(task.papi_evtset[0].evtset));
     // attach eventset to appropriate component - currently just cpu
     // tyler: seems to be necessary for multiplexing
-    rv = PAPI_assign_eventset_component( papi_evtset[0].evtset, 0 );
+    rv = PAPI_assign_eventset_component( task.papi_evtset[0].evtset, 0 );
 
     if( rv!= PAPI_OK )    {
         IPMERR("PAPI: [comp %d] Error creating eventset: %s\n", 0, PAPI_strerror(rv));
@@ -168,7 +183,7 @@ int ipm_papi_start()
     }
 
 #ifdef USE_PAPI_MULTIPLEXING
-    rv = PAPI_set_multiplex(papi_evtset[0].evtset);
+    rv = PAPI_set_multiplex(task.papi_evtset[0].evtset);
     if( rv!= PAPI_OK ) {
         IPMDBG("PAPI: [comp %d] Error calling set_multiplex\n", 0);
     }
@@ -176,36 +191,36 @@ int ipm_papi_start()
 
     // add events
     for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
-        if( !(papi_events[i].name[0]) )
+        if( !(task.papi_events[i].name[0]) )
             continue;
 
-        rv = PAPI_add_event(papi_evtset[0].evtset, papi_events[i].code);
+        rv = PAPI_add_event(task.papi_evtset[0].evtset, task.papi_events[i].code);
         // if an event is listed more than once, the -8 lacking-hardware error
         // will be given. behavior undefined for papi and ipm
         if( rv!= PAPI_OK ) {
             IPMERR("PAPI: [comp %d] Error adding event to eventset: %s, %s, skipping\n",
-            0, papi_events[i].name, PAPI_strerror(rv));
+            0, task.papi_events[i].name, PAPI_strerror(rv));
 
         } else {
             IPMDBG("PAPI: [comp %d] Successfully added event: %s\n",
-            0, papi_events[i].name);
+            0, task.papi_events[i].name);
 
-            papi_evtset[0].ctr2evt[papi_evtset[0].nevts]=i;
+            task.papi_evtset[0].ctr2evt[task.papi_evtset[0].nevts]=i;
 
-            papi_evtset[0].nevts++;
+            task.papi_evtset[0].nevts++;
         }
     }
 
     // start papi
-    if( papi_evtset[0].nevts>0 ) {
-        rv = PAPI_start(papi_evtset[0].evtset);
+    if( task.papi_evtset[0].nevts>0 ) {
+        rv = PAPI_start(task.papi_evtset[0].evtset);
         if( rv!=PAPI_OK ) {
             IPMERR("PAPI: [comp %d] Error starting eventset (%d events)\n",
-            0, papi_evtset[0].nevts);
-            papi_evtset[0].nevts=0;
+            0, task.papi_evtset[0].nevts);
+            task.papi_evtset[0].nevts=0;
         } else {
             IPMDBG("PAPI: [comp %d] Successfully started eventset (%d events)\n",
-            0, papi_evtset[0].nevts);
+            0, task.papi_evtset[0].nevts);
         }
     }
 
@@ -217,8 +232,8 @@ int ipm_papi_stop()
     int rv;
     long long ctr[MAXNUM_PAPI_EVENTS];
 
-    if( papi_evtset[0].nevts>0 ) {
-        rv =  PAPI_stop(papi_evtset[0].evtset, ctr);
+    if( task.papi_evtset[0].nevts>0 ) {
+        rv =  PAPI_stop(task.papi_evtset[0].evtset, ctr);
         if( rv!=PAPI_OK ) {
             IPMERR("PAPI: [comp %d] Error stopping eventset\n", 0);
             return IPM_EOTHER;
@@ -226,7 +241,7 @@ int ipm_papi_stop()
             IPMDBG("PAPI: [comp %d] Successfully stopped eventset\n", 0);
         }
 
-        rv =  PAPI_cleanup_eventset(papi_evtset[0].evtset);
+        rv =  PAPI_cleanup_eventset(task.papi_evtset[0].evtset);
         if( rv!=PAPI_OK ) {
             IPMERR("PAPI: [comp %d] Error cleaning eventset up\n", 0);
             return IPM_EOTHER;
@@ -234,7 +249,7 @@ int ipm_papi_stop()
             IPMDBG("PAPI: [comp %d] Successfully cleaned eventset up\n", 0);
         }
 
-        rv =  PAPI_destroy_eventset(&(papi_evtset[0].evtset));
+        rv =  PAPI_destroy_eventset(&(task.papi_evtset[0].evtset));
         if( rv!=PAPI_OK ) {
             IPMERR("PAPI: [comp %d] Error destroying eventset\n", 0);
             return IPM_EOTHER;
@@ -250,14 +265,14 @@ int ipm_papi_read(long long *val)
     int i, rv;
     long long ctr[MAXNUM_PAPI_COUNTERS];
 
-    if( papi_evtset[0].nevts>0 ) {
-        rv =  PAPI_read(papi_evtset[0].evtset, ctr);
+    if( task.papi_evtset[0].nevts>0 ) {
+        rv =  PAPI_read(task.papi_evtset[0].evtset, ctr);
         if( rv!=PAPI_OK ) {
             IPMERR("PAPI: [comp %d] Error reading eventset\n", 0);
             return IPM_EOTHER;
         } else {
-            for( i=0; i<papi_evtset[0].nevts; i++ ) {
-                val[ papi_evtset[0].ctr2evt[i] ] = ctr[i];
+            for( i=0; i<task.papi_evtset[0].nevts; i++ ) {
+                val[ task.papi_evtset[0].ctr2evt[i] ] += ctr[i];
             }
         }
     }

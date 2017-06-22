@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>       
@@ -401,13 +400,15 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   int i, nc;
   int res=0;
 #ifdef HAVE_PAPI
+#define SAMPLES 5
   double gflops=0.0;
-  //regions shorter than one second for now
-  char* time = reg->stime < 1.0 ? "false" : "true";
-
+  //estimate time needed for good reading. papi_evtset[0] is always cpu core events
+  // minimum samples to get a decent read * number of counters * counter swap
+  // interval in seconds
+  char* time = reg->stime < SAMPLES * t->papi_evtset[0].nevts * (t->papi_mpx_interval.multiplex.ns / (1000000000.0)) ? "false" : "true";
   nc=0;
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
-    if( (papi_events[i].name[0]) )
+    if( (t->papi_events[i].name[0]) )
       nc++;
   }
 
@@ -417,11 +418,11 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\" valid_region=\"%s\">\n",
 		    nc, gflops, time);
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
-    if( !(papi_events[i].name[0]) )
+    if( !(t->papi_events[i].name[0]) )
       continue;
 
     res += ipm_printf(ptr, "<counter name=\"%s\" > %lld </counter>\n",
-		      papi_events[i].name, reg->ctr[i]);
+		      t->papi_events[i].name, reg->ctr[i]);
   }
   res += ipm_printf(ptr, "</hpm>\n");
 #endif /* HAVE_PAPI */

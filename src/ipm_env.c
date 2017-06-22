@@ -257,7 +257,7 @@ int ipm_check_env(int env, char *val)
 	/* User defined list of counters */
 	cptr1 = strtok_r(val,",",&uptr);
 	while (cptr1){
-	  strcpy(papi_events[i].name, cptr1);
+	  strcpy(task.papi_events[i].name, cptr1);
 	  cptr1 = strtok_r(NULL,",",&uptr);
 	  i++;
 	}

@@ -27,9 +27,6 @@ typedef struct
   short ctr2evt[MAXNUM_PAPI_COUNTERS];
 } ipm_papi_evtset_t;
 
-extern ipm_papi_event_t papi_events[MAXNUM_PAPI_EVENTS];
-extern ipm_papi_evtset_t papi_evtset[MAXNUM_PAPI_COMPONENTS];
-
 int mod_papi_init(ipm_mod_t *mod, int flags);
 
 int ipm_papi_read(long long *val);
