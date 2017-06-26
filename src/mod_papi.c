@@ -20,15 +20,6 @@
 // components they are supported on - this would be the better way to determine
 // which events to monitor.
 
-/* 
-   uncomment the following #define to enable multiplexing, 
-   also check the number of supported counters per PAPI component 
-   (MAXNUM_PAPI_COUNTERS) and the overall number of events supported 
-   (MAXNUM_PAPI_EVENTS) - you might want to have both of these larger 
-   when multiplexing is enabled. 
-*/
-//#define USE_PAPI_MULTIPLEXING
-
 double flops_weight[MAXNUM_PAPI_EVENTS];
 
 int ipm_papi_start();
@@ -51,17 +42,20 @@ int mod_papi_region(ipm_mod_t* mod, int op, struct region* reg)
             break;
         }
     }
+    return 0;
 }
 
 int mod_papi_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
 {
     int res = 0;
     const PAPI_hw_info_t *hwinfo = PAPI_get_hardware_info();
+    
     // time here for compatibility with standard - papi has no interactive regions
     res += ipm_printf(ptr, "<module name=\"PAPI\" time=\"0.0\" ncpu=\"%d\" nnodes=\"%d\" totalcpus=\"%d\"\
- vendor=\"%d\" vendor_string=\"%s\" model=\"%d\" model_string=\"%s\" revision=\"%f\" mhz=\"%f\"></module>\n",
+ vendor=\"%d\" vendor_string=\"%s\" model=\"%d\" model_string=\"%s\" revision=\"%f\" min_mhz=\"%d\" max_mhz=\"%d\" domain=\"%d\"></module>\n",
                        hwinfo->ncpu, hwinfo->nnodes, hwinfo->totalcpus, hwinfo->vendor, hwinfo->vendor_string,
-                       hwinfo->model, hwinfo->model_string, hwinfo->revision, hwinfo->mhz);
+                       hwinfo->model, hwinfo->model_string, hwinfo->revision, hwinfo->cpu_min_mhz, hwinfo->cpu_max_mhz, task.papi_evtset[0].domain);
+    //res += ipm_printf(ptr, " min_mhz=\"%d\" max_mhz=\"%d\" domain=\"%d\"></module>\n", hwinfo->cpu_min_mhz, hwinfo->cpu_max_mhz, task.papi_evtset[0].domain);
 
     return res;
 }
@@ -82,6 +76,7 @@ int mod_papi_init(ipm_mod_t* mod, int flags)
   for( comp=0; comp<MAXNUM_PAPI_COMPONENTS; comp++ ) {
     task.papi_evtset[comp].nevts=0;
     task.papi_evtset[comp].evtset=PAPI_NULL;
+    task.papi_evtset[comp].domain = PAPI_DOM_ALL;
   }
 
   // clear events

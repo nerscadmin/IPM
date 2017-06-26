@@ -50,13 +50,13 @@
 
 // Consider updating MAXSIZE_ENVKEY if you change these values...
 /* module papi */
-#define MAXNUM_PAPI_EVENTS      1024
-#define MAXNUM_PAPI_COUNTERS    1024
+#define MAXNUM_PAPI_EVENTS      512
+#define MAXNUM_PAPI_COUNTERS    512
 #define MAXNUM_PAPI_COMPONENTS  1
 #define MAXSIZE_PAPI_EVTNAME    32
 
 /* module omptracepoints */
-#define MAXNUM_THREADS          128
+#define MAXNUM_THREADS          276
 
 
 #endif /* IPM_SIZES_INCLUDED */

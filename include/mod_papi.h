@@ -25,6 +25,7 @@ typedef struct
   int evtset;
   int nevts;
   short ctr2evt[MAXNUM_PAPI_COUNTERS];
+  int domain;
 } ipm_papi_evtset_t;
 
 int mod_papi_init(ipm_mod_t *mod, int flags);
