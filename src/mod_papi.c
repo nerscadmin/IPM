@@ -51,9 +51,9 @@ int mod_papi_xml(ipm_mod_t* mod, void* ptr, struct region* reg)
     const PAPI_hw_info_t *hwinfo = PAPI_get_hardware_info();
     
     // time here for compatibility with standard - papi has no interactive regions
-    res += ipm_printf(ptr, "<module name=\"PAPI\" time=\"0.0\" ncpu=\"%d\" nnodes=\"%d\" totalcpus=\"%d\"\
+    res += ipm_printf(ptr, "<module name=\"PAPI\" time=\"0.0\" ncpu=\"%d\" nnodes=\"%d\" totalcpus=\"%d\" threads=\"%d\" cores=\"%d\" \
  vendor=\"%d\" vendor_string=\"%s\" model=\"%d\" model_string=\"%s\" revision=\"%f\" min_mhz=\"%d\" max_mhz=\"%d\" domain=\"%d\"></module>\n",
-                       hwinfo->ncpu, hwinfo->nnodes, hwinfo->totalcpus, hwinfo->vendor, hwinfo->vendor_string,
+                       hwinfo->ncpu, hwinfo->nnodes, hwinfo->totalcpus, hwinfo->threads, hwinfo->cores, hwinfo->vendor, hwinfo->vendor_string,
                        hwinfo->model, hwinfo->model_string, hwinfo->revision, hwinfo->cpu_min_mhz, hwinfo->cpu_max_mhz, task.papi_evtset[0].domain);
     //res += ipm_printf(ptr, " min_mhz=\"%d\" max_mhz=\"%d\" domain=\"%d\"></module>\n", hwinfo->cpu_min_mhz, hwinfo->cpu_max_mhz, task.papi_evtset[0].domain);
 
