@@ -74,7 +74,8 @@ typedef struct taskdata
   double wtime, stime, utime, mtime, iotime, omptime, ompidletime; 
 
   double procmem;
-
+  
+  unsigned int num_threads;
   int nhosts;
   int par_env;
   char user[MAXSIZE_USERNAME];

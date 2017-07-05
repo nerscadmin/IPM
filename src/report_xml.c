@@ -279,10 +279,10 @@ int xml_perf(void *ptr, taskdata_t *t) {
   /* retained the mtime entry here for backwards compatibility */
   res += ipm_printf(ptr, "<perf wtime=\"%.5e\" utime=\"%.5e\" "
 		    "stime=\"%.5e\" mtime=\"%.5e\" "
-		    "gflop=\"%.5e\" gbyte=\"%.5e\" >",
+		    "gflop=\"%.5e\" gbyte=\"%.5e\" omp_num_threads=\"%u\">",
 		    IPM_TIMEVAL(t->t_stop)-IPM_TIMEVAL(t->t_start), 
 		    t->utime, t->stime, t->mtime,
-		    gflops, procmem);
+		    gflops, procmem, t->num_threads);
   res += ipm_printf(ptr, "</perf>\n");
 
   return res;

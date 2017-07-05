@@ -13,20 +13,21 @@
 extern char **environ;
 
 
-#define ENV_DEBUG          0
-#define ENV_REPORT         1
-#define ENV_LOG            2
-#define ENV_LOGDIR         3
-#define ENV_HPM            4
-#define ENV_OUTFILE        5
-#define ENV_LOGWRITER      6
-#define ENV_HPCNAME        7
+#define ENV_DEBUG           0
+#define ENV_REPORT          1
+#define ENV_LOG             2
+#define ENV_LOGDIR          3
+#define ENV_HPM             4
+#define ENV_OUTFILE         5
+#define ENV_LOGWRITER       6
+#define ENV_HPCNAME         7
 #ifdef HAVE_SNAP
-#define ENV_SNAP           8
+#define ENV_SNAP            8
 #endif
-#define ENV_NESTED_REGIONS 9
+#define ENV_NESTED_REGIONS  9
 #ifdef HAVE_PMON
-#define ENV_PMON 10
+#define ENV_PMON            10
+#define ENV_OMP_NUM_THREADS 11
 #endif
 
 
@@ -82,14 +83,13 @@ int ipm_get_env()
 
   cp=environ;
   while(str=(*cp)) {
-    if( strncmp(str,"IPM", 3)!=0 ) {
+    if( strncmp(str,"IPM", 3)!=0  && strncmp(str, "OMP", 3) != 0) {
       cp++;
       continue;
     }
 
     ipm_tokenize(str,key,val);
     len = strlen(key);
-
     /* IPM_DEBUG */
     if(!strcmp("IPM_DEBUG", key)) {
       ipm_check_env(ENV_DEBUG, val);
@@ -143,6 +143,10 @@ int ipm_get_env()
 
     else if(!strcmp("IPM_NESTED_REGIONS", key)) {
       ipm_check_env(ENV_NESTED_REGIONS, val);
+    }
+    
+    else if(!strcmp("OMP_NUM_THREADS", key)) {
+      ipm_check_env(ENV_OMP_NUM_THREADS, val);
     }
 
     /* do not complain about these */
@@ -282,6 +286,10 @@ int ipm_check_env(int env, char *val)
     case ENV_NESTED_REGIONS:
       task.flags |= FLAG_NESTED_REGIONS;
       break;
+
+    case ENV_OMP_NUM_THREADS:
+        task.num_threads = atoi(val);
+    break;
 
     default:
       ;

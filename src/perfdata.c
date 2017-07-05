@@ -33,6 +33,8 @@ void taskdata_init(taskdata_t *t)
   t->omptime  = ipm_omptime();
 
   t->procmem = 0.0;
+  
+  t->num_threads = 1;
 
   gethostname(t->hostname, MAXSIZE_HOSTNAME);
   t->hostname[MAXSIZE_HOSTNAME-1]=0;

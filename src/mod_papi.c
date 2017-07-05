@@ -123,6 +123,9 @@ int ipm_papi_init()
         IPMDBG("Detected classic PAPI. One default (CPU) component supported\n");
     }
 
+    //if (PAPI_thread_init((unsigned long(*)(void))omp_get_thread_num) != PAPI_OK)
+    //    IPMERR("PAPI_thread_init() failed.\n");
+
 #ifdef USE_PAPI_MULTIPLEXING
     rv=PAPI_multiplex_init();
     if( rv!=PAPI_OK ) {
