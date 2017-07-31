@@ -400,12 +400,10 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   int i, nc;
   int res=0;
 #ifdef HAVE_PAPI
-#define SAMPLES 5
   double gflops=0.0;
   //estimate time needed for good reading. papi_evtset[0] is always cpu core events
   // minimum samples to get a decent read * number of counters * counter swap
   // interval in seconds
-  char* time = reg->stime + reg->utime < SAMPLES * t->papi_evtset[0].nevts * (t->papi_mpx_interval.multiplex.ns / (1000000000.0)) ? "false" : "true";
   nc=0;
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     if( (t->papi_events[i].name[0]) )
@@ -415,7 +413,7 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   // tyler: this only reports for rank == 0 regardless of task
   gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
 
-  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\" valid_region=\"%s\">\n",
+  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\" >\n",
 		    nc, gflops, time);
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
     if( !(t->papi_events[i].name[0]) )
@@ -529,9 +527,9 @@ int xml_noregion(void *ptr, taskdata_t *t, region_t *reg, ipm_hent_t *htab) {
     mtime -= tmp->mtime;
 
 #ifdef HAVE_PAPI
-    for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
-      noregion.ctr[i] -= tmp->ctr[i];
-    }
+    //for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
+    //  noregion.ctr[i] -= tmp->ctr[i];
+    //}
 #endif
 #ifdef HAVE_PMON
 

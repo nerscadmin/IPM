@@ -15,12 +15,14 @@ static void parse_pm_counter(const char* file, double* val)
         if(fscanf(F, "%lf", val) != 1)
         {
             *val = 0.0;
+            IPMERR("Warning: Cray Power File not readable.");
         }
         fclose(F);
     }
     else
     {
         *val = 0.0;
+        IPMERR("Warning: Cray Power File not found or insufficient permissions to open.");
     }
 }
 
@@ -108,7 +110,6 @@ int mod_pmon_region(ipm_mod_t* mod, int op, struct region* reg)
 int mod_pmon_init(ipm_mod_t* mod, int flags)
 {
   int i;
-
   mod->state    = STATE_IN_INIT;
   mod->init     = mod_pmon_init;
   mod->output   = 0;//mod_pmon_output;

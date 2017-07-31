@@ -28,6 +28,7 @@ int ipm_papi_init();
 
 int mod_papi_region(ipm_mod_t* mod, int op, struct region* reg)
 {
+    int i;
     if (reg)
     {
         switch (op)
@@ -35,9 +36,18 @@ int mod_papi_region(ipm_mod_t* mod, int op, struct region* reg)
             //end
             case -1:
                 ipm_papi_read(reg->ctr);
+                for (i = 0; i < task.papi_evtset[0].nevts; i++)
+                {
+                    reg->ctr[i] -= reg->ctr_e[i];
+                }
             break;
             // start
             case 1:
+                for (i = 0; i < task.papi_evtset[0].nevts; i++)
+                {
+                    reg->ctr[i] = 0;
+                    reg->ctr_e[i] = 0;
+                }
                 ipm_papi_read(reg->ctr_e);
             break;
         }
