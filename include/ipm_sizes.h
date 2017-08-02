@@ -52,7 +52,7 @@
 #define MAXNUM_PAPI_EVENTS      16
 #define MAXNUM_PAPI_COUNTERS    8
 #define MAXNUM_PAPI_COMPONENTS  8 
-#define MAXSIZE_PAPI_EVTNAME    32
+#define MAXSIZE_PAPI_EVTNAME    128
 
 /* module omptracepoints */
 #define MAXNUM_THREADS          128
