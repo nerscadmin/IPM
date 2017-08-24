@@ -55,3 +55,7 @@
 42|PIO_UNLINKAT_ID|int unlinkat(int dirfd, const char *pathname, int flags)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 43|PIO_FSEEKO_ID|int fseeko(FILE *stream, off_t offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
 44|PIO_FSEEKO64_ID|int fseeko64(FILE *stream, off64_t offset, int whence)||CS_LOCAL,BYTES_NONE,RANK_NONE,DATA_NONE
+45|PIO_WRITEV_ID|ssize_t writev(int fd, const struct iovec *iov, int iovcnt)||CS_LOCAL,BYTES_RETURN_COUNT,RANK_NONE,DATA_TX
+46|PIO_READV_ID|ssize_t readv(int fd, const struct iovec *iov, int iovcnt)||CS_LOCAL,BYTES_RETURN_COUNT,RANK_NONE,DATA_RX
+47|PIO_PWRITEV_ID|ssize_t pwritev(int fd, const struct iovec *iov, int iovcnt, off_t offset)||CS_LOCAL,BYTES_RETURN_COUNT,RANK_NONE,DATA_TX
+48|PIO_PREADV_ID|ssize_t preadv(int fd, const struct iovec *iov, int iovcnt, off_t offset)||CS_LOCAL,BYTES_RETURN_COUNT,RANK_NONE,DATA_RX

@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <sys/uio.h>
 
 #define MPI3CONST const
 
