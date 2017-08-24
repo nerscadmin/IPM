@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>       
@@ -280,10 +279,10 @@ int xml_perf(void *ptr, taskdata_t *t) {
   /* retained the mtime entry here for backwards compatibility */
   res += ipm_printf(ptr, "<perf wtime=\"%.5e\" utime=\"%.5e\" "
 		    "stime=\"%.5e\" mtime=\"%.5e\" "
-		    "gflop=\"%.5e\" gbyte=\"%.5e\" >",
+		    "gflop=\"%.5e\" gbyte=\"%.5e\" omp_num_threads=\"%u\">",
 		    IPM_TIMEVAL(t->t_stop)-IPM_TIMEVAL(t->t_start), 
 		    t->utime, t->stime, t->mtime,
-		    gflops, procmem);
+		    gflops, procmem, t->num_threads);
   res += ipm_printf(ptr, "</perf>\n");
 
   return res;
@@ -402,37 +401,39 @@ int xml_hpm(void *ptr, taskdata_t *t, region_t *reg) {
   int res=0;
 #ifdef HAVE_PAPI
   double gflops=0.0;
-
-
+  //estimate time needed for good reading. papi_evtset[0] is always cpu core events
+  // minimum samples to get a decent read * number of counters * counter swap
+  // interval in seconds
   nc=0;
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
-    if( (papi_events[i].name[0]) )
+    if( (t->papi_events[i].name[0]) )
       nc++;
   }
 
   // tyler: this only reports for rank == 0 regardless of task
   gflops = ipm_papi_gflops(reg->ctr, reg->wtime);
 
-  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\">\n",
-		    nc, gflops);
+  res += ipm_printf(ptr, "<hpm api=\"PAPI\" ncounter=\"%d\" eventset=\"0\" gflop=\"%.5e\" >\n",
+		    nc, gflops, time);
   for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
-    if( !(papi_events[i].name[0]) )
+    if( !(t->papi_events[i].name[0]) )
       continue;
 
     res += ipm_printf(ptr, "<counter name=\"%s\" > %lld </counter>\n",
-		      papi_events[i].name, reg->ctr[i]);
+		      t->papi_events[i].name, reg->ctr[i]);
   }
   res += ipm_printf(ptr, "</hpm>\n");
 #endif /* HAVE_PAPI */
 #ifdef HAVE_PMON
     if (task.flags & FLAG_PMON)
     {
-    res += ipm_printf(ptr,
-"<pmon\n\
-<device name=\"node\" avg_power=\"%lf\" energy=\"%lf\">\n\
-<device name=\"cpu\"  avg_power=\"%lf\" energy=\"%lf\">\n\
-<device name=\"memory\" avg_power=\"%lf\" energy=\"%lf\">\n\
-<device name=\"misc\" avg_power=\"%lf\" energy=\"%lf\">\n\
+        //ensure even internal tags have closing tags...
+        res += ipm_printf(ptr,
+"<pmon>\n\
+<device name=\"node\" avg_power=\"%lf\" energy=\"%lf\"></device>\n\
+<device name=\"cpu\"  avg_power=\"%lf\" energy=\"%lf\"></device>\n\
+<device name=\"memory\" avg_power=\"%lf\" energy=\"%lf\"></device>\n\
+<device name=\"misc\" avg_power=\"%lf\" energy=\"%lf\"></device>\n\
 </pmon>\n",
           reg->energy/reg->wtime, reg->energy,
           reg->cpu_energy/reg->wtime, reg->cpu_energy,
@@ -526,9 +527,9 @@ int xml_noregion(void *ptr, taskdata_t *t, region_t *reg, ipm_hent_t *htab) {
     mtime -= tmp->mtime;
 
 #ifdef HAVE_PAPI
-    for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
-      noregion.ctr[i] -= tmp->ctr[i];
-    }
+    //for( i=0; i<MAXNUM_PAPI_EVENTS; i++ ) {
+    //  noregion.ctr[i] -= tmp->ctr[i];
+    //}
 #endif
 #ifdef HAVE_PMON
 
@@ -566,10 +567,11 @@ int xml_region(void *ptr, taskdata_t *t, region_t *reg, ipm_hent_t *htab) {
 		    reg->wtime, reg->utime, reg->stime, 
 		    reg->mtime, reg->iotime, reg->omptime, reg->ompidletime);
   */
-
+  
+  
   res += ipm_printf(ptr, "<region label=\"%s\" nexits=\"%u\" "
 		    "wtime=\"%.5e\" utime=\"%.5e\" stime=\"%.5e\" "
-		    "mtime=\"%.5e\" id=\"%d\" >\n",
+		    "mtime=\"%.5e\" id=\"%d\">\n",
 		    reg->name, reg->nexecs, reg->wtime, 
 		    reg->utime, reg->stime, reg->mtime,
 		    internal2xml[reg->id]);

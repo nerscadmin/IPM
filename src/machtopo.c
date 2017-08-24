@@ -13,8 +13,8 @@
 void ipm_get_machtopo()
 {
   unsigned i, j, np;
-  char *allnames;
-  char *unique;
+  char *allnames = NULL;
+  char *unique = NULL;
   unsigned nunique;
   int x;
 

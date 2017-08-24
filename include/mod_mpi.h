@@ -23,7 +23,6 @@ typedef struct mpidata
   double mtime_e;
 } mpidata_t;
 
-extern mpidata_t mpidata[MAXNUM_REGIONS];
 extern MPI_Group ipm_world_group;
 
 #define IPM_MPI_MAP_RANK(rank_out_, rank_in_, comm_) \

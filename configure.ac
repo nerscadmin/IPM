@@ -196,6 +196,13 @@ AC_ARG_WITH(papi,
     ]
 )
 
+AC_ARG_ENABLE(papi-multiplexing,
+    AC_HELP_STRING([--enable-papi-multiplexing], [If PAPI is enabled, allows for multiplexing.]),
+    [CFLAGS="$CFLAGS -DUSE_PAPI_MULTIPLEXING"],
+    []
+)
+
+
 AC_ARG_ENABLE(pmon,
   AC_HELP_STRING([--enable-pmon], [Enables power monitoring module (default=no)]),
     [
