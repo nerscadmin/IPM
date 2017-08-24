@@ -213,6 +213,8 @@ void compute_local_region_stats(region_t *reg, regstats_t *stats, int incl, int 
   scanspec_restrict_activity( &spec,
 			      POSIXIO_MINID_GLOBAL, POSIXIO_MAXID_GLOBAL);
   htable_scan( ipm_htable, &hpio, spec );
+#else
+  hpio.bytesum = 0.0;
 #endif
 
 #ifdef HAVE_OMPTRACEPOINTS
