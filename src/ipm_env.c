@@ -27,9 +27,8 @@ extern char **environ;
 #define ENV_NESTED_REGIONS  9
 #ifdef HAVE_PMON
 #define ENV_PMON            10
-#define ENV_OMP_NUM_THREADS 11
 #endif
-
+#define ENV_OMP_NUM_THREADS 11
 
 #define MAXSIZE_ENVKEY  1024
 
